@@ -1,0 +1,26 @@
+// Include the React Native Gradle plugin
+pluginManagement {
+    includeBuild("../node_modules/@react-native/gradle-plugin")
+}
+
+plugins {
+    id("com.facebook.react.settings")
+}
+
+// Configure React settings extension
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+    ex.autolinkLibrariesFromCommand()
+}
+
+// Set the root project name
+rootProject.name = 'MedAyu'
+
+// Include the app module
+include ':app'
+
+// Include the React Native Gradle plugin
+includeBuild('../node_modules/@react-native/gradle-plugin')
+
+// Include react-native-print library
+include ':react-native-print'
+project(':react-native-print').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-print/android')
