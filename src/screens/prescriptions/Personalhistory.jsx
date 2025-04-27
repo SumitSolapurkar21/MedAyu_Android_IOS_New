@@ -8,10 +8,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowLeft, faPencilSquare} from '@fortawesome/free-solid-svg-icons';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import UserContext from '../../functions/usercontext';
 import axios from 'axios';
 import {
@@ -76,30 +82,32 @@ const Personalhistory = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchmobileAssessment = async () => {
-      try {
-        await axios
-          .post(FetchMobileOpdAssessmentForEditapi, {
-            hospital_id: userData?.hospital_id,
-            reception_id: userData?._id,
-            patient_id: selectedPatient?._id,
-            api_type: 'OPD-PERSONAL-HISTORY',
-            uhid: selectedPatient?.patientuniqueno,
-            mobilenumber: selectedPatient?.mobilenumber,
-            appoint_id: selectedPatient?.appoint_id,
-          })
-          .then(res => {
-            console.log('res : ', res.data);
-            setPatientSympyomsArrayEdit(res.data.opdpersonalhistoryarray);
-          });
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchmobileAssessment = async () => {
+        try {
+          await axios
+            .post(FetchMobileOpdAssessmentForEditapi, {
+              hospital_id: userData?.hospital_id,
+              reception_id: userData?._id,
+              patient_id: selectedPatient?._id,
+              api_type: 'OPD-PERSONAL-HISTORY',
+              uhid: selectedPatient?.patientuniqueno,
+              mobilenumber: selectedPatient?.mobilenumber,
+              appoint_id: selectedPatient?.appoint_id,
+            })
+            .then(res => {
+              console.log('res : ', res.data);
+              setPatientSympyomsArrayEdit(res.data.opdpersonalhistoryarray);
+            });
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-    fetchmobileAssessment();
-  }, []);
+      fetchmobileAssessment();
+    }, []),
+  );
 
   return (
     <>
@@ -211,7 +219,7 @@ const Personalhistory = () => {
                         #{index + 1} Symptom
                       </Text>
                       <TouchableOpacity
-                        onPress={() => removeSymptom(index)}
+                        onPress={() => navigation.navigate('Editpersonalhistory', {data: item, userData, selectedPatient})}
                         style={styles.deleteButton}>
                         <FontAwesomeIcon
                           icon={faPencilSquare}

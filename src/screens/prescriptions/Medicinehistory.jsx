@@ -15,7 +15,6 @@ import {
   faArrowLeft,
   faCalendarDays,
   faPencilSquare,
-  faPlus,
   faTrashCan,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
