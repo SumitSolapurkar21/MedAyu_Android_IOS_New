@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
@@ -19,7 +19,7 @@ import {
   faTrashCan,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import UserContext from '../../functions/usercontext';
 import axios from 'axios';
 import {
@@ -193,9 +193,10 @@ const Medicinehistory = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchmobileAssessment = async () => {
-      try {
+  useFocusEffect(
+    useCallback(() => {
+      const fetchmobileAssessment = async () => {
+        try {
         await axios
           .post(FetchMobileOpdAssessmentForEditapi, {
             hospital_id: userData?.hospital_id,
@@ -215,8 +216,9 @@ const Medicinehistory = () => {
       }
     };
 
-    fetchmobileAssessment();
-  }, []);
+      fetchmobileAssessment();
+    }, []),
+  );
 
   return (
     <>
@@ -292,8 +294,9 @@ const Medicinehistory = () => {
                           #{index + 1} Symptom
                         </Text>
                         <TouchableOpacity
-                          style={styles.deleteButton}>
-                          <FontAwesomeIcon
+                          style={styles.deleteButton}
+                          onPress={() => navigation.navigate('Editmedicinehistory', {data: item, userData, selectedPatient})}>
+                          <FontAwesomeIcon 
                             icon={faPencilSquare}
                             color="#05b508"
                             style={styles.icon}
@@ -307,11 +310,11 @@ const Medicinehistory = () => {
                         </View>
                         <View style={styles.sympDivInner}>
                           <Text style={styles.label}>Dose</Text>
-                          <Text>{item.drugname}</Text>
+                          <Text>{item.dose}</Text>
                         </View>
                         <View style={styles.sympDivInner}>
                           <Text style={styles.label}>Route</Text>
-                          <Text>{item.drugname}</Text>
+                          <Text>{item.route}</Text>
                         </View>
                         <View style={styles.sympDivInner}>
                           <Text style={styles.label}>From Date</Text>
