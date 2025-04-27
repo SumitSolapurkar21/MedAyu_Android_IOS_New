@@ -9,15 +9,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   faArrowLeft,
-  faChevronRight,
   faChevronUp,
   faPencilSquare,
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {faChevronDown} from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import {Dropdown} from 'react-native-element-dropdown';
 import {Formik} from 'formik';
@@ -168,9 +167,10 @@ const Vitals = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchmobileAssessment = async () => {
-      try {
+  useFocusEffect(
+    useCallback(() => {
+      const fetchmobileAssessment = async () => {
+        try {
         await axios
           .post(FetchMobileOpdAssessmentForEditapi, {
             hospital_id: userData?.hospital_id,
@@ -191,7 +191,8 @@ const Vitals = () => {
     };
 
     fetchmobileAssessment();
-  }, []);
+  }, []),
+  );
 
   return (
     <>
@@ -707,8 +708,7 @@ const Vitals = () => {
                                 ]}>
                                 #{index + 1} Symptom
                               </Text>
-                              <TouchableOpacity
-                                onPress={() => removeSymptom(index)}>
+                              <TouchableOpacity onPress={() => navigation.navigate('Editvitals', {data: item, userData, selectedPatient})}>
                                 <FontAwesomeIcon
                                   icon={faPencilSquare}
                                   color="#05b508"
