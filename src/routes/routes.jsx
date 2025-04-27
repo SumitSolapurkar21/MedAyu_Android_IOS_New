@@ -41,6 +41,7 @@ import Editpersonalhistory from '../screens/editprescription/Editpersonalhistory
 import Editobstetricshistory from '../screens/editprescription/Editobstetricshistory';
 import Editmenstrualhistory from '../screens/editprescription/Editmenstrualhistory';
 import Editvitals from '../screens/editprescription/Editvitals';
+import Editgeneralexamination from '../screens/editprescription/Editgeneralexamination';
 const Stack = createNativeStackNavigator();
 
 export const MyRoutes = () => {
@@ -97,6 +98,7 @@ export const MyRoutes = () => {
         <Stack.Screen name="Editobstetricshistory" component={Editobstetricshistory} />
         <Stack.Screen name="Editmenstrualhistory" component={Editmenstrualhistory} />
         <Stack.Screen name="Editvitals" component={Editvitals} /> 
+        <Stack.Screen name="Editgeneralexamination" component={Editgeneralexamination} />
 
 
 

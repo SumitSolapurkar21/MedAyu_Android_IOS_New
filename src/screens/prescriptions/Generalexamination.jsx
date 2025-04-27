@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
@@ -18,7 +18,7 @@ import {
   faTrashCan,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import UserContext from '../../functions/usercontext';
 import axios from 'axios';
 import {Formik} from 'formik';
@@ -100,9 +100,11 @@ const Generalexamination = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchmobileAssessment = async () => {
-      try {
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchmobileAssessment = async () => {
+        try {
         await axios
           .post(FetchMobileOpdAssessmentForEditapi, {
             hospital_id: userData?.hospital_id,
@@ -125,7 +127,8 @@ const Generalexamination = () => {
     };
 
     fetchmobileAssessment();
-  }, []);
+  }, []),
+  );
 
   return (
     <>
@@ -173,7 +176,7 @@ const Generalexamination = () => {
                         ]}>
                         #{index + 1} Symptom
                       </Text>
-                      <TouchableOpacity onPress={() => removeSymptom(index)}>
+                      <TouchableOpacity onPress={() => navigation.navigate('Editgeneralexamination', {data: item, userData, selectedPatient})}>
                         <FontAwesomeIcon
                           icon={faPencilSquare}
                           color="#05b508"
