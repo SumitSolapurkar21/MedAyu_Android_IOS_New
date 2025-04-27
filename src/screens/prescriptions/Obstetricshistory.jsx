@@ -9,7 +9,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
@@ -19,7 +25,7 @@ import {
   faTrashCan,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import UserContext from '../../functions/usercontext';
 import axios from 'axios';
 import {
@@ -105,30 +111,32 @@ const Obstetricshistory = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchmobileAssessment = async () => {
-      try {
-        await axios
-          .post(FetchMobileOpdAssessmentForEditapi, {
-            hospital_id: userData?.hospital_id,
-            reception_id: userData?._id,
-            patient_id: selectedPatient?._id,
-            api_type: 'OPD-OBSTETRICS-HISTORY',
-            uhid: selectedPatient?.patientuniqueno,
-            mobilenumber: selectedPatient?.mobilenumber,
-            appoint_id: selectedPatient?.appoint_id,
-          })
-          .then(res => {
-            console.log('res : ', res.data);
-            setPatientSympyomsArrayEdit(res.data.opdobstetricshistoryarray);
-          });
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchmobileAssessment = async () => {
+        try {
+          await axios
+            .post(FetchMobileOpdAssessmentForEditapi, {
+              hospital_id: userData?.hospital_id,
+              reception_id: userData?._id,
+              patient_id: selectedPatient?._id,
+              api_type: 'OPD-OBSTETRICS-HISTORY',
+              uhid: selectedPatient?.patientuniqueno,
+              mobilenumber: selectedPatient?.mobilenumber,
+              appoint_id: selectedPatient?.appoint_id,
+            })
+            .then(res => {
+              console.log('res : ', res.data);
+              setPatientSympyomsArrayEdit(res.data.opdobstetricshistoryarray);
+            });
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-    fetchmobileAssessment();
-  }, []);
+      fetchmobileAssessment();
+    }, []),
+  );
 
   return (
     <>
@@ -176,7 +184,14 @@ const Obstetricshistory = () => {
                         ]}>
                         #{index + 1} Symptom
                       </Text>
-                      <TouchableOpacity onPress={() => removeSymptom(index)}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('Editobstetricshistory', {
+                            data: item,
+                            userData,
+                            selectedPatient,
+                          })
+                        }>
                         <FontAwesomeIcon
                           icon={faPencilSquare}
                           color="#05b508"
@@ -231,6 +246,7 @@ const Obstetricshistory = () => {
               </View>
             )}
           </View>
+
           {/* Symptoms Section */}
           <View style={styles.categoryDiv}>
             <Text style={styles.categoryText}>Obstetrics Details</Text>
