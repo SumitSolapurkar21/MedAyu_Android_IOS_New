@@ -33,7 +33,9 @@ import BillAddItems from '../screens/bills/AddItems';
 import BillHistory from '../screens/bills/BillHistory';
 import EditBillItem from '../screens/bills/EditBillItem';
 import ApplyAttendance from '../screens/attendence/ApplyAttendence';
-
+import Editcomplaints from '../screens/editprescription/Editcomplaints';
+import Editpasthistory from '../screens/editprescription/Editpasthistory';
+import Editfamilyhistory from '../screens/editprescription/Editfamilyhistory';
 const Stack = createNativeStackNavigator();
 
 export const MyRoutes = () => {
@@ -80,6 +82,11 @@ export const MyRoutes = () => {
         <Stack.Screen name="Procedure" component={Procedure} />
         <Stack.Screen name="Followupdate" component={Followupdate} />
 
+        {/*Edit  Assessment Pages .... */}
+
+        <Stack.Screen name="Editcomplaints" component={Editcomplaints} />
+        <Stack.Screen name="Editpasthistory" component={Editpasthistory} />
+        <Stack.Screen name="Editfamilyhistory" component={Editfamilyhistory} />
         <Stack.Screen name="Billhome" component={BillHome} />
         <Stack.Screen name="BillAddItems" component={BillAddItems} />
         <Stack.Screen name="BillHistory" component={BillHistory} />
