@@ -47,7 +47,7 @@ import Editsystemicexamination from '../screens/editprescription/Editsystemicexa
 import Editdiagnosis from '../screens/editprescription/Editdiagnosis';
 import Edittreatment from '../screens/editprescription/Edittreatment';
 import Editadvice from '../screens/editprescription/Editadvice';
-
+import Editfollowup from '../screens/editprescription/Editfollowup';
 const Stack = createNativeStackNavigator();
 
 export const MyRoutes = () => {
@@ -110,6 +110,7 @@ export const MyRoutes = () => {
         <Stack.Screen name="Editdiagnosis" component={Editdiagnosis} />
         <Stack.Screen name="Edittreatment" component={Edittreatment} />
         <Stack.Screen name="Editadvice" component={Editadvice} />
+        <Stack.Screen name="Editfollowup" component={Editfollowup} />
 
 
         {/* Bills Pages .... */}

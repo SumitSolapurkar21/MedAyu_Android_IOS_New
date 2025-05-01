@@ -91,7 +91,7 @@ const Appointmentpreview = ({ route }) => {
 
           dispatch(addAppointmentFunction(data)).then((result) => {
                if (result.payload) {
-                    setSuccessPopup(true)
+                    Alert.alert('Success !!', 'Appointment Added Successfull')
                     setSelectedPatientArray(null);
                     setTimeout(() => {
                          navigation.replace('Upcommingappointments')

@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useCallback} from 'react';
 import {
   Alert,
   StatusBar,
@@ -10,10 +10,13 @@ import {
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowLeft, faCalendarDays} from '@fortawesome/free-solid-svg-icons';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import UserContext from '../../functions/usercontext';
 import DatePicker from 'react-native-date-picker';
-import {addopdassessment} from '../../api/api';
+import {
+  addopdassessment,
+  FetchMobileOpdAssessmentForEditapi,
+} from '../../api/api';
 import axios from 'axios';
 
 const Followupdate = () => {
@@ -65,6 +68,33 @@ const Followupdate = () => {
     setNumberInput(diffInDays.toString());
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      const fetchmobileAssessment = async () => {
+        try {
+          await axios
+            .post(FetchMobileOpdAssessmentForEditapi, {
+              hospital_id: userData?.hospital_id,
+              reception_id: userData?._id,
+              patient_id: selectedPatient?._id,
+              api_type: 'OPD-FOLLOW-UP',
+              uhid: selectedPatient?.patientuniqueno,
+              mobilenumber: selectedPatient?.mobilenumber,
+              appoint_id: selectedPatient?.appoint_id,
+            })
+            .then(res => {
+              console.log('OPD-FOLLOW-UP res : ', res.data);
+              // setPatientSympyomsArrayEdit(res.data.opdadvicehistoryarray);
+            });
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      fetchmobileAssessment();
+    }, []),
+  );
+
   const SubmitHandler = async () => {
     const data = {
       followup_date: selectedDate.toISOString().split('T')[0],
@@ -85,7 +115,7 @@ const Followupdate = () => {
           uhid: selectedPatient?.patientuniqueno,
           mobilenumber: selectedPatient?.mobilenumber,
           patient_id: selectedPatient?.patient_id,
-          appoint_id: selectedPatient?.appoint_id
+          appoint_id: selectedPatient?.appoint_id,
         })
         .then(res => {
           if (res.data.status === true) {
