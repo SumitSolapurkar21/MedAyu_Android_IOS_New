@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {useState} from 'react';
 
 // screen ... //
 import Login from '../screens/login/login';
@@ -42,9 +43,17 @@ import Editobstetricshistory from '../screens/editprescription/Editobstetricshis
 import Editmenstrualhistory from '../screens/editprescription/Editmenstrualhistory';
 import Editvitals from '../screens/editprescription/Editvitals';
 import Editgeneralexamination from '../screens/editprescription/Editgeneralexamination';
+import Editsystemicexamination from '../screens/editprescription/Editsystemicexamination';
+import Editdiagnosis from '../screens/editprescription/Editdiagnosis';
 const Stack = createNativeStackNavigator();
 
 export const MyRoutes = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -99,7 +108,8 @@ export const MyRoutes = () => {
         <Stack.Screen name="Editmenstrualhistory" component={Editmenstrualhistory} />
         <Stack.Screen name="Editvitals" component={Editvitals} /> 
         <Stack.Screen name="Editgeneralexamination" component={Editgeneralexamination} />
-
+        <Stack.Screen name="Editsystemicexamination" component={Editsystemicexamination} />
+        <Stack.Screen name="Editdiagnosis" component={Editdiagnosis} />
 
 
         {/* Bills Pages .... */}

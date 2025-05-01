@@ -8,16 +8,24 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
+  faCalendarDays,
   faPencilSquare,
   faTrashCan,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import UserContext from '../../functions/usercontext';
 import axios from 'axios';
 import {
@@ -27,6 +35,8 @@ import {
 } from '../../api/api';
 import {Formik} from 'formik';
 import {Modal} from 'react-native-paper';
+import DateTimePicker from 'react-native-date-picker';
+import DatePicker from 'react-native-date-picker';
 
 const Diagnosis = () => {
   const navigation = useNavigation();
@@ -45,6 +55,8 @@ const Diagnosis = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [patientSympyomsArrayEdit, setPatientSympyomsArrayEdit] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [timeOpen, setTimeOpen] = useState(false);
 
   // System back button handling
   useEffect(() => {
@@ -142,32 +154,34 @@ const Diagnosis = () => {
     toggleModal();
   };
 
-  useEffect(() => {
-    const fetchmobileAssessment = async () => {
-      try {
-        await axios
-          .post(FetchMobileOpdAssessmentForEditapi, {
-            hospital_id: userData?.hospital_id,
-            reception_id: userData?._id,
-            patient_id: selectedPatient?._id,
-            api_type: 'OPD-DIAGNOSIS',
-            uhid: selectedPatient?.patientuniqueno,
-            mobilenumber: selectedPatient?.mobilenumber,
-            appoint_id: selectedPatient?.appoint_id,
-          })
-          .then(res => {
-            console.log('res : ', res.data);
-            setPatientSympyomsArrayEdit(
-              res.data.opddiagnosisayurvedichistoryarray,
-            );
-          });
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchmobileAssessment = async () => {
+        try {
+          await axios
+            .post(FetchMobileOpdAssessmentForEditapi, {
+              hospital_id: userData?.hospital_id,
+              reception_id: userData?._id,
+              patient_id: selectedPatient?._id,
+              api_type: 'OPD-DIAGNOSIS',
+              uhid: selectedPatient?.patientuniqueno,
+              mobilenumber: selectedPatient?.mobilenumber,
+              appoint_id: selectedPatient?.appoint_id,
+            })
+            .then(res => {
+              console.log('res : ', res.data);
+              setPatientSympyomsArrayEdit(
+                res.data.opddiagnosisayurvedichistoryarray,
+              );
+            });
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-    fetchmobileAssessment();
-  }, []);
+      fetchmobileAssessment();
+    }, []),
+  );
 
   return (
     <>
@@ -262,7 +276,13 @@ const Diagnosis = () => {
                         #{index + 1} Diagnosis
                       </Text>
                       <TouchableOpacity
-                        // onPress={() => removeSymptom(index)}
+                        onPress={() =>
+                          navigation.navigate('Editdiagnosis', {
+                            data: item,
+                            userData: userData,
+                            selectedPatient: selectedPatient,
+                          })
+                        }
                         style={styles.deleteButton}>
                         <FontAwesomeIcon
                           icon={faPencilSquare}
@@ -418,21 +438,8 @@ const Diagnosis = () => {
                 resetForm();
               }}>
               {({handleSubmit, values, setFieldValue}) => {
-                useEffect(() => {
-                  const currentDate = new Date();
-                  const dateOnly = currentDate.toISOString().split('T')[0];
-                  const timeOnly = currentDate
-                    .toISOString()
-                    .split('T')[1]
-                    .split('Z')[0]
-                    .split(':')
-                    .slice(0, 2)
-                    .join(':');
-
-                  // This ensures formikRef is always accessible in this context
-                  setFieldValue('adddate', dateOnly);
-                  setFieldValue('addtime', timeOnly);
-                }, []);
+                const [showDatePicker, setShowDatePicker] = useState(false);
+                const [showTimePicker, setShowTimePicker] = useState(false);
                 return (
                   <>
                     <View style={styles.modalDiv}>
@@ -494,15 +501,75 @@ const Diagnosis = () => {
                         </View>
                       </View>
                       <View>
-                        <Text style={styles.modalText}>Date / Time</Text>
-
-                        <View style={{flexDirection: 'row', gap: 8}}>
-                          <TouchableOpacity style={[styles.segButton]}>
-                            <Text style={styles.segText}>
-                              {values.adddate} / {values.addtime}
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
+                        <Text style={styles.modalText}>Date</Text>
+                        <TouchableOpacity
+                          style={[
+                            styles.segButton,
+                            {flexDirection: 'row', gap: 20},
+                          ]}
+                          onPress={() => setOpen(true)}>
+                          <Text style={styles.segText}>
+                            {values.adddate || 'Select Date'}
+                          </Text>
+                          <DatePicker
+                            modal
+                            mode="date"
+                            open={open}
+                            date={new Date()}
+                            onConfirm={selectedDate => {
+                              setOpen(false);
+                              const formattedDate = selectedDate
+                                .toISOString()
+                                .split('T')[0];
+                              setFieldValue('adddate', formattedDate);
+                            }}
+                            onCancel={() => {
+                              setOpen(false);
+                            }}
+                          />
+                          <FontAwesomeIcon
+                            icon={faCalendarDays}
+                            style={styles.icon}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <View>
+                        <Text style={styles.modalText}>Time</Text>
+                        <TouchableOpacity
+                          style={[
+                            styles.segButton,
+                            {flexDirection: 'row', gap: 20},
+                          ]}
+                          onPress={() => setTimeOpen(true)}>
+                          <Text style={styles.segText}>
+                            {values.addtime || 'Select Time'}
+                          </Text>
+                          <DatePicker
+                            modal
+                            mode="time"
+                            open={timeOpen}
+                            date={new Date()}
+                            onConfirm={selectedTime => {
+                              setTimeOpen(false);
+                              const hours = selectedTime
+                                .getHours()
+                                .toString()
+                                .padStart(2, '0');
+                              const minutes = selectedTime
+                                .getMinutes()
+                                .toString()
+                                .padStart(2, '0');
+                              setFieldValue('addtime', `${hours}:${minutes}`);
+                            }}
+                            onCancel={() => {
+                              setTimeOpen(false);
+                            }}
+                          />
+                          <FontAwesomeIcon
+                            icon={faCalendarDays}
+                            style={styles.icon}
+                          />
+                        </TouchableOpacity>
                       </View>
                     </View>
 
