@@ -45,6 +45,7 @@ import Editvitals from '../screens/editprescription/Editvitals';
 import Editgeneralexamination from '../screens/editprescription/Editgeneralexamination';
 import Editsystemicexamination from '../screens/editprescription/Editsystemicexamination';
 import Editdiagnosis from '../screens/editprescription/Editdiagnosis';
+import Edittreatment from '../screens/editprescription/Edittreatment';
 const Stack = createNativeStackNavigator();
 
 export const MyRoutes = () => {
@@ -110,6 +111,7 @@ export const MyRoutes = () => {
         <Stack.Screen name="Editgeneralexamination" component={Editgeneralexamination} />
         <Stack.Screen name="Editsystemicexamination" component={Editsystemicexamination} />
         <Stack.Screen name="Editdiagnosis" component={Editdiagnosis} />
+        <Stack.Screen name="Edittreatment" component={Edittreatment} />
 
 
         {/* Bills Pages .... */}

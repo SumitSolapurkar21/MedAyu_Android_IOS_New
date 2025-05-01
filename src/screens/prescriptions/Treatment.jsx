@@ -24,7 +24,6 @@ import UserContext from '../../functions/usercontext';
 import axios from 'axios';
 import {
   addopdassessment,
-  fetchdiseases,
   fetchmedicines,
   FetchMobileOpdAssessmentForEditapi,
 } from '../../api/api';
@@ -248,8 +247,13 @@ const Treatment = () => {
                         #{index + 1} Treatment
                       </Text>
                       <TouchableOpacity
-                        // onPress={() => removeSymptom(index)}
-                        style={styles.deleteButton}>
+                        onPress={() =>
+                          navigation.navigate('Edittreatment', {
+                            data: item,
+                            userData: userData,
+                            selectedPatient: selectedPatient,
+                          })
+                        }>
                         <FontAwesomeIcon
                           icon={faPencilSquare}
                           color="#05b508"
@@ -313,6 +317,7 @@ const Treatment = () => {
             <Text style={styles.categoryText}>Treatment History</Text>
             {patientAssessmentArray?.length > 0 ? (
               patientAssessmentArray?.map((item, index) => {
+                console.log('item : ', item);
                 return (
                   <View style={styles.sympDiv} key={index + 1}>
                     <View
