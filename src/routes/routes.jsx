@@ -46,14 +46,11 @@ import Editgeneralexamination from '../screens/editprescription/Editgeneralexami
 import Editsystemicexamination from '../screens/editprescription/Editsystemicexamination';
 import Editdiagnosis from '../screens/editprescription/Editdiagnosis';
 import Edittreatment from '../screens/editprescription/Edittreatment';
+import Editadvice from '../screens/editprescription/Editadvice';
+
 const Stack = createNativeStackNavigator();
 
 export const MyRoutes = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
-  };
 
   return (
     <NavigationContainer>
@@ -112,6 +109,7 @@ export const MyRoutes = () => {
         <Stack.Screen name="Editsystemicexamination" component={Editsystemicexamination} />
         <Stack.Screen name="Editdiagnosis" component={Editdiagnosis} />
         <Stack.Screen name="Edittreatment" component={Edittreatment} />
+        <Stack.Screen name="Editadvice" component={Editadvice} />
 
 
         {/* Bills Pages .... */}
