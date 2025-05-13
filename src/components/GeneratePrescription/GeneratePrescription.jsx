@@ -3,15 +3,15 @@ import axios from 'axios';
 import {generateprescriptionapi} from '../../api/api';
 
 export const GeneratePdf = async (data, userdata) => {
-  console.log("GeneratePdf :",{data, userdata});
+  console.log('GeneratePdf :', {data, userdata});
 
   let depart_id = userdata?.depart_id;
   let doctor_id = userdata?._id;
-  // let mobilenumber = userdata?.mobilenumber;
+  let mobilenumber = data?.mobilenumber;
   let role = userdata?.role;
   let hospital_id = userdata?.hospital_id;
   let reception_id = userdata?._id;
- 
+
   let uhid = data?.patientuniqueno;
   let patient_id = data?._id;
   let appoint_id = data?.appoint_id;
@@ -24,7 +24,7 @@ export const GeneratePdf = async (data, userdata) => {
         appoint_id: appoint_id,
         depart_id: depart_id,
         doctor_id: doctor_id,
-        // mobilenumber: mobilenumber,
+        mobilenumber: mobilenumber,
         uhid: uhid,
         patient_id: patient_id,
         role: role,
@@ -36,7 +36,6 @@ export const GeneratePdf = async (data, userdata) => {
     const data =
       patientTreatmentPrescriptionDataRes.data.data.length > 0 &&
       patientTreatmentPrescriptionDataRes.data.data[0];
-
 
     const formatDate = dateStr => {
       const date = new Date(dateStr);
@@ -59,8 +58,8 @@ export const GeneratePdf = async (data, userdata) => {
                       ${`
                            <div class="divdata" style="margin-left:20px">
                            <p> Next Followup is on ${formatDate(
-                        data?.opdfollowuparray?.followup_date,
-                      )} , ${data?.opdfollowuparray?.followup_day}</p>
+                             data?.opdfollowuparray?.followup_date,
+                           )} , ${data?.opdfollowuparray?.followup_day}</p>
 
                            </div>`}
 
@@ -114,9 +113,7 @@ export const GeneratePdf = async (data, userdata) => {
                                                      res.years
                                                    } years and is ${
                                                      res.treatment_status
-                                                   } since ${
-                                                     res.from_date
-                                                   } </p>
+                                                   } since ${res.from_date} </p>
 
                                                         </div>`;
                                                  },
@@ -654,9 +651,7 @@ export const GeneratePdf = async (data, userdata) => {
 
   <body style="border: 1px solid;">
        <div class="head">
-            <div>
-                 <img src=${data?.hosp_logo} style="width: 14vw;" />
-            </div>
+           
             <div class="head-content">
                  <h1>${data?.hosp_name}</h1>
                  <p>( OPERATED BY MedAyu HEALTHCARE LLP )</p>
@@ -709,7 +704,7 @@ export const GeneratePdf = async (data, userdata) => {
   ${data?.opddiagnosishistoryarray?.length > 0 ? diagnosisHistoryData : ''}
   ${data?.opdtreatmenthistoryarray?.length > 0 ? treatmentHistoryData : ''}
   ${data?.opdadvicehistoryarray?.length > 0 ? adviceHistoryData : ''}
-  ${ _opdFollowup }
+  ${_opdFollowup}
 
   <br />
   <div class="main4">

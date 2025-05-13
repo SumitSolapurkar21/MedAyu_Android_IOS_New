@@ -7,6 +7,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import React, {
   useContext,
@@ -42,6 +44,8 @@ const Upcommingappointments = () => {
     }),
   );
   const [open, setOpen] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [generatingPdfId, setGeneratingPdfId] = useState(null);
 
   const {userData, setSelectedPatient} = useContext(UserContext);
 
@@ -126,6 +130,25 @@ const Upcommingappointments = () => {
     setSelectedPatient(item);
     navigation.navigate('CreateRx');
   };
+
+  const handleGeneratePdf = async (item) => {
+    try {
+      setIsGeneratingPdf(true);
+      setGeneratingPdfId(item._id);
+      await GeneratePdf(item, userData);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      Alert.alert(
+        'Error',
+        'Failed to generate PDF. Please try again.',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setIsGeneratingPdf(false);
+      setGeneratingPdfId(null);
+    }
+  };
+
   return (
     <>
       <StatusBar style={styles.StatusBar} animated backgroundColor="#ffffff" />
@@ -224,8 +247,13 @@ const Upcommingappointments = () => {
                 </View>
                 <TouchableOpacity
                   style={styles.prescriptionButton}
-                  onPress={() => GeneratePdf(item, userData)}>
-                  <FontAwesomeIcon icon={faFilePrescription} style={{color: 'red'}} size={24} />
+                  onPress={() => handleGeneratePdf(item)}
+                  disabled={isGeneratingPdf}>
+                  {isGeneratingPdf && generatingPdfId === item._id ? (
+                    <ActivityIndicator size="small" color="red" />
+                  ) : (
+                    <FontAwesomeIcon icon={faFilePrescription} style={{color: 'red'}} size={24} />
+                  )}
                 </TouchableOpacity>
               </TouchableOpacity>
             )}
@@ -234,7 +262,7 @@ const Upcommingappointments = () => {
         <View style={styles.buttons}>
           <TouchableOpacity
             style={styles.button2}
-            onPress={() => navigation.replace('Addappointments')}>
+            onPress={() => navigation.navigate('Addappointments')}>
             <FontAwesomeIcon icon={faPlus} style={{color: '#ffffff'}} />
           </TouchableOpacity>
         </View>
