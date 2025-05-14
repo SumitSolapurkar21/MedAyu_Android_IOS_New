@@ -629,7 +629,7 @@ const Complaints = () => {
           <View
             visible={isModalVisible2}
             onDismiss={toggleModal2}
-            style={styles.bottomModalContainer}>
+            style={styles.bottomModalContainer2}>
            
                 <View style={styles.modalContent}>
                   {/* header */}
@@ -847,7 +847,16 @@ const styles = StyleSheet.create({
   },
   bottomModalContainer: {
     padding: 20,
-    paddingBottom: 120
+    paddingBottom: 120,
+    backgroundColor:'#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    position:"absolute",
+    bottom: 0
+  },
+  bottomModalContainer2:{
+    padding: 20,
+
   },
 
   modalText: {
