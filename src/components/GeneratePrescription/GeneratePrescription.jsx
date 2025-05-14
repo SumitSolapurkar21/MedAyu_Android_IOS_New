@@ -600,6 +600,7 @@ export const GeneratePdf = async (data, userdata) => {
   border-radius: 6px;
   margin-left: 20px;
   margin-right: 20px;
+  margin-top: 20px;
   }
 
   .head-content2-part1 h3 {
@@ -651,7 +652,11 @@ export const GeneratePdf = async (data, userdata) => {
 
   <body style="border: 1px solid;">
        <div class="head">
-           
+           <div>
+                 <img src=${
+                   data?.hosp_logo || '../../assets/images/medicalrecord.png'
+                 } style="width: 14vw;" />
+            </div>
             <div class="head-content">
                  <h1>${data?.hosp_name}</h1>
                  <p>( OPERATED BY MedAyu HEALTHCARE LLP )</p>

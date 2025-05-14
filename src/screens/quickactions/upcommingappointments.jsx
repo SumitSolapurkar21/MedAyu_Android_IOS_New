@@ -188,9 +188,7 @@ const Upcommingappointments = () => {
               Today {appointmentdataarray?.length}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.day} onPress={handleSetTomorrow}>
-            <Text style={styles.dayText}>Tomorrow 0</Text>
-          </TouchableOpacity>
+         
         </View>
       </View>
       <View style={styles.container}>
