@@ -1,23 +1,24 @@
-import React, {useEffect, useState, useContext, useRef, useCallback} from 'react';
+import React, {useEffect, useState, useContext, useCallback} from 'react';
 import {
   Alert,
   BackHandler,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
-  faChevronRight,
   faPencilSquare,
-  faPenClip,
   faPlus,
-  faTrash,
   faTrashCan,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
@@ -47,13 +48,6 @@ const Complaints = () => {
   const [selectedCategoryforSymptoms, setSelectedCategoryforSymptoms] =
     useState('');
 
-  const [selectedCategoryEdit, setSelectedCategoryEdit] = useState('');
-  const [selectedSymptomsEdit, setSelectedSymptomsEdit] = useState('');
-  const [selectedTimeEdit, setSelectedTimeEdit] = useState('');
-  const [selectedFrequencyEdit, setSelectedFrequencyEdit] = useState('');
-  const [selectedCategoryforSymptomsEdit, setSelectedCategoryforSymptomsEdit] =
-    useState('');
-
   // inputs states ...
   const [filterInput, setFilterInput] = useState('');
   const [symptomsInput, setSymptomsInput] = useState('');
@@ -69,8 +63,6 @@ const Complaints = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalVisible2, setIsModalVisible2] = useState(false);
-  const [isModalVisible3, setIsModalVisible3] = useState(false);
-  const [isEditVisible, setIsVisible] = useState(false);
 
   // System back button handling
   useEffect(() => {
@@ -185,11 +177,6 @@ const Complaints = () => {
     console.log(__data);
     toggleModal2();
     setSelectedCategoryforSymptoms(__data);
-  };
-
-  // when click on category to open symptoms popup ....
-  const symptomsHandlerEdit = __data => {
-    setSelectedCategoryforSymptomsEdit(__data);
   };
 
   // Add Symptoms ...
@@ -356,520 +343,415 @@ const Complaints = () => {
       </View>
 
       <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 100}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Segmented Buttons */}
-          <View style={styles.segDiv}>
-            <TouchableOpacity
-              style={[
-                styles.segButton,
-                value === 'Medical' && styles.selectedButton,
-              ]}
-              onPress={() => setValue('Medical')}>
-              <Text style={styles.segText}>Medical</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.segButton,
-                value === 'Ayurvedic' && styles.selectedButton,
-              ]}
-              onPress={() => setValue('Ayurvedic')}>
-              <Text style={styles.segText}>Ayurvedic</Text>
-            </TouchableOpacity>
-          </View>
+        {!isModalVisible2 ? (
+          <>
+            <ScrollView
+             
+              vertical
+              showsVerticalScrollIndicator={false}>
+              {/* Segmented Buttons */}
+              <View style={styles.segDiv}>
+                <TouchableOpacity
+                  style={[
+                    styles.segButton,
+                    value === 'Medical' && styles.selectedButton,
+                  ]}
+                  onPress={() => setValue('Medical')}>
+                  <Text style={styles.segText}>Medical</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.segButton,
+                    value === 'Ayurvedic' && styles.selectedButton,
+                  ]}
+                  onPress={() => setValue('Ayurvedic')}>
+                  <Text style={styles.segText}>Ayurvedic</Text>
+                </TouchableOpacity>
+              </View>
 
-          {/* Category Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Category</Text>
-            <View style={styles.filterDiv}>
-              <TextInput
-                style={styles.filterinput}
-                placeholder="Search Category"
-                value={filterInput}
-                onChangeText={text => setFilterInput(text)}
-              />
-              <TouchableOpacity
-                style={styles.addCategButton}
-                onPress={toggleModal}>
-                <FontAwesomeIcon icon={faPlus} style={styles.icon} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.catDiv}>
-              {filteredCategories?.length > 0 &&
-                filteredCategories.map((item, index) => (
+              {/* Category Section */}
+              <View style={styles.categoryDiv}>
+                <Text style={styles.categoryText}>Category</Text>
+                <View style={styles.filterDiv}>
+                  <TextInput
+                    style={styles.filterinput}
+                    placeholder="Search Category"
+                    value={filterInput}
+                    onChangeText={text => setFilterInput(text)}
+                  />
                   <TouchableOpacity
-                    onPress={() => symptomsHandler(item.categoryvalue)}
-                    key={index}
-                    style={[
-                      styles.segButton,
-                      selectedCategoryforSymptoms === item.categoryvalue &&
-                        styles.selectedButton,
-                    ]}>
-                    <Text style={styles.segText}>{item.categoryname}</Text>
+                    style={styles.addCategButton}
+                    onPress={toggleModal}>
+                    <FontAwesomeIcon icon={faPlus} style={styles.icon} />
                   </TouchableOpacity>
-                ))}
-            </View>
-          </View>
-
-          {/* Already Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Previous Symptoms Detail</Text>
-            {patientSympyomsArrayEdit?.length > 0 ? (
-              patientSympyomsArrayEdit?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
+                </View>
+                <View style={styles.catDiv}>
+                  {filteredCategories?.length > 0 &&
+                    filteredCategories.map((item, index) => (
+                      <TouchableOpacity
+                        onPress={() => symptomsHandler(item.categoryvalue)}
+                        key={index}
                         style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
+                          styles.segButton,
+                          selectedCategoryforSymptoms === item.categoryvalue &&
+                            styles.selectedButton,
                         ]}>
-                        #{index + 1} Symptom
-                      </Text>
-                      <View style={styles.icongroup}>
-                        <TouchableOpacity onPress={() => toggleModal3(item)}>
-                          <FontAwesomeIcon
-                            icon={faPencilSquare}
-                            color="#05b508"
-                            style={[styles.icon, {padding: 9}]}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Category</Text>
-                        <Text>{item.category}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Symptom</Text>
-                        <Text>{item.symptoms}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Duration</Text>
-                        <Text>{item.duration}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Time</Text>
-                        <Text>{item.time}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Frequency</Text>
-                        <Text>{item.frequency}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Remark</Text>
-                        <Text>{item.remark}</Text>
-                      </View>
-                    </View>
-                  </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
+                        <Text style={styles.segText}>{item.categoryname}</Text>
+                      </TouchableOpacity>
+                    ))}
                 </View>
               </View>
-            )}
-          </View>
 
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Symptoms Detail</Text>
-            {patientSympyomsArray?.length > 0 ? (
-              patientSympyomsArray?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
-                        style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
-                        ]}>
-                        #{index + 1} Symptom
+              {/* Already Symptoms Section */}
+              <View style={styles.categoryDiv}>
+                <Text style={styles.categoryText}>
+                  Previous Symptoms Detail
+                </Text>
+                {patientSympyomsArrayEdit?.length > 0 ? (
+                  patientSympyomsArrayEdit?.map((item, index) => {
+                    return (
+                      <View style={styles.sympDiv} key={index + 1}>
+                        <View
+                          style={[
+                            styles.modalContentHeader,
+                            {
+                              borderBottomWidth: 1,
+                              paddingBottom: 6,
+                              borderColor: '#e6e6e6',
+                            },
+                          ]}>
+                          <Text
+                            style={[
+                              styles.modalText,
+                              {marginBottom: 0, fontSize: 13},
+                            ]}>
+                            #{index + 1} Symptom
+                          </Text>
+                          <View style={styles.icongroup}>
+                            <TouchableOpacity
+                              onPress={() => toggleModal3(item)}>
+                              <FontAwesomeIcon
+                                icon={faPencilSquare}
+                                color="#05b508"
+                                style={[styles.icon, {padding: 9}]}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                        <View style={styles.sympDivOuter} key={index + 1}>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Category</Text>
+                            <Text>{item.category}</Text>
+                          </View>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Symptom</Text>
+                            <Text>{item.symptoms}</Text>
+                          </View>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Duration</Text>
+                            <Text>{item.duration}</Text>
+                          </View>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Time</Text>
+                            <Text>{item.time}</Text>
+                          </View>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Frequency</Text>
+                            <Text>{item.frequency}</Text>
+                          </View>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Remark</Text>
+                            <Text>{item.remark}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    );
+                  })
+                ) : (
+                  <View style={styles.sympDiv}>
+                    <View style={{padding: 20}}>
+                      <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                        No Data Available
                       </Text>
-                      <View style={styles.icongroup}>
-                        <TouchableOpacity onPress={() => removeSymptom(index)}>
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            color="#FF3B30"
-                            style={styles.icon}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Category</Text>
-                        <Text>{item.category}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Symptom</Text>
-                        <Text>{item.symptoms}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Duration</Text>
-                        <Text>{item.duration}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Time</Text>
-                        <Text>{item.time}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Frequency</Text>
-                        <Text>{item.frequency}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Remark</Text>
-                        <Text>{item.remark}</Text>
-                      </View>
                     </View>
                   </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
+                )}
+              </View>
+
+              {/* Symptoms Section */}
+              <View style={styles.categoryDiv}>
+                <Text style={styles.categoryText}>Symptoms Detail</Text>
+                {patientSympyomsArray?.length > 0 ? (
+                  patientSympyomsArray?.map((item, index) => {
+                    return (
+                      <View style={styles.sympDiv} key={index + 1}>
+                        <View
+                          style={[
+                            styles.modalContentHeader,
+                            {
+                              borderBottomWidth: 1,
+                              paddingBottom: 6,
+                              borderColor: '#e6e6e6',
+                            },
+                          ]}>
+                          <Text
+                            style={[
+                              styles.modalText,
+                              {marginBottom: 0, fontSize: 13},
+                            ]}>
+                            #{index + 1} Symptom
+                          </Text>
+                          <View style={styles.icongroup}>
+                            <TouchableOpacity
+                              onPress={() => removeSymptom(index)}>
+                              <FontAwesomeIcon
+                                icon={faTrashCan}
+                                color="#FF3B30"
+                                style={styles.icon}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                        <View style={styles.sympDivOuter} key={index + 1}>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Category</Text>
+                            <Text>{item.category}</Text>
+                          </View>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Symptom</Text>
+                            <Text>{item.symptoms}</Text>
+                          </View>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Duration</Text>
+                            <Text>{item.duration}</Text>
+                          </View>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Time</Text>
+                            <Text>{item.time}</Text>
+                          </View>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Frequency</Text>
+                            <Text>{item.frequency}</Text>
+                          </View>
+                          <View style={styles.sympDivInner}>
+                            <Text style={styles.label}>Remark</Text>
+                            <Text>{item.remark}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    );
+                  })
+                ) : (
+                  <View style={styles.sympDiv}>
+                    <View style={{padding: 20}}>
+                      <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                        No Data Available
+                      </Text>
+                    </View>
+                  </View>
+                )}
+              </View>
+            </ScrollView>
+
+            <View style={styles.loginButton}>
+              <TouchableOpacity
+                style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+                onPress={() => savePatientSymptoms()}>
+                <Text style={styles.buttonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* add chategory Modal */}
+            <Modal
+              visible={isModalVisible}
+              onDismiss={toggleModal}
+              contentContainerStyle={styles.bottomModalContainer}>
+              <View style={styles.modalContent}>
+                <View style={styles.modalContentHeader}>
+                  <Text
+                    style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
+                    Add Symptoms
                   </Text>
+                  <TouchableOpacity
+                    onPress={toggleModal}
+                    style={styles.closeButton1}>
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      color="#FF3B30"
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
                 </View>
-              </View>
-            )}
-          </View>
-        </ScrollView>
-
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={() => savePatientSymptoms()}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* add chategory Modal */}
-        <Modal
-          visible={isModalVisible}
-          onDismiss={toggleModal}
-          contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
-                Add Symptoms
-              </Text>
-              <TouchableOpacity
-                onPress={toggleModal}
-                style={styles.closeButton1}>
-                <FontAwesomeIcon
-                  icon={faXmark}
-                  color="#FF3B30"
-                  style={styles.icon}
+                <Text style={styles.modalText}>Category</Text>
+                <TextInput
+                  style={styles.filterinput}
+                  placeholder="Search Category"
+                  value={filterInput}
+                  onChangeText={text => setFilterInput(text)}
                 />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.modalText}>Category</Text>
-            <TextInput
-              style={styles.filterinput}
-              placeholder="Search Category"
-              value={filterInput}
-              onChangeText={text => setFilterInput(text)}
-            />
-            <ScrollView horizontal>
-              <View style={styles.catDiv}>
-                {filteredCategories?.length > 0 &&
-                  filteredCategories.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => setSelectedCategory(item.categoryvalue)}
-                      key={index}
-                      style={[
-                        styles.segButton,
-                        selectedCategory === item.categoryvalue &&
-                          styles.selectedButton,
-                      ]}>
-                      <Text style={styles.segText}>{item.categoryname}</Text>
-                    </TouchableOpacity>
-                  ))}
-              </View>
-            </ScrollView>
-            <Text style={styles.modalText}>Symptoms</Text>
-            <TextInput
-              style={styles.filterinput}
-              placeholder="Symptoms"
-              value={symptomsInput}
-              onChangeText={text => setSymptomsInput(text)}
-            />
-            <TouchableOpacity
-              onPress={addSymptomsHandler}
-              style={[styles.closeButton, {backgroundColor: '#5cd65c'}]}>
-              <Text style={styles.buttonText}>Add</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-
-        {/* add symptoms Modal */}
-        <Modal
-          visible={isModalVisible2}
-          onDismiss={toggleModal2}
-          contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
-                Add Symptoms
-              </Text>
-              <TouchableOpacity
-                onPress={toggleModal2}
-                style={styles.closeButton1}>
-                <FontAwesomeIcon
-                  icon={faXmark}
-                  color="#FF3B30"
-                  style={styles.icon}
+                <ScrollView horizontal>
+                  <View style={styles.catDiv}>
+                    {filteredCategories?.length > 0 &&
+                      filteredCategories.map((item, index) => (
+                        <TouchableOpacity
+                          onPress={() =>
+                            setSelectedCategory(item.categoryvalue)
+                          }
+                          key={index}
+                          style={[
+                            styles.segButton,
+                            selectedCategory === item.categoryvalue &&
+                              styles.selectedButton,
+                          ]}>
+                          <Text style={styles.segText}>
+                            {item.categoryname}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                  </View>
+                </ScrollView>
+                <Text style={styles.modalText}>Symptoms</Text>
+                <TextInput
+                  style={styles.filterinput}
+                  placeholder="Symptoms"
+                  value={symptomsInput}
+                  onChangeText={text => setSymptomsInput(text)}
                 />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.modalText}>Symptoms</Text>
-            <TextInput
-              style={styles.filterinput}
-              placeholder="Search Symptoms"
-              value={searchSymptomsInput}
-              onChangeText={text => setSearchSymptomsInput(text)}
-            />
-            <ScrollView horizontal>
-              <View style={styles.catDiv}>
-                {filteredSymptoms?.length > 0 &&
-                  filteredSymptoms.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => setSelectedSymptoms(item.illnessname)}
-                      key={index + 1}
-                      style={[
-                        styles.segButton,
-                        selectedSymptoms === item.illnessname &&
-                          styles.selectedButton,
-                      ]}>
-                      <Text style={styles.segText}>{item.illnessname}</Text>
-                    </TouchableOpacity>
-                  ))}
+                <TouchableOpacity
+                  onPress={addSymptomsHandler}
+                  style={[styles.closeButton, {backgroundColor: '#5cd65c'}]}>
+                  <Text style={styles.buttonText}>Add</Text>
+                </TouchableOpacity>
               </View>
-            </ScrollView>
-
-            {/* duration ... */}
-            <Text style={styles.modalText}>Duration</Text>
-            <TextInput
-              style={styles.filterinput}
-              placeholder="Duration"
-              value={durationInput}
-              onChangeText={text => setDurationInput(text)}
-            />
-
-            {/* frequency ... */}
-            <Text style={styles.modalText}>Frequency</Text>
-            <ScrollView horizontal>
-              <View style={styles.catDiv}>
-                {frequencyArray?.length > 0 &&
-                  frequencyArray.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => setSelectedFrequency(item.value)}
-                      key={index + 1}
+            </Modal>
+          </>
+        ) : (
+          <View
+            visible={isModalVisible2}
+            onDismiss={toggleModal2}
+            style={styles.bottomModalContainer}>
+           
+                <View style={styles.modalContent}>
+                  {/* header */}
+                  <View style={styles.modalContentHeader}>
+                    <Text
                       style={[
-                        styles.segButton,
-                        selectedFrequency === item.value &&
-                          styles.selectedButton,
+                        styles.modalText,
+                        {marginBottom: 0, fontSize: 18},
                       ]}>
-                      <Text style={styles.segText}>{item.label}</Text>
-                    </TouchableOpacity>
-                  ))}
-              </View>
-            </ScrollView>
-
-            {/* time ... */}
-            <Text style={styles.modalText}>Time</Text>
-            <ScrollView horizontal>
-              <View style={styles.catDiv}>
-                {timeArray?.length > 0 &&
-                  timeArray.map((item, index) => (
+                      Add Symptoms
+                    </Text>
                     <TouchableOpacity
-                      onPress={() => setSelectedTime(item.value)}
-                      key={index + 1}
-                      style={[
-                        styles.segButton,
-                        selectedTime === item.value && styles.selectedButton,
-                      ]}>
-                      <Text style={styles.segText}>{item.label}</Text>
+                      onPress={toggleModal2}
+                      style={styles.closeButton1}>
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        color="#FF3B30"
+                        style={styles.icon}
+                      />
                     </TouchableOpacity>
-                  ))}
-              </View>
-            </ScrollView>
+                  </View>
 
-            {/* remark ... */}
-            <Text style={styles.modalText}>Remark</Text>
-            <TextInput
-              style={styles.filterinput}
-              placeholder="Remark"
-              value={remarkInput}
-              onChangeText={text => setRemarkInput(text)}
-            />
+                  {/* form */}
+                  <ScrollView vertical showsVerticalScrollIndicator={false}>
+                    <Text style={styles.modalText}>Symptoms</Text>
+                    <TextInput
+                      style={styles.filterinput}
+                      placeholder="Search Symptoms"
+                      value={searchSymptomsInput}
+                      onChangeText={text => setSearchSymptomsInput(text)}
+                    />
+                    <ScrollView horizontal>
+                      <View style={styles.catDiv}>
+                        {filteredSymptoms?.length > 0 &&
+                          filteredSymptoms.map((item, index) => (
+                            <TouchableOpacity
+                              onPress={() =>
+                                setSelectedSymptoms(item.illnessname)
+                              }
+                              key={index + 1}
+                              style={[
+                                styles.segButton,
+                                selectedSymptoms === item.illnessname &&
+                                  styles.selectedButton,
+                              ]}>
+                              <Text style={styles.segText}>
+                                {item.illnessname}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                      </View>
+                    </ScrollView>
 
-            <TouchableOpacity
-              onPress={addPatientSymptomsToArrayHandler}
-              style={[styles.closeButton, {backgroundColor: '#5cd65c'}]}>
-              <Text style={styles.buttonText}>Add</Text>
-            </TouchableOpacity>
+                    {/* duration ... */}
+                    <Text style={styles.modalText}>Duration</Text>
+                    <TextInput
+                      style={styles.filterinput}
+                      placeholder="Duration"
+                      value={durationInput}
+                      onChangeText={text => setDurationInput(text)}
+                    />
+                    {/* time ... */}
+                    <Text style={styles.modalText}>Time</Text>
+                    <ScrollView horizontal>
+                      <View style={styles.catDiv}>
+                        {timeArray?.length > 0 &&
+                          timeArray.map((item, index) => (
+                            <TouchableOpacity
+                              onPress={() => setSelectedTime(item.value)}
+                              key={index + 1}
+                              style={[
+                                styles.segButton,
+                                selectedTime === item.value &&
+                                  styles.selectedButton,
+                              ]}>
+                              <Text style={styles.segText}>{item.label}</Text>
+                            </TouchableOpacity>
+                          ))}
+                      </View>
+                    </ScrollView>
+                    {/* frequency ... */}
+                    <Text style={styles.modalText}>Frequency</Text>
+                    <ScrollView horizontal>
+                      <View style={styles.catDiv}>
+                        {frequencyArray?.length > 0 &&
+                          frequencyArray.map((item, index) => (
+                            <TouchableOpacity
+                              onPress={() => setSelectedFrequency(item.value)}
+                              key={index + 1}
+                              style={[
+                                styles.segButton,
+                                selectedFrequency === item.value &&
+                                  styles.selectedButton,
+                              ]}>
+                              <Text style={styles.segText}>{item.label}</Text>
+                            </TouchableOpacity>
+                          ))}
+                      </View>
+                    </ScrollView>
+
+                    {/* remark ... */}
+                    <Text style={styles.modalText}>Remark</Text>
+                    <TextInput
+                      style={styles.filterinput}
+                      placeholder="Remark"
+                      value={remarkInput}
+                      onChangeText={text => setRemarkInput(text)}
+                    />
+
+                    <TouchableOpacity
+                      onPress={addPatientSymptomsToArrayHandler}
+                      style={[
+                        styles.closeButton,
+                        {backgroundColor: '#5cd65c'},
+                      ]}>
+                      <Text style={styles.buttonText}>Add</Text>
+                    </TouchableOpacity>
+                  </ScrollView>
+                </View>
+              
           </View>
-        </Modal>
-
-        {/* edit symptoms Modal */}
-        <Modal
-          visible={isModalVisible3}
-          onDismiss={toggleModal3}
-          contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
-                Edit Symptoms
-              </Text>
-              <TouchableOpacity
-                onPress={toggleModal3}
-                style={styles.closeButton1}>
-                <FontAwesomeIcon
-                  icon={faXmark}
-                  color="#FF3B30"
-                  style={styles.icon}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.modalText}>Category</Text>
-            <TextInput
-              style={styles.filterinput}
-              placeholder="Search Category"
-              value={filterInput}
-              onChangeText={text => setFilterInput(text)}
-            />
-            <ScrollView horizontal>
-              <View style={styles.catDiv}>
-                {filteredCategories?.length > 0 &&
-                  filteredCategories.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => symptomsHandlerEdit(item.categoryvalue)}
-                      key={index}
-                      style={[
-                        styles.segButton,
-                        selectedCategoryforSymptomsEdit ===
-                          item.categoryvalue && styles.selectedButton,
-                      ]}>
-                      <Text style={styles.segText}>{item.categoryname}</Text>
-                    </TouchableOpacity>
-                  ))}
-              </View>
-            </ScrollView>
-            <Text style={styles.modalText}>Symptoms</Text>
-            <TextInput
-              style={styles.filterinput}
-              placeholder="Search Symptoms"
-              value={searchSymptomsInput}
-              onChangeText={text => setSearchSymptomsInput(text)}
-            />
-            <ScrollView horizontal>
-              <View style={styles.catDiv}>
-                {filteredSymptoms?.length > 0 &&
-                  filteredSymptoms.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => setSelectedSymptomsEdit(item.illnessname)}
-                      key={index + 1}
-                      style={[
-                        styles.segButton,
-                        selectedSymptomsEdit === item.illnessname &&
-                          styles.selectedButton,
-                      ]}>
-                      <Text style={styles.segText}>{item.illnessname}</Text>
-                    </TouchableOpacity>
-                  ))}
-              </View>
-            </ScrollView>
-
-            {/* duration ... */}
-            <Text style={styles.modalText}>Duration</Text>
-            <TextInput
-              style={styles.filterinput}
-              placeholder="Duration"
-              value={durationInput}
-              onChangeText={text => setDurationInput(text)}
-            />
-
-            {/* frequency ... */}
-            <Text style={styles.modalText}>Frequency</Text>
-            <ScrollView horizontal>
-              <View style={styles.catDiv}>
-                {frequencyArray?.length > 0 &&
-                  frequencyArray.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => setSelectedFrequencyEdit(item.value)}
-                      key={index + 1}
-                      style={[
-                        styles.segButton,
-                        selectedFrequencyEdit === item.value &&
-                          styles.selectedButton,
-                      ]}>
-                      <Text style={styles.segText}>{item.label}</Text>
-                    </TouchableOpacity>
-                  ))}
-              </View>
-            </ScrollView>
-
-            {/* time ... */}
-            <Text style={styles.modalText}>Time</Text>
-            <ScrollView horizontal>
-              <View style={styles.catDiv}>
-                {timeArray?.length > 0 &&
-                  timeArray.map((item, index) => (
-                    <TouchableOpacity
-                      onPress={() => setSelectedTimeEdit(item.value)}
-                      key={index + 1}
-                      style={[
-                        styles.segButton,
-                        selectedTimeEdit === item.value &&
-                          styles.selectedButton,
-                      ]}>
-                      <Text style={styles.segText}>{item.label}</Text>
-                    </TouchableOpacity>
-                  ))}
-              </View>
-            </ScrollView>
-
-            {/* remark ... */}
-            <Text style={styles.modalText}>Remark</Text>
-            <TextInput
-              style={styles.filterinput}
-              placeholder="Remark"
-              value={remarkInput}
-              onChangeText={text => setRemarkInput(text)}
-            />
-            <TouchableOpacity
-              //     onPress={addPatientSymptomsToArrayHandler}
-              style={[styles.closeButton, {backgroundColor: '#5cd65c'}]}>
-              <Text style={styles.buttonText}>Update</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+        )}
       </View>
     </>
   );
@@ -899,6 +781,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f7f7fc',
+    paddingBottom: '18%'
   },
   segDiv: {
     padding: 10,
@@ -936,7 +819,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     gap: 10,
     flexWrap: 'wrap',
-    marginVertical: 10,
+    marginBottom: 10,
   },
   filterDiv: {
     flexDirection: 'row',
@@ -963,13 +846,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   bottomModalContainer: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    padding: 16,
-    position: 'absolute',
-    bottom: 0.5,
-    width: '100%',
+    padding: 20,
+    paddingBottom: 120
   },
 
   modalText: {
@@ -977,6 +855,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     marginBottom: 10,
     color: '#000000',
+    marginTop: 10,
   },
   closeButton: {
     backgroundColor: '#FF3B30',
