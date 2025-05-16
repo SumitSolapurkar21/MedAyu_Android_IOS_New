@@ -436,30 +436,7 @@ const Complaints = () => {
                           </View>
                         </View>
                         <View style={styles.sympDivOuter} key={index + 1}>
-                          <View style={styles.sympDivInner}>
-                            <Text style={styles.label}>Category</Text>
-                            <Text>{item.category}</Text>
-                          </View>
-                          <View style={styles.sympDivInner}>
-                            <Text style={styles.label}>Symptom</Text>
-                            <Text>{item.symptoms}</Text>
-                          </View>
-                          <View style={styles.sympDivInner}>
-                            <Text style={styles.label}>Duration</Text>
-                            <Text>{item.duration}</Text>
-                          </View>
-                          <View style={styles.sympDivInner}>
-                            <Text style={styles.label}>Time</Text>
-                            <Text>{item.time}</Text>
-                          </View>
-                          <View style={styles.sympDivInner}>
-                            <Text style={styles.label}>Frequency</Text>
-                            <Text>{item.frequency}</Text>
-                          </View>
-                          <View style={styles.sympDivInner}>
-                            <Text style={styles.label}>Remark</Text>
-                            <Text>{item.remark}</Text>
-                          </View>
+                        <Text>{item.symptoms} {item.duration} {item.time} {item.frequency}</Text>
                         </View>
                       </View>
                     );
