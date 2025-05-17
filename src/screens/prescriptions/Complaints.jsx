@@ -17,6 +17,7 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
+  faPencil,
   faPencilSquare,
   faPlus,
   faTrashCan,
@@ -407,37 +408,24 @@ const Complaints = () => {
                 {patientSympyomsArrayEdit?.length > 0 ? (
                   patientSympyomsArrayEdit?.map((item, index) => {
                     return (
-                      <View style={styles.sympDiv} key={index + 1}>
-                        <View
-                          style={[
-                            styles.modalContentHeader,
-                            {
-                              borderBottomWidth: 1,
-                              paddingBottom: 6,
-                              borderColor: '#e6e6e6',
-                            },
-                          ]}>
-                          <Text
-                            style={[
-                              styles.modalText,
-                              {marginBottom: 0, fontSize: 13},
-                            ]}>
-                            #{index + 1} Symptom
-                          </Text>
-                          <View style={styles.icongroup}>
-                            <TouchableOpacity
-                              onPress={() => toggleModal3(item)}>
-                              <FontAwesomeIcon
-                                icon={faPencilSquare}
-                                color="#05b508"
-                                style={[styles.icon, {padding: 9}]}
-                              />
-                            </TouchableOpacity>
-                          </View>
-                        </View>
+                      <View
+                        style={[styles.sympDiv, styles.sympContainer]}
+                        key={index + 1}>
                         <View style={styles.sympDivOuter} key={index + 1}>
-                        <Text>{item.symptoms} {item.duration} {item.time} {item.frequency}</Text>
+                          <Text style={styles.sympText}>
+                            {item.symptoms} {item.duration} {item.time}{' '}
+                            {item.frequency}
+                          </Text>
                         </View>
+                        <TouchableOpacity
+                          style={styles.editIcon}
+                          onPress={() => toggleModal3(item)}>
+                          <FontAwesomeIcon
+                            icon={faPencil}
+                            color="#05b508"
+                            style={[styles.icon, {padding: 9}]}
+                          />
+                        </TouchableOpacity>
                       </View>
                     );
                   })
@@ -631,7 +619,7 @@ const Complaints = () => {
                   value={searchSymptomsInput}
                   onChangeText={text => setSearchSymptomsInput(text)}
                 />
-                <ScrollView horizontal>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View style={styles.catDiv}>
                     {filteredSymptoms?.length > 0 &&
                       filteredSymptoms.map((item, index) => (
@@ -659,7 +647,7 @@ const Complaints = () => {
                 />
                 {/* time ... */}
                 <Text style={styles.modalText}>Time</Text>
-                <ScrollView horizontal>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View style={styles.catDiv}>
                     {timeArray?.length > 0 &&
                       timeArray.map((item, index) => (
@@ -678,7 +666,7 @@ const Complaints = () => {
                 </ScrollView>
                 {/* frequency ... */}
                 <Text style={styles.modalText}>Frequency</Text>
-                <ScrollView horizontal>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View style={styles.catDiv}>
                     {frequencyArray?.length > 0 &&
                       frequencyArray.map((item, index) => (
@@ -735,6 +723,22 @@ const styles = StyleSheet.create({
     padding: 8,
     fontWeight: '400',
   },
+  sympContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sympText: {
+    fontSize: 16,
+    fontWeight: 'normal',
+
+  },
+  editIcon: {
+    padding: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#05b508',
+  },
   navbarText: {
     fontSize: 18,
     color: 'black',
@@ -790,7 +794,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   filterinput: {
-    padding: 4,
+    padding: 12,
     paddingHorizontal: 16,
     borderColor: '#e6e6e6',
     borderWidth: 1.4,

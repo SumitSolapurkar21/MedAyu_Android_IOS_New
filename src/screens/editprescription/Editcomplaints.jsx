@@ -423,7 +423,7 @@ const Editcomplaints = ({route}) => {
               <View style={styles.modalContentHeader}>
                 <Text
                   style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
-                  Add Symptoms
+                  Edit Symptoms
                 </Text>
                 <TouchableOpacity
                   onPress={toggleModal2}
@@ -444,7 +444,7 @@ const Editcomplaints = ({route}) => {
                   value={searchSymptomsInput}
                   onChangeText={text => setSearchSymptomsInput(text)}
                 />
-                <ScrollView horizontal>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View style={styles.catDiv}>
                     {filteredSymptoms?.length > 0 &&
                       filteredSymptoms.map((item, index) => (
@@ -473,7 +473,7 @@ const Editcomplaints = ({route}) => {
 
                 {/* time ... */}
                 <Text style={styles.modalText}>Time</Text>
-                <ScrollView horizontal>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View style={styles.catDiv}>
                     {timeArray?.length > 0 &&
                       timeArray.map((item, index) => (
@@ -493,7 +493,7 @@ const Editcomplaints = ({route}) => {
 
                 {/* frequency ... */}
                 <Text style={styles.modalText}>Frequency</Text>
-                <ScrollView horizontal>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View style={styles.catDiv}>
                     {frequencyArray?.length > 0 &&
                       frequencyArray.map((item, index) => (
