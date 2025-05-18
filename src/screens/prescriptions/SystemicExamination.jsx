@@ -1804,190 +1804,49 @@ const SystemicExamination = () => {
             </Text>
 
             <View style={styles.sympDiv}>
-              <View
-                style={[
-                  styles.modalContentHeader,
-                  {
-                    borderBottomWidth: 1,
-                    paddingBottom: 6,
-                    borderColor: '#e6e6e6',
-                  },
-                ]}>
-                <Text
-                  style={[styles.modalText, {marginBottom: 0, fontSize: 13}]}>
-                  # Systemin Examination Details
-                </Text>
-                <TouchableOpacity>
-                  <FontAwesomeIcon
-                    icon={faPencilSquare}
-                    color="#05b508"
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.sympDivOuter}>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Advice</Text>
-                  <Text>{patientSympyomsArrayEdit?.opdtemplate_text}</Text>
-                </View>
-
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Abdomen Shape</Text>
-                  <Text>{patientSympyomsArrayEdit?.abdomen_shape}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Abdominal Sound</Text>
-                  <Text>{patientSympyomsArrayEdit?.abdominal_sound}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Any Deformity</Text>
-                  <Text>{patientSympyomsArrayEdit?.any_deformity}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Breast</Text>
-                  <Text>{patientSympyomsArrayEdit?.breast}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Breath Sound</Text>
-                  <Text>{patientSympyomsArrayEdit?.breath_sound}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Chest Movement</Text>
-                  <Text>{patientSympyomsArrayEdit?.chest_movement}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Chest Wall</Text>
-                  <Text>{patientSympyomsArrayEdit?.chest_wall}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Color</Text>
-                  <Text>{patientSympyomsArrayEdit?.color}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Dermal Assessment</Text>
-                  <Text>{patientSympyomsArrayEdit?.dermal_assessment}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Ears</Text>
-                  <Text>{patientSympyomsArrayEdit?.ears}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>ECG Input</Text>
-                  <Text>{patientSympyomsArrayEdit?.ecg_input}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Edema</Text>
-                  <Text>{patientSympyomsArrayEdit?.edema}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Eyes</Text>
-                  <Text>{patientSympyomsArrayEdit?.eyes}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>GCS E</Text>
-                  <Text>{patientSympyomsArrayEdit?.gcs_e}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>GCS Score</Text>
-                  <Text>{patientSympyomsArrayEdit?.gcs_score}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>GCS V</Text>
-                  <Text>{patientSympyomsArrayEdit?.gcs_v}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Genitalia</Text>
-                  <Text>{patientSympyomsArrayEdit?.genitalia}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Hearing</Text>
-                  <Text>{patientSympyomsArrayEdit?.hearing}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Heart Sound</Text>
-                  <Text>{patientSympyomsArrayEdit?.heart_sound}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Memory</Text>
-                  <Text>{patientSympyomsArrayEdit?.memory}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Motor Power</Text>
-                  <Text>{patientSympyomsArrayEdit?.motor_power}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Neck Vein Engorged</Text>
-                  <Text>{patientSympyomsArrayEdit?.neck_vein_engorged}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Nipple</Text>
-                  <Text>{patientSympyomsArrayEdit?.nipple}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Nose</Text>
-                  <Text>{patientSympyomsArrayEdit?.nose}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Oral Cavity</Text>
-                  <Text>{patientSympyomsArrayEdit?.oralcavity}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Palpation</Text>
-                  <Text>{patientSympyomsArrayEdit?.palpation}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Pulse Amplitude</Text>
-                  <Text>{patientSympyomsArrayEdit?.pluse_amplitude}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Pulse Rate</Text>
-                  <Text>{patientSympyomsArrayEdit?.pulse_rate}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Pulse Rhythm</Text>
-                  <Text>{patientSympyomsArrayEdit?.pulse_rhythm}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Rate</Text>
-                  <Text>{patientSympyomsArrayEdit?.rate}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Reflexes</Text>
-                  <Text>{patientSympyomsArrayEdit?.reflexes}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Rhythm Depth</Text>
-                  <Text>{patientSympyomsArrayEdit?.rhythm_depth}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Sensation</Text>
-                  <Text>{patientSympyomsArrayEdit?.sensation}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Speech</Text>
-                  <Text>{patientSympyomsArrayEdit?.speech}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Spleen</Text>
-                  <Text>{patientSympyomsArrayEdit?.spleen}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Throat</Text>
-                  <Text>{patientSympyomsArrayEdit?.throat}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Tongue</Text>
-                  <Text>{patientSympyomsArrayEdit?.tongue}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Turgor</Text>
-                  <Text>{patientSympyomsArrayEdit?.turgor}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Vision</Text>
-                  <Text>{patientSympyomsArrayEdit?.vision}</Text>
-                </View>
-              </View>
+              <Text>
+                {patientSympyomsArrayEdit?.opdtemplate_text}
+                {patientSympyomsArrayEdit?.abdomen_shape} &nbsp;
+                {patientSympyomsArrayEdit?.abdominal_sound} &nbsp;
+                {patientSympyomsArrayEdit?.any_deformity} &nbsp;
+                {patientSympyomsArrayEdit?.breast} &nbsp;
+                {patientSympyomsArrayEdit?.breath_sound} &nbsp;
+                {patientSympyomsArrayEdit?.chest_movement} &nbsp;
+                {patientSympyomsArrayEdit?.chest_wall} &nbsp;
+                {patientSympyomsArrayEdit?.color} &nbsp;
+                {patientSympyomsArrayEdit?.dermal_assessment} &nbsp;
+                {patientSympyomsArrayEdit?.ears} &nbsp;
+                {patientSympyomsArrayEdit?.ecg_input} &nbsp;
+                {patientSympyomsArrayEdit?.edema} &nbsp;
+                {patientSympyomsArrayEdit?.eyes} &nbsp;
+                {patientSympyomsArrayEdit?.gcs_e} &nbsp;
+                {patientSympyomsArrayEdit?.gcs_score} &nbsp;
+                {patientSympyomsArrayEdit?.gcs_v} &nbsp;
+                {patientSympyomsArrayEdit?.genitalia} &nbsp;
+                {patientSympyomsArrayEdit?.hearing} &nbsp;
+                {patientSympyomsArrayEdit?.heart_sound} &nbsp;
+                {patientSympyomsArrayEdit?.memory} &nbsp;
+                {patientSympyomsArrayEdit?.motor_power} &nbsp;
+                {patientSympyomsArrayEdit?.neck_vein_engorged} &nbsp;
+                {patientSympyomsArrayEdit?.nipple} &nbsp;
+                {patientSympyomsArrayEdit?.nose} &nbsp;
+                {patientSympyomsArrayEdit?.oralcavity} &nbsp;
+                {patientSympyomsArrayEdit?.palpation} &nbsp;
+                {patientSympyomsArrayEdit?.pluse_amplitude} &nbsp;
+                {patientSympyomsArrayEdit?.pulse_rate} &nbsp;
+                {patientSympyomsArrayEdit?.pulse_rhythm} &nbsp;
+                {patientSympyomsArrayEdit?.rate} &nbsp;
+                {patientSympyomsArrayEdit?.reflexes} &nbsp;
+                {patientSympyomsArrayEdit?.rhythm_depth} &nbsp;
+                {patientSympyomsArrayEdit?.sensation} &nbsp;
+                {patientSympyomsArrayEdit?.speech} &nbsp;
+                {patientSympyomsArrayEdit?.spleen} &nbsp;
+                {patientSympyomsArrayEdit?.throat} &nbsp;
+                {patientSympyomsArrayEdit?.tongue} &nbsp;
+                {patientSympyomsArrayEdit?.turgor} &nbsp;
+                {patientSympyomsArrayEdit?.vision} &nbsp;
+                {patientSympyomsArrayEdit?.advice} &nbsp;
+              </Text>
             </View>
           </View>
         </ScrollView>
