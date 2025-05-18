@@ -9,10 +9,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
+  faPencil,
   faPencilSquare,
   faPlus,
   faTrashCan,
@@ -100,34 +107,33 @@ const Generalexamination = () => {
     }
   };
 
-
   useFocusEffect(
     useCallback(() => {
       const fetchmobileAssessment = async () => {
         try {
-        await axios
-          .post(FetchMobileOpdAssessmentForEditapi, {
-            hospital_id: userData?.hospital_id,
-            reception_id: userData?._id,
-            patient_id: selectedPatient?._id,
-            api_type: 'OPD-GENERAL-EXAMINATION',
-            uhid: selectedPatient?.patientuniqueno,
-            mobilenumber: selectedPatient?.mobilenumber,
-            appoint_id: selectedPatient?.appoint_id,
-          })
-          .then(res => {
-            console.log('res : ', res.data);
-            setPatientSympyomsArrayEdit(
-              res.data.opdgeneralexaminationhistoryarray,
-            );
-          });
-      } catch (error) {
-        console.error(error);
-      }
-    };
+          await axios
+            .post(FetchMobileOpdAssessmentForEditapi, {
+              hospital_id: userData?.hospital_id,
+              reception_id: userData?._id,
+              patient_id: selectedPatient?._id,
+              api_type: 'OPD-GENERAL-EXAMINATION',
+              uhid: selectedPatient?.patientuniqueno,
+              mobilenumber: selectedPatient?.mobilenumber,
+              appoint_id: selectedPatient?.appoint_id,
+            })
+            .then(res => {
+              console.log('res : ', res.data);
+              setPatientSympyomsArrayEdit(
+                res.data.opdgeneralexaminationhistoryarray,
+              );
+            });
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-    fetchmobileAssessment();
-  }, []),
+      fetchmobileAssessment();
+    }, []),
   );
 
   return (
@@ -148,167 +154,145 @@ const Generalexamination = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 70}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Previous General Details</Text>
-            {patientSympyomsArrayEdit?.length > 0 ? (
-              patientSympyomsArrayEdit?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 70}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Symptoms Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Previous General Details</Text>
+              {patientSympyomsArrayEdit?.length > 0 ? (
+                patientSympyomsArrayEdit?.map((item, index) => {
+                  return (
                     <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
-                        style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
-                        ]}>
-                        #{index + 1} Symptom
+                      style={[styles.sympDiv, styles.sympContainer]}
+                      key={index + 1}>
+                      <Text style={styles.sympText}>
+                        {item.pallor} {item.cyanosis} {item.icterus} {item.ln}{' '}
+                        {item.odema}
                       </Text>
-                      <TouchableOpacity onPress={() => navigation.navigate('Editgeneralexamination', {data: item, userData, selectedPatient})}>
+                      <TouchableOpacity
+                        style={styles.editIcon}
+                        onPress={() =>
+                          navigation.navigate('Editgeneralexamination', {
+                            data: item,
+                            userData,
+                            selectedPatient,
+                          })
+                        }>
                         <FontAwesomeIcon
-                          icon={faPencilSquare}
+                          icon={faPencil}
                           color="#05b508"
                           style={styles.icon}
                         />
                       </TouchableOpacity>
                     </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Pallor</Text>
-                        <Text>{item.pallor}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Cyanosis</Text>
-                        <Text>{item.cyanosis}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Icterus</Text>
-                        <Text>{item.icterus}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Ln</Text>
-                        <Text>{item.ln}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Odema</Text>
-                        <Text>{item.odema}</Text>
-                      </View>
-                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{padding: 20}}>
+                    <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                      No Data Available
+                    </Text>
                   </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
                 </View>
-              </View>
-            )}
-          </View>
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>General Details</Text>
-            {patientAssessmentArray?.length > 0 ? (
-              patientAssessmentArray?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
+              )}
+            </View>
+            {/* Symptoms Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>General Details</Text>
+              {patientAssessmentArray?.length > 0 ? (
+                patientAssessmentArray?.map((item, index) => {
+                  return (
+                    <View style={styles.sympDiv} key={index + 1}>
+                      <View
                         style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
+                          styles.modalContentHeader,
+                          {
+                            borderBottomWidth: 1,
+                            paddingBottom: 6,
+                            borderColor: '#e6e6e6',
+                          },
                         ]}>
-                        #{index + 1} Symptom
-                      </Text>
-                      <TouchableOpacity onPress={() => removeSymptom(index)}>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          color="#FF3B30"
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
+                        <Text
+                          style={[
+                            styles.modalText,
+                            {marginBottom: 0, fontSize: 13},
+                          ]}>
+                          #{index + 1} Symptom
+                        </Text>
+                        <TouchableOpacity onPress={() => removeSymptom(index)}>
+                          <FontAwesomeIcon
+                            icon={faTrashCan}
+                            color="#FF3B30"
+                            style={styles.icon}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.sympDivOuter} key={index + 1}>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Pallor</Text>
+                          <Text>{item.pallor}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Cyanosis</Text>
+                          <Text>{item.cyanosis}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Icterus</Text>
+                          <Text>{item.icterus}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Ln</Text>
+                          <Text>{item.ln}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Odema</Text>
+                          <Text>{item.odema}</Text>
+                        </View>
+                      </View>
                     </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Pallor</Text>
-                        <Text>{item.pallor}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Cyanosis</Text>
-                        <Text>{item.cyanosis}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Icterus</Text>
-                        <Text>{item.icterus}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Ln</Text>
-                        <Text>{item.ln}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Odema</Text>
-                        <Text>{item.odema}</Text>
-                      </View>
-                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{padding: 20}}>
+                    <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                      No Data Available
+                    </Text>
                   </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
                 </View>
-              </View>
-            )}
+              )}
+            </View>
+          </ScrollView>
+          <View style={styles.addButton}>
+            <TouchableOpacity
+              style={[styles.addbuttonDiv]}
+              onPress={toggleModal}>
+              <FontAwesomeIcon
+                icon={faPlus}
+                color={'white'}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.addButton}>
-          <TouchableOpacity style={[styles.addbuttonDiv]} onPress={toggleModal}>
-            <FontAwesomeIcon
-              icon={faPlus}
-              color={'white'}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={() => savePatientSymptoms()}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={() => savePatientSymptoms()}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* add symptoms Modal */}
-        <Modal
+      ) : (
+        <View
           visible={isModalVisible}
           onDismiss={toggleModal}
           contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
               <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
                 Add General Examination
@@ -503,8 +487,8 @@ const Generalexamination = () => {
               }}
             </Formik>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -573,13 +557,12 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   bottomModalContainer: {
-    backgroundColor: 'white',
+    backgroundColor: '#f7f7fc',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     padding: 10,
-    position: 'absolute',
-    bottom: 0.5,
     width: '100%',
+    flex: 1,
   },
 
   modalText: {
@@ -693,5 +676,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 1,
     textAlign: 'center',
+  },
+  sympContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sympText: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    flex: 0.9,
+  },
+  editIcon: {
+    padding: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#05b508',
   },
 });

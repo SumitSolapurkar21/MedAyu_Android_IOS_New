@@ -26,11 +26,36 @@ const Editgeneralexamination = ({route}) => {
 
   // Form state (use 'Present'/'Absent' for all fields)
   const [formData, setFormData] = useState({
-    pallor: data?.pallor === 'present' ? 'Present' : data?.pallor === 'absent' ? 'Absent' : data?.pallor || '',
-    cyanosis: data?.cyanosis === 'present' ? 'Present' : data?.cyanosis === 'absent' ? 'Absent' : data?.cyanosis || '',
-    icterus: data?.icterus === 'present' ? 'Present' : data?.icterus === 'absent' ? 'Absent' : data?.icterus || '',
-    ln: data?.ln === 'present' ? 'Present' : data?.ln === 'absent' ? 'Absent' : data?.ln || '',
-    odema: data?.odema === 'present' ? 'Present' : data?.odema === 'absent' ? 'Absent' : data?.odema || '',
+    pallor:
+      data?.pallor === 'present'
+        ? 'Present'
+        : data?.pallor === 'absent'
+        ? 'Absent'
+        : data?.pallor || '',
+    cyanosis:
+      data?.cyanosis === 'present'
+        ? 'Present'
+        : data?.cyanosis === 'absent'
+        ? 'Absent'
+        : data?.cyanosis || '',
+    icterus:
+      data?.icterus === 'present'
+        ? 'Present'
+        : data?.icterus === 'absent'
+        ? 'Absent'
+        : data?.icterus || '',
+    ln:
+      data?.ln === 'present'
+        ? 'Present'
+        : data?.ln === 'absent'
+        ? 'Absent'
+        : data?.ln || '',
+    odema:
+      data?.odema === 'present'
+        ? 'Present'
+        : data?.odema === 'absent'
+        ? 'Absent'
+        : data?.odema || '',
   });
 
   // System back button handling
@@ -96,7 +121,11 @@ const Editgeneralexamination = ({route}) => {
 
   return (
     <>
-      <StatusBar style={styles.StatusBar} animated={false} backgroundColor="#ffffff" />
+      <StatusBar
+        style={styles.StatusBar}
+        animated={false}
+        backgroundColor="#ffffff"
+      />
       {/* Header */}
       <View style={styles.navbar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -106,41 +135,64 @@ const Editgeneralexamination = ({route}) => {
           <Text style={styles.navbarText}>Edit General Examination</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
-        <ScrollView style={{marginBottom: 100}} vertical showsVerticalScrollIndicator={false}>
-          {/* Current General Examination Details */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Current General Examination Details</Text>
-            <View style={styles.sympDiv}>
-              <View style={styles.sympDivOuter}>
-                {fields.map(f => (
-                  <View style={styles.sympDivInner} key={f.field}>
-                    <Text style={styles.label}>{f.label}</Text>
-                    <Text>{formData[f.field]}</Text>
-                  </View>
-                ))}
+
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 100}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Current General Examination Details */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>
+                Current General Examination Details
+              </Text>
+              <View style={styles.sympDiv}>
+                <View style={styles.sympDivOuter}>
+                  {fields.map(f => (
+                    <View style={styles.sympDivInner} key={f.field}>
+                      <Text style={styles.label}>{f.label}</Text>
+                      <Text>{formData[f.field]}</Text>
+                    </View>
+                  ))}
+                </View>
               </View>
             </View>
-          </View>
-          {/* Edit Button */}
-          <View style={styles.categoryDiv}>
-            <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={() => setIsModalVisible(true)}>
-              <Text style={styles.buttonText}>Edit</Text>
+            {/* Edit Button */}
+            <View style={styles.categoryDiv}>
+              <TouchableOpacity
+                style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+                onPress={() => setIsModalVisible(true)}>
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={updatePatientGeneralExaminationHistory}>
+              <Text style={styles.buttonText}>Update</Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.loginButton}>
-          <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={updatePatientGeneralExaminationHistory}>
-            <Text style={styles.buttonText}>Update</Text>
-          </TouchableOpacity>
         </View>
-        {/* Edit Modal */}
-        <Modal visible={isModalVisible} onDismiss={() => setIsModalVisible(false)} contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+      ) : (
+        <View
+          visible={isModalVisible}
+          onDismiss={() => setIsModalVisible(false)}
+          contentContainerStyle={styles.bottomModalContainer}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>Edit General Examination</Text>
-              <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton1}>
-                <FontAwesomeIcon icon={faXmark} color="#FF3B30" style={styles.icon} />
+              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
+                Edit General Examination
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(false)}
+                style={styles.closeButton}>
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  color="#FF3B30"
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
             <ScrollView>
@@ -150,15 +202,25 @@ const Editgeneralexamination = ({route}) => {
                     <Text style={styles.modalText}>{f.label}</Text>
                     <View style={{flexDirection: 'row', gap: 8}}>
                       <TouchableOpacity
-                        style={[styles.segButton, formData[f.field] === 'Present' && styles.selectedButton]}
-                        onPress={() => setFormData(prev => ({...prev, [f.field]: 'Present'}))}
-                      >
+                        style={[
+                          styles.segButton,
+                          formData[f.field] === 'Present' &&
+                            styles.selectedButton,
+                        ]}
+                        onPress={() =>
+                          setFormData(prev => ({...prev, [f.field]: 'Present'}))
+                        }>
                         <Text style={styles.segText}>Present</Text>
                       </TouchableOpacity>
                       <TouchableOpacity
-                        style={[styles.segButton, formData[f.field] === 'Absent' && styles.selectedButton]}
-                        onPress={() => setFormData(prev => ({...prev, [f.field]: 'Absent'}))}
-                      >
+                        style={[
+                          styles.segButton,
+                          formData[f.field] === 'Absent' &&
+                            styles.selectedButton,
+                        ]}
+                        onPress={() =>
+                          setFormData(prev => ({...prev, [f.field]: 'Absent'}))
+                        }>
                         <Text style={styles.segText}>Absent</Text>
                       </TouchableOpacity>
                     </View>
@@ -179,8 +241,8 @@ const Editgeneralexamination = ({route}) => {
               <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -334,5 +396,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     width: '100%',
     borderRadius: 4,
+  },
+  closeButton: {
+    padding: 4,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'red',
   },
 });
