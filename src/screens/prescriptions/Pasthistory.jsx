@@ -20,6 +20,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
   faCalendarDays,
+  faPencil,
   faPencilSquare,
   faPlus,
   faTrashCan,
@@ -128,19 +129,6 @@ const Pasthistory = () => {
 
     return {years, months, days};
   };
-
-  // const calculateDateFromInput = (years, months, days) => {
-  //      const currentDate = new Date();
-  //      currentDate.setFullYear(currentDate.getFullYear() - years);
-  //      currentDate.setMonth(currentDate.getMonth() - months);
-  //      currentDate.setDate(currentDate.getDate() - days);
-  //      return currentDate.toLocaleDateString('en-US', {
-  //           weekday: 'short',
-  //           day: '2-digit',
-  //           month: 'short',
-  //           year: 'numeric'
-  //      });
-  // };
 
   const calculateDateFromInput = (years, months, days) => {
     const currentDate = new Date();
@@ -255,64 +243,289 @@ const Pasthistory = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 70}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Category Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Diseases</Text>
-            <View style={styles.filterDiv}>
-              <TextInput
-                style={[styles.filterinput, {padding: 4}]}
-                placeholder="Search Diseases"
-                value={diseaseSearchInput}
-                onChangeText={text => setDiseaseSearchInput(text)}
-              />
-            </View>
-            <View style={styles.catDiv}>
-              {diseasesArray?.length > 0 &&
-                diseasesArray?.map((item, index) => (
-                  <TouchableOpacity
-                    onPress={() => diseasesHandler(item.illnessname)}
-                    key={index + 1}
-                    style={[
-                      styles.segButton,
-                      selectedDiseases === item.illnessname &&
-                        styles.selectedButton,
-                    ]}>
-                    <Text style={styles.segText}>{item.illnessname}</Text>
-                  </TouchableOpacity>
-                ))}
+      {isModalVisible ? (
+        <>
+          {/* add symptoms Modal */}
+          <View
+            visible={isModalVisible}
+            onDismiss={toggleModal}
+            contentContainerStyle={styles.bottomModalContainer}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalContentHeader}>
+                <Text
+                  style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
+                  Add Diseases
+                </Text>
+                <TouchableOpacity
+                  onPress={toggleModal}
+                  style={styles.closeButton}>
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    color="#FF3B30"
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Formik
+                innerRef={formikRef}
+                initialValues={{
+                  treatment_status: '',
+                  days: '',
+                  months: '',
+                  years: '',
+                  illnessname: selectedDiseases,
+                  from_date: '',
+                }}
+                validate={values => {
+                  const errors = {};
+                  return errors;
+                }}
+                onSubmit={(values, {resetForm}) => {
+                  toggleModal();
+                  setPatientAssessmentArray(prevData => [...prevData, values]);
+                  resetForm();
+                }}>
+                {({
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  values,
+                  errors,
+                  touched,
+                  setFieldValue,
+                }) => {
+                  // Update `from_date` when `years`, `months`, or `days` changes, but only if a manual date wasn't selected
+                  useEffect(() => {
+                    if (!manualDateSelected) {
+                      const years = parseInt(values.years) || 0;
+                      const months = parseInt(values.months) || 0;
+                      const days = parseInt(values.days) || 0;
+
+                      if (years || months || days) {
+                        const calculatedDate = calculateDateFromInput(
+                          years,
+                          months,
+                          days,
+                        );
+                        setFieldValue('from_date', calculatedDate);
+                      }
+                    }
+                  }, [values.years, values.months, values.days]);
+
+                  return (
+                    <>
+                      <View style={styles.modalDiv}>
+                        <View>
+                          <Text style={styles.modalText}>Illness</Text>
+                          <TouchableOpacity
+                            style={[
+                              styles.segButton,
+                              selectedDiseases && styles.selectedButton,
+                            ]}>
+                            <Text style={styles.segText}>
+                              {
+                                // Find the illness that matches selectedDiseases
+                                diseasesArray.find(
+                                  item => item.illnessname === selectedDiseases,
+                                )?.illnessname || '-'
+                              }
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                        <View>
+                          <Text style={styles.modalText}>From Date</Text>
+                          <TouchableOpacity
+                            style={[
+                              styles.segButton,
+                              {flexDirection: 'row', gap: 20},
+                            ]}
+                            onPress={() => setOpen(true)}>
+                            <Text style={styles.segText}>
+                              {values.from_date || 'Select Date'}
+                            </Text>
+                            <DatePicker
+                              modal
+                              mode="date"
+                              open={open}
+                              date={new Date()}
+                              onConfirm={selectedDate => {
+                                setOpen(false);
+                                const formattedDate =
+                                  selectedDate.toLocaleDateString('en-US', {
+                                    weekday: 'short',
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                  });
+                                setFieldValue('from_date', formattedDate);
+
+                                // Calculate difference between selected date and today
+                                const {years, months, days} =
+                                  calculateDateDifference(
+                                    selectedDate,
+                                    new Date(),
+                                  );
+                                setFieldValue('years', years.toString());
+                                setFieldValue('months', months.toString());
+                                setFieldValue('days', days.toString());
+                              }}
+                              onCancel={() => {
+                                setOpen(false);
+                              }}
+                            />
+                            <FontAwesomeIcon
+                              icon={faCalendarDays}
+                              style={styles.icon}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        {/* Years Field */}
+                        <View>
+                          <Text style={styles.modalText}>Years</Text>
+                          <TextInput
+                            keyboardType="numeric"
+                            style={styles.filterinput}
+                            placeholder="Years"
+                            value={values.years}
+                            onChangeText={text => {
+                              setFieldValue('years', text);
+                              setManualDateSelected(false); // Reset manual selection if user edits fields
+                            }}
+                            onBlur={handleBlur('years')}
+                          />
+                        </View>
+
+                        {/* Months Field */}
+                        <View>
+                          <Text style={styles.modalText}>Months</Text>
+                          <TextInput
+                            keyboardType="numeric"
+                            style={styles.filterinput}
+                            placeholder="Months"
+                            value={values.months}
+                            onChangeText={text => {
+                              setFieldValue('months', text);
+                              setManualDateSelected(false); // Reset manual selection if user edits fields
+                            }}
+                            onBlur={handleBlur('months')}
+                          />
+                        </View>
+
+                        {/* Days Field */}
+                        <View>
+                          <Text style={styles.modalText}>Days</Text>
+                          <TextInput
+                            keyboardType="numeric"
+                            style={styles.filterinput}
+                            placeholder="Days"
+                            value={values.days}
+                            onChangeText={text => {
+                              setFieldValue('days', text);
+                              setManualDateSelected(false); // Reset manual selection if user edits fields
+                            }}
+                            onBlur={handleBlur('days')}
+                          />
+                        </View>
+                      </View>
+                      <View style={{marginBottom: 10}}>
+                        <Text style={styles.modalText}>Treatment Status</Text>
+
+                        <View style={{flexDirection: 'row', gap: 8}}>
+                          <TouchableOpacity
+                            key={'Treated'}
+                            onPress={() =>
+                              setFieldValue('treatment_status', 'Treated')
+                            }
+                            style={[
+                              styles.segButton,
+                              values.treatment_status === 'Treated' &&
+                                styles.selectedButton,
+                            ]}>
+                            <Text style={styles.segText}>Treated</Text>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity
+                            key={'Treatment'}
+                            onPress={() =>
+                              setFieldValue('treatment_status', 'Treatment')
+                            }
+                            style={[
+                              styles.segButton,
+                              values.treatment_status === 'Treatment' &&
+                                styles.selectedButton,
+                            ]}>
+                            <Text style={styles.segText}>On Treatment</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+
+                      <TouchableOpacity
+                        onPress={handleSubmit}
+                        style={[
+                          styles.closeButton1,
+                          {backgroundColor: '#5cd65c'},
+                        ]}>
+                        <Text style={styles.buttonText}>Add</Text>
+                      </TouchableOpacity>
+                    </>
+                  );
+                }}
+              </Formik>
             </View>
           </View>
-
-          {/* Already 
-          Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Previous Past History</Text>
-            {patientSympyomsArrayEdit?.length > 0 ? (
-              patientSympyomsArrayEdit?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
+        </>
+      ) : (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 70}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Category Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Diseases</Text>
+              <View style={styles.filterDiv}>
+                <TextInput
+                  style={[styles.filterinput]}
+                  placeholder="Search Diseases"
+                  value={diseaseSearchInput}
+                  onChangeText={text => setDiseaseSearchInput(text)}
+                />
+              </View>
+              <View style={styles.catDiv}>
+                {diseasesArray?.length > 0 &&
+                  diseasesArray?.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => diseasesHandler(item.illnessname)}
+                      key={index + 1}
                       style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
+                        styles.segButton,
+                        selectedDiseases === item.illnessname &&
+                          styles.selectedButton,
                       ]}>
-                      <Text
-                        style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
-                        ]}>
-                        #{index + 1} Symptom
-                      </Text>
+                      <Text style={styles.segText}>{item.illnessname}</Text>
+                    </TouchableOpacity>
+                  ))}
+              </View>
+            </View>
+
+            {/* Already 
+          Symptoms Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Previous Past History</Text>
+              {patientSympyomsArrayEdit?.length > 0 ? (
+                patientSympyomsArrayEdit?.map((item, index) => {
+                  return (
+                    <View
+                      style={[styles.sympDiv, styles.sympContainer]}
+                      key={index + 1}>
+                      <View style={styles.sympDivOuter} key={index + 1}>
+                        <Text style={styles.sympText}>
+                          {item.illnessname} {item.from_date} {item.years}{' '}
+                          {item.months} {item.days} {item.treatment_status}
+                        </Text>
+                      </View>
                       <TouchableOpacity
+                        style={styles.editIcon}
                         onPress={() =>
                           navigation.navigate('Editpasthistory', {
                             data: item,
@@ -321,360 +534,107 @@ const Pasthistory = () => {
                           })
                         }>
                         <FontAwesomeIcon
-                          icon={faPencilSquare}
+                          icon={faPencil}
                           color="#05b508"
                           style={[styles.icon, {padding: 9}]}
                         />
                       </TouchableOpacity>
                     </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Illness</Text>
-                        <Text>{item.illnessname}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>From Date</Text>
-                        <Text>{item.from_date}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Years</Text>
-                        <Text>{item.years}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Months</Text>
-                        <Text>{item.months}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Days</Text>
-                        <Text>{item.days}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Treatment Status</Text>
-                        <Text>{item.treatment_status}</Text>
-                      </View>
-                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{padding: 20}}>
+                    <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                      No Data Available
+                    </Text>
                   </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
                 </View>
-              </View>
-            )}
-          </View>
-
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Past History</Text>
-            {patientAssessmentArray?.length > 0 ? (
-              patientAssessmentArray?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
-                        style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
-                        ]}>
-                        #{index + 1} Symptom
-                      </Text>
-                      <TouchableOpacity
-                        onPress={() => removeSymptom(index)}
-                        style={styles.deleteButton}>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          color="#FF3B30"
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Illness</Text>
-                        <Text>{item.illnessname}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>From Date</Text>
-                        <Text>{item.from_date}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Years</Text>
-                        <Text>{item.years}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Months</Text>
-                        <Text>{item.months}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Days</Text>
-                        <Text>{item.days}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Treatment Status</Text>
-                        <Text>{item.treatment_status}</Text>
-                      </View>
-                    </View>
-                  </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
-                </View>
-              </View>
-            )}
-          </View>
-        </ScrollView>
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={() => savePatientSymptoms()}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-        {/* add symptoms Modal */}
-        <Modal
-          visible={isModalVisible}
-          onDismiss={toggleModal}
-          contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
-                Add Diseases
-              </Text>
-              <TouchableOpacity
-                onPress={toggleModal}
-                style={styles.closeButton}>
-                <FontAwesomeIcon
-                  icon={faXmark}
-                  color="#FF3B30"
-                  style={styles.icon}
-                />
-              </TouchableOpacity>
+              )}
             </View>
-            <Formik
-              innerRef={formikRef}
-              initialValues={{
-                treatment_status: '',
-                days: '',
-                months: '',
-                years: '',
-                illnessname: selectedDiseases,
-                from_date: '',
-              }}
-              validate={values => {
-                const errors = {};
-                return errors;
-              }}
-              onSubmit={(values, {resetForm}) => {
-                toggleModal();
-                setPatientAssessmentArray(prevData => [...prevData, values]);
-                resetForm();
-              }}>
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                touched,
-                setFieldValue,
-              }) => {
-                // Update `from_date` when `years`, `months`, or `days` changes, but only if a manual date wasn't selected
-                useEffect(() => {
-                  if (!manualDateSelected) {
-                    const years = parseInt(values.years) || 0;
-                    const months = parseInt(values.months) || 0;
-                    const days = parseInt(values.days) || 0;
 
-                    if (years || months || days) {
-                      const calculatedDate = calculateDateFromInput(
-                        years,
-                        months,
-                        days,
-                      );
-                      setFieldValue('from_date', calculatedDate);
-                    }
-                  }
-                }, [values.years, values.months, values.days]);
-
-                return (
-                  <>
-                    <View style={styles.modalDiv}>
-                      <View>
-                        <Text style={styles.modalText}>Illness</Text>
-                        <TouchableOpacity
+            {/* Symptoms Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Past History</Text>
+              {patientAssessmentArray?.length > 0 ? (
+                patientAssessmentArray?.map((item, index) => {
+                  return (
+                    <View style={styles.sympDiv} key={index + 1}>
+                      <View
+                        style={[
+                          styles.modalContentHeader,
+                          {
+                            borderBottomWidth: 1,
+                            paddingBottom: 6,
+                            borderColor: '#e6e6e6',
+                          },
+                        ]}>
+                        <Text
                           style={[
-                            styles.segButton,
-                            selectedDiseases && styles.selectedButton,
+                            styles.modalText,
+                            {marginBottom: 0, fontSize: 13},
                           ]}>
-                          <Text style={styles.segText}>
-                            {
-                              // Find the illness that matches selectedDiseases
-                              diseasesArray.find(
-                                item => item.illnessname === selectedDiseases,
-                              )?.illnessname || '-'
-                            }
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                      <View>
-                        <Text style={styles.modalText}>From Date</Text>
+                          #{index + 1} Symptom
+                        </Text>
                         <TouchableOpacity
-                          style={[
-                            styles.segButton,
-                            {flexDirection: 'row', gap: 20},
-                          ]}
-                          onPress={() => setOpen(true)}>
-                          <Text style={styles.segText}>
-                            {values.from_date || 'Select Date'}
-                          </Text>
-                          <DatePicker
-                            modal
-                            mode="date"
-                            open={open}
-                            date={new Date()}
-                            onConfirm={selectedDate => {
-                              setOpen(false);
-                              const formattedDate =
-                                selectedDate.toLocaleDateString('en-US', {
-                                  weekday: 'short',
-                                  day: '2-digit',
-                                  month: 'short',
-                                  year: 'numeric',
-                                });
-                              setFieldValue('from_date', formattedDate);
-
-                              // Calculate difference between selected date and today
-                              const {years, months, days} =
-                                calculateDateDifference(
-                                  selectedDate,
-                                  new Date(),
-                                );
-                              setFieldValue('years', years.toString());
-                              setFieldValue('months', months.toString());
-                              setFieldValue('days', days.toString());
-                            }}
-                            onCancel={() => {
-                              setOpen(false);
-                            }}
-                          />
+                          onPress={() => removeSymptom(index)}
+                          style={styles.deleteButton}>
                           <FontAwesomeIcon
-                            icon={faCalendarDays}
+                            icon={faTrashCan}
+                            color="#FF3B30"
                             style={styles.icon}
                           />
                         </TouchableOpacity>
                       </View>
-                      {/* Years Field */}
-                      <View>
-                        <Text style={styles.modalText}>Years</Text>
-                        <TextInput
-                          keyboardType="numeric"
-                          style={styles.filterinput}
-                          placeholder="Years"
-                          value={values.years}
-                          onChangeText={text => {
-                            setFieldValue('years', text);
-                            setManualDateSelected(false); // Reset manual selection if user edits fields
-                          }}
-                          onBlur={handleBlur('years')}
-                        />
-                      </View>
-
-                      {/* Months Field */}
-                      <View>
-                        <Text style={styles.modalText}>Months</Text>
-                        <TextInput
-                          keyboardType="numeric"
-                          style={styles.filterinput}
-                          placeholder="Months"
-                          value={values.months}
-                          onChangeText={text => {
-                            setFieldValue('months', text);
-                            setManualDateSelected(false); // Reset manual selection if user edits fields
-                          }}
-                          onBlur={handleBlur('months')}
-                        />
-                      </View>
-
-                      {/* Days Field */}
-                      <View>
-                        <Text style={styles.modalText}>Days</Text>
-                        <TextInput
-                          keyboardType="numeric"
-                          style={styles.filterinput}
-                          placeholder="Days"
-                          value={values.days}
-                          onChangeText={text => {
-                            setFieldValue('days', text);
-                            setManualDateSelected(false); // Reset manual selection if user edits fields
-                          }}
-                          onBlur={handleBlur('days')}
-                        />
+                      <View style={styles.sympDivOuter} key={index + 1}>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Illness</Text>
+                          <Text>{item.illnessname}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>From Date</Text>
+                          <Text>{item.from_date}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Years</Text>
+                          <Text>{item.years}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Months</Text>
+                          <Text>{item.months}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Days</Text>
+                          <Text>{item.days}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Treatment Status</Text>
+                          <Text>{item.treatment_status}</Text>
+                        </View>
                       </View>
                     </View>
-                    <View style={{marginBottom: 10}}>
-                      <Text style={styles.modalText}>Treatment Status</Text>
-
-                      <View style={{flexDirection: 'row', gap: 8}}>
-                        <TouchableOpacity
-                          key={'Treated'}
-                          onPress={() =>
-                            setFieldValue('treatment_status', 'Treated')
-                          }
-                          style={[
-                            styles.segButton,
-                            values.treatment_status === 'Treated' &&
-                              styles.selectedButton,
-                          ]}>
-                          <Text style={styles.segText}>Treated</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                          key={'Treatment'}
-                          onPress={() =>
-                            setFieldValue('treatment_status', 'Treatment')
-                          }
-                          style={[
-                            styles.segButton,
-                            values.treatment_status === 'Treatment' &&
-                              styles.selectedButton,
-                          ]}>
-                          <Text style={styles.segText}>On Treatment</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-
-                    <TouchableOpacity
-                      onPress={handleSubmit}
-                      style={[
-                        styles.closeButton1,
-                        {backgroundColor: '#5cd65c'},
-                      ]}>
-                      <Text style={styles.buttonText}>Add</Text>
-                    </TouchableOpacity>
-                  </>
-                );
-              }}
-            </Formik>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{padding: 20}}>
+                    <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                      No Data Available
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          </ScrollView>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={() => savePatientSymptoms()}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -694,6 +654,22 @@ const styles = StyleSheet.create({
   icon: {
     padding: 9,
     fontWeight: '400',
+  },
+  sympContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sympText: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    flex: 0.9
+  },
+  editIcon: {
+    padding: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#05b508',
   },
   navbarText: {
     fontSize: 18,
@@ -719,7 +695,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   filterinput: {
-    padding: 4,
+    padding: 8,
     paddingHorizontal: 16,
     borderColor: '#e6e6e6',
     borderWidth: 1.4,
@@ -742,14 +718,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 0.5,
   },
-  bottomModalContainer: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    padding: 16,
-    position: 'absolute',
-    bottom: 0.5,
-    width: '100%',
+  modalContent: {
+    padding: 20,
   },
 
   modalText: {
