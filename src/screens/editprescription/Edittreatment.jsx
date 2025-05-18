@@ -107,7 +107,7 @@ const Edittreatment = ({route}) => {
       diseasesArray?.filter(res => res.drugname === __data);
     setSelectedTreatmentArray(filterTreatment);
     setSelectedDiseases(__data);
-    
+
     // Pre-fill the form values
     if (filterTreatment && filterTreatment.length > 0) {
       const treatment = filterTreatment[0];
@@ -121,7 +121,7 @@ const Edittreatment = ({route}) => {
       setDuration(treatment.duration || '');
       setFrom_date(treatment.from_date || '');
     }
-    
+
     toggleModal();
   };
 
@@ -191,102 +191,103 @@ const Edittreatment = ({route}) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 70}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Category Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Treatment</Text>
-            <View style={styles.filterDiv}>
-              <TextInput
-                style={[styles.filterinput, {padding: 4}]}
-                placeholder="Search Diseases"
-                value={diseaseSearchInput}
-                onChangeText={text => setDiseaseSearchInput(text)}
-              />
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 70}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Category Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Treatment</Text>
+              <View style={styles.filterDiv}>
+                <TextInput
+                  style={[styles.filterinput]}
+                  placeholder="Search Diseases"
+                  value={diseaseSearchInput}
+                  onChangeText={text => setDiseaseSearchInput(text)}
+                />
+              </View>
+              <View style={styles.catDiv}>
+                {diseasesArray?.length > 0 &&
+                  diseasesArray.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => diseasesHandler(item.drugname)}
+                      key={index + 1}
+                      style={[
+                        styles.segButton,
+                        selectedDiseases === item.drugname &&
+                          styles.selectedButton,
+                      ]}>
+                      <Text style={styles.segText}>{item.drugname}</Text>
+                    </TouchableOpacity>
+                  ))}
+              </View>
             </View>
-            <View style={styles.catDiv}>
-              {diseasesArray?.length > 0 &&
-                diseasesArray.map((item, index) => (
-                  <TouchableOpacity
-                    onPress={() => diseasesHandler(item.drugname)}
-                    key={index + 1}
-                    style={[
-                      styles.segButton,
-                      selectedDiseases === item.drugname &&
-                        styles.selectedButton,
-                    ]}>
-                    <Text style={styles.segText}>{item.drugname}</Text>
-                  </TouchableOpacity>
-                ))}
-            </View>
-          </View>
 
-          {/* Current Treatment Details */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Current Treatment Details</Text>
-            <View style={styles.sympDiv}>
-              <View style={styles.sympDivOuter}>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Drug Code</Text>
-                  <Text>{formData.drugcode}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Drug Name</Text>
-                  <Text>{formData.drugname}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Brand Name</Text>
-                  <Text>{formData.brandname}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Dose</Text>
-                  <Text>{formData.dose}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Instruction</Text>
-                  <Text>{formData.anupan}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Route</Text>
-                  <Text>{formData.route}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Schedule</Text>
-                  <Text>{formData.schedule}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Days</Text>
-                  <Text>{formData.duration}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>From Date</Text>
-                  <Text>{formData.from_date}</Text>
+            {/* Current Treatment Details */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Current Treatment Details</Text>
+              <View style={styles.sympDiv}>
+                <View style={styles.sympDivOuter}>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Drug Code</Text>
+                    <Text>{formData.drugcode}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Drug Name</Text>
+                    <Text>{formData.drugname}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Brand Name</Text>
+                    <Text>{formData.brandname}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Dose</Text>
+                    <Text>{formData.dose}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Instruction</Text>
+                    <Text>{formData.anupan}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Route</Text>
+                    <Text>{formData.route}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Schedule</Text>
+                    <Text>{formData.schedule}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Days</Text>
+                    <Text>{formData.duration}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>From Date</Text>
+                    <Text>{formData.from_date}</Text>
+                  </View>
                 </View>
               </View>
             </View>
+          </ScrollView>
+
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={() => {
+                updateFormData();
+                updatePatientTreatment();
+              }}>
+              <Text style={styles.buttonText}>Update</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={() => {
-              updateFormData();
-              updatePatientTreatment();
-            }}>
-            <Text style={styles.buttonText}>Update</Text>
-          </TouchableOpacity>
         </View>
-
-        {/* Edit Treatment Modal */}
-        <Modal
+      ) : (
+        <View
           visible={isModalVisible}
           onDismiss={toggleModal}
           contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
               <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
                 Edit Treatment
@@ -415,8 +416,8 @@ const Edittreatment = ({route}) => {
               <Text style={styles.buttonText}>Update</Text>
             </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -460,7 +461,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   filterinput: {
-    padding: 5,
+    padding: 8,
     paddingHorizontal: 16,
     borderColor: '#e6e6e6',
     borderWidth: 1.4,

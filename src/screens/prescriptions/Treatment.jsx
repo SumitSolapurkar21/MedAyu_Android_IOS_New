@@ -14,6 +14,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
   faCalendarDays,
+  faPencil,
   faPencilSquare,
   faPlus,
   faTrashCan,
@@ -191,62 +192,60 @@ const Treatment = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 70}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Category Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Treatment</Text>
-            <View style={styles.filterDiv}>
-              <TextInput
-                style={[styles.filterinput, {padding: 4}]}
-                placeholder="Search Diseases"
-                value={diseaseSearchInput}
-                onChangeText={text => setDiseaseSearchInput(text)}
-              />
-            </View>
-            <View style={styles.catDiv}>
-              {diseasesArray?.length > 0 &&
-                diseasesArray.map((item, index) => (
-                  <TouchableOpacity
-                    onPress={() => diseasesHandler(item.drugname)}
-                    key={index + 1}
-                    style={[
-                      styles.segButton,
-                      selectedDiseases === item.drugname &&
-                        styles.selectedButton,
-                    ]}>
-                    <Text style={styles.segText}>{item.drugname}</Text>
-                  </TouchableOpacity>
-                ))}
-            </View>
-          </View>
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Treatment History</Text>
-            {patientSympyomsArrayEdit?.length > 0 ? (
-              patientSympyomsArrayEdit?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 70}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Category Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Treatment</Text>
+              <View style={styles.filterDiv}>
+                <TextInput
+                  style={[styles.filterinput]}
+                  placeholder="Search Diseases"
+                  value={diseaseSearchInput}
+                  onChangeText={text => setDiseaseSearchInput(text)}
+                />
+              </View>
+              <View style={styles.catDiv}>
+                {diseasesArray?.length > 0 &&
+                  diseasesArray.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => diseasesHandler(item.drugname)}
+                      key={index + 1}
                       style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
+                        styles.segButton,
+                        selectedDiseases === item.drugname &&
+                          styles.selectedButton,
                       ]}>
-                      <Text
-                        style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
-                        ]}>
-                        #{index + 1} Treatment
+                      <Text style={styles.segText}>{item.drugname}</Text>
+                    </TouchableOpacity>
+                  ))}
+              </View>
+            </View>
+
+            {/* Symptoms Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>
+                Previous Treatment History
+              </Text>
+              {patientSympyomsArrayEdit?.length > 0 ? (
+                patientSympyomsArrayEdit?.map((item, index) => {
+                  console.log('patientSympyomsArrayEdit : ', item);
+                  return (
+                    <View
+                      style={[styles.sympDiv, styles.sympContainer]}
+                      key={index + 1}>
+                      <Text style={styles.sympText}>
+                        {item.drugcode} &nbsp; {item.drugname} &nbsp;{' '}
+                        {item.brandname} &nbsp; {item.dose} &nbsp; {item.anupan}
+                        &nbsp; {item.route} &nbsp; {item.schedule} &nbsp;{' '}
+                        {item.duration} &nbsp; {item.from_date}
                       </Text>
                       <TouchableOpacity
+                        style={styles.editIcon}
                         onPress={() =>
                           navigation.navigate('Edittreatment', {
                             data: item,
@@ -255,163 +254,125 @@ const Treatment = () => {
                           })
                         }>
                         <FontAwesomeIcon
-                          icon={faPencilSquare}
+                          icon={faPencil}
                           color="#05b508"
                           style={styles.icon}
                         />
                       </TouchableOpacity>
                     </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Drug Code</Text>
-                        <Text>{item.drugcode}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Drug Name</Text>
-                        <Text>{item.drugname}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Brand Name</Text>
-                        <Text>{item.brandname}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Dose</Text>
-                        <Text>{item.dose}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Instruction</Text>
-                        <Text>{item.anupan}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Route</Text>
-                        <Text>{item.route}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Schedule</Text>
-                        <Text>{item.schedule}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Days</Text>
-                        <Text>{item.duration}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>From Date</Text>
-                        <Text>{item.from_date}</Text>
-                      </View>
-                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{padding: 20}}>
+                    <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                      No Data Available
+                    </Text>
                   </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
                 </View>
-              </View>
-            )}
-          </View>
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Treatment History</Text>
-            {patientAssessmentArray?.length > 0 ? (
-              patientAssessmentArray?.map((item, index) => {
-                console.log('item : ', item);
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
-                        style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
-                        ]}>
-                        #{index + 1} Treatment
-                      </Text>
-                      <TouchableOpacity
-                        onPress={() => removeSymptom(index)}
-                        style={styles.deleteButton}>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          color="#FF3B30"
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Drug Code</Text>
-                        <Text>{item.drugcode}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Drug Name</Text>
-                        <Text>{item.drugname}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Brand Name</Text>
-                        <Text>{item.brandname}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Dose</Text>
-                        <Text>{item.dose}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Instruction</Text>
-                        <Text>{item.anupan}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Route</Text>
-                        <Text>{item.route}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Schedule</Text>
-                        <Text>{item.schedule}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Days</Text>
-                        <Text>{item.duration}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>From Date</Text>
-                        <Text>{item.from_date}</Text>
-                      </View>
-                    </View>
-                  </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
-                </View>
-              </View>
-            )}
-          </View>
-        </ScrollView>
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={() => savePatientSymptoms()}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
+              )}
+            </View>
 
-        {/* add symptoms Modal */}
-        <Modal
+            {/* Symptoms Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Treatment History</Text>
+              {patientAssessmentArray?.length > 0 ? (
+                patientAssessmentArray?.map((item, index) => {
+                  console.log('item : ', item);
+                  return (
+                    <View style={styles.sympDiv} key={index + 1}>
+                      <View
+                        style={[
+                          styles.modalContentHeader,
+                          {
+                            borderBottomWidth: 1,
+                            paddingBottom: 6,
+                            borderColor: '#e6e6e6',
+                          },
+                        ]}>
+                        <Text
+                          style={[
+                            styles.modalText,
+                            {marginBottom: 0, fontSize: 13},
+                          ]}>
+                          #{index + 1} Treatment
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => removeSymptom(index)}
+                          style={styles.deleteButton}>
+                          <FontAwesomeIcon
+                            icon={faTrashCan}
+                            color="#FF3B30"
+                            style={styles.icon}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.sympDivOuter} key={index + 1}>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Drug Code</Text>
+                          <Text>{item.drugcode}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Drug Name</Text>
+                          <Text>{item.drugname}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Brand Name</Text>
+                          <Text>{item.brandname}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Dose</Text>
+                          <Text>{item.dose}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Instruction</Text>
+                          <Text>{item.anupan}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Route</Text>
+                          <Text>{item.route}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Schedule</Text>
+                          <Text>{item.schedule}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Days</Text>
+                          <Text>{item.duration}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>From Date</Text>
+                          <Text>{item.from_date}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{padding: 20}}>
+                    <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                      No Data Available
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          </ScrollView>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={() => savePatientSymptoms()}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        <View
           visible={isModalVisible}
           onDismiss={toggleModal}
           contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
               <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
                 Add Diseases
@@ -436,7 +397,7 @@ const Treatment = () => {
                 anupan: selectedDiseases,
                 route: selectedTreatmentArray[0]?.route || '',
                 schedule: selectedTreatmentArray[0]?.schedule || '',
-                duration: selectedTreatmentArray[0]?.schedule || '',
+                duration: selectedTreatmentArray[0]?.duration || '',
                 from_date: '',
               }}
               validate={values => {
@@ -611,8 +572,8 @@ const Treatment = () => {
               }}
             </Formik>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -657,7 +618,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   filterinput: {
-    padding: 5,
+    padding: 8,
     paddingHorizontal: 16,
     borderColor: '#e6e6e6',
     borderWidth: 1.4,
@@ -787,5 +748,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 1,
     textAlign: 'center',
+  },
+  sympContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sympText: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    flex: 0.9,
+  },
+  editIcon: {
+    padding: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#05b508',
   },
 });
