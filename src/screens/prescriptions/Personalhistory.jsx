@@ -16,7 +16,11 @@ import React, {
   useState,
 } from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faArrowLeft, faPencilSquare} from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowLeft,
+  faPencil,
+  faPencilSquare,
+} from '@fortawesome/free-solid-svg-icons';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import UserContext from '../../functions/usercontext';
 import axios from 'axios';
@@ -201,71 +205,29 @@ const Personalhistory = () => {
             {patientSympyomsArrayEdit?.length > 0 ? (
               patientSympyomsArrayEdit?.map((item, index) => {
                 return (
-                  <View style={styles.sympDiv} key={index}>
-                    <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
-                        style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
-                        ]}>
-                        #{index + 1} Symptom
-                      </Text>
-                      <TouchableOpacity
-                        onPress={() => navigation.navigate('Editpersonalhistory', {data: item, userData, selectedPatient})}
-                        style={styles.deleteButton}>
-                        <FontAwesomeIcon
-                          icon={faPencilSquare}
-                          color="#05b508"
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Tea</Text>
-                        <Text>{item.Tea}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Coffee</Text>
-                        <Text>{item.Coffee}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Tobacco</Text>
-                        <Text>{item.Tobacco}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Smoking</Text>
-                        <Text>{item.Smoking}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Alcohol</Text>
-                        <Text>{item.Alcohol}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Drugs</Text>
-                        <Text>{item.Drugs}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Exercise</Text>
-                        <Text>{item.Exercise}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Soft Drink</Text>
-                        <Text>{item.Softdrink}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Salty Food</Text>
-                        <Text>{item.Saltyfood}</Text>
-                      </View>
-                    </View>
+                  <View
+                    style={[styles.sympDiv, styles.sympContainer]}
+                    key={index}>
+                    <Text style={styles.sympText}>
+                    {item.Tea} {item.Coffee} {item.Tobacco} {item.Smoking}{' '}
+                      {item.Alcohol} {item.Drugs} {item.Exercise}{' '}
+                      {item.Softdrink} {item.Saltyfood}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate('Editpersonalhistory', {
+                          data: item,
+                          userData,
+                          selectedPatient,
+                        })
+                      }
+                      style={styles.editIcon}>
+                      <FontAwesomeIcon
+                        icon={faPencil}
+                        color="#05b508"
+                        style={styles.icon}
+                      />
+                    </TouchableOpacity>
                   </View>
                 );
               })
@@ -468,5 +430,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 6,
+  },
+  sympContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sympText: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    flex: 0.9,
+  },
+  editIcon: {
+    padding: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#05b508',
   },
 });

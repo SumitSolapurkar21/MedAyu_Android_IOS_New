@@ -96,7 +96,11 @@ const Editpersonalhistory = ({route}) => {
 
   return (
     <>
-      <StatusBar style={styles.StatusBar} animated={false} backgroundColor="#ffffff" />
+      <StatusBar
+        style={styles.StatusBar}
+        animated={false}
+        backgroundColor="#ffffff"
+      />
       {/* Header */}
       <View style={styles.navbar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -106,41 +110,64 @@ const Editpersonalhistory = ({route}) => {
           <Text style={styles.navbarText}>Edit Personal History</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
-        <ScrollView style={{marginBottom: 100}} vertical showsVerticalScrollIndicator={false}>
-          {/* Current Personal History Details */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Current Personal History Details</Text>
-            <View style={styles.sympDiv}>
-              <View style={styles.sympDivOuter}>
-                {habits.map(habit => (
-                  <View style={styles.sympDivInner} key={habit.field}>
-                    <Text style={styles.label}>{habit.label}</Text>
-                    <Text>{formData[habit.field]}</Text>
-                  </View>
-                ))}
+
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 100}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Current Personal History Details */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>
+                Current Personal History Details
+              </Text>
+              <View style={styles.sympDiv}>
+                <View style={styles.sympDivOuter}>
+                  {habits.map(habit => (
+                    <View style={styles.sympDivInner} key={habit.field}>
+                      <Text style={styles.label}>{habit.label}</Text>
+                      <Text>{formData[habit.field]}</Text>
+                    </View>
+                  ))}
+                </View>
               </View>
             </View>
-          </View>
-          {/* Edit Button */}
-          <View style={styles.categoryDiv}>
-            <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={() => setIsModalVisible(true)}>
-              <Text style={styles.buttonText}>Edit</Text>
+            {/* Edit Button */}
+            <View style={styles.categoryDiv}>
+              <TouchableOpacity
+                style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+                onPress={() => setIsModalVisible(true)}>
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={updatePatientPersonalHistory}>
+              <Text style={styles.buttonText}>Update</Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.loginButton}>
-          <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={updatePatientPersonalHistory}>
-            <Text style={styles.buttonText}>Update</Text>
-          </TouchableOpacity>
         </View>
-        {/* Edit Modal */}
-        <Modal visible={isModalVisible} onDismiss={() => setIsModalVisible(false)} contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+      ) : (
+        <View
+          visible={isModalVisible}
+          onDismiss={() => setIsModalVisible(false)}
+          contentContainerStyle={styles.bottomModalContainer}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>Edit Personal History</Text>
-              <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton1}>
-                <FontAwesomeIcon icon={faXmark} color="#FF3B30" style={styles.icon} />
+              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
+                Edit Personal History
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(false)}
+                style={styles.closeButton1}>
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  color="#FF3B30"
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
             <ScrollView>
@@ -153,10 +180,12 @@ const Editpersonalhistory = ({route}) => {
                         key={level}
                         style={[
                           styles.segButton,
-                          formData[habit.field] === level && styles.selectedButton,
+                          formData[habit.field] === level &&
+                            styles.selectedButton,
                         ]}
-                        onPress={() => setFormData(prev => ({...prev, [habit.field]: level}))}
-                      >
+                        onPress={() =>
+                          setFormData(prev => ({...prev, [habit.field]: level}))
+                        }>
                         <Text style={styles.segText}>{level}</Text>
                       </TouchableOpacity>
                     ))}
@@ -177,8 +206,8 @@ const Editpersonalhistory = ({route}) => {
               <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
