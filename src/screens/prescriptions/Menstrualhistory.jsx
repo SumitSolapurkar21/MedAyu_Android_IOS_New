@@ -9,11 +9,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
   faCalendarDays,
+  faPencil,
   faPencilSquare,
   faPlus,
   faTrashCan,
@@ -41,7 +48,7 @@ const Menstrualhistory = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const [openTime, setOpenTime] = useState(false);
   const [patientSympyomsArrayEdit, setPatientSympyomsArrayEdit] = useState([]);
 
   // System back button handling
@@ -113,24 +120,24 @@ const Menstrualhistory = () => {
     useCallback(() => {
       const fetchmobileAssessment = async () => {
         try {
-        await axios
-          .post(FetchMobileOpdAssessmentForEditapi, {
-            hospital_id: userData?.hospital_id,
-            reception_id: userData?._id,
-            patient_id: selectedPatient?._id,
-            api_type: 'OPD-MENSTRUAL-HISTORY',
-            uhid: selectedPatient?.patientuniqueno,
-            mobilenumber: selectedPatient?.mobilenumber,
-            appoint_id: selectedPatient?.appoint_id,
-          })
-          .then(res => {
-            console.log('res : ', res.data);
-            setPatientSympyomsArrayEdit(res.data.opdmenstrualhistoryarray);
-          });
-      } catch (error) {
-        console.error(error);
-      }
-    };
+          await axios
+            .post(FetchMobileOpdAssessmentForEditapi, {
+              hospital_id: userData?.hospital_id,
+              reception_id: userData?._id,
+              patient_id: selectedPatient?._id,
+              api_type: 'OPD-MENSTRUAL-HISTORY',
+              uhid: selectedPatient?.patientuniqueno,
+              mobilenumber: selectedPatient?.mobilenumber,
+              appoint_id: selectedPatient?.appoint_id,
+            })
+            .then(res => {
+              console.log('res : ', res.data);
+              setPatientSympyomsArrayEdit(res.data.opdmenstrualhistoryarray);
+            });
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
       fetchmobileAssessment();
     }, []),
@@ -154,197 +161,166 @@ const Menstrualhistory = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 70}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Previous Menstrual Details</Text>
-            {patientSympyomsArrayEdit?.length > 0 ? (
-              patientSympyomsArrayEdit?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 70}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Symptoms Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>
+                Previous Menstrual Details
+              </Text>
+              {patientSympyomsArrayEdit?.length > 0 ? (
+                patientSympyomsArrayEdit?.map((item, index) => {
+                  return (
                     <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
-                        style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
-                        ]}>
-                        #{index + 1} Symptom
+                      style={[styles.sympDiv, styles.sympContainer]}
+                      key={index + 1}>
+                      <Text style={styles.sympText}>
+                        {item.menarche_age} {item.lmp} {item.periods}{' '}
+                        {item.durations} {item.qualityofbloodflow}{' '}
+                        {item.painduringcycle} {item.menopause} {item.from_date}{' '}
+                        / {item.opd_time}
                       </Text>
-                      <TouchableOpacity onPress={() => navigation.navigate('Editmenstrualhistory', {data: item, userData, selectedPatient})}>
+
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('Editmenstrualhistory', {
+                            data: item,
+                            userData,
+                            selectedPatient,
+                          })
+                        }
+                        style={styles.editIcon}>
                         <FontAwesomeIcon
-                          icon={faPencilSquare}
+                          icon={faPencil}
                           color="#05b508"
                           style={styles.icon}
                         />
                       </TouchableOpacity>
                     </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Menarche Age</Text>
-                        <Text>{item.menarche_age}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Lmp </Text>
-                        <Text>{item.lmp}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Periods </Text>
-                        <Text>{item.periods}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Durations </Text>
-                        <Text>{item.durations}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Quality of Blood Flow </Text>
-                        <Text>{item.qualityofbloodflow}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Pain during Cycle </Text>
-                        <Text>{item.painduringcycle}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Menopause </Text>
-                        <Text>{item.menopause}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Date / Time </Text>
-                        <Text>
-                          {item.from_date} / {item.opd_time}
-                        </Text>
-                      </View>
-                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{padding: 20}}>
+                    <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                      No Data Available
+                    </Text>
                   </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
                 </View>
-              </View>
-            )}
-          </View>
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Menstrual Details</Text>
-            {patientAssessmentArray?.length > 0 ? (
-              patientAssessmentArray?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
+              )}
+            </View>
+            {/* Symptoms Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Menstrual Details</Text>
+              {patientAssessmentArray?.length > 0 ? (
+                patientAssessmentArray?.map((item, index) => {
+                  return (
+                    <View style={styles.sympDiv} key={index + 1}>
+                      <View
                         style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
+                          styles.modalContentHeader,
+                          {
+                            borderBottomWidth: 1,
+                            paddingBottom: 6,
+                            borderColor: '#e6e6e6',
+                          },
                         ]}>
-                        #{index + 1} Symptom
-                      </Text>
-                      <TouchableOpacity onPress={() => removeSymptom(index)}>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          color="#FF3B30"
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Menarche Age</Text>
-                        <Text>{item.menarche_age}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Lmp </Text>
-                        <Text>{item.lmp}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Periods </Text>
-                        <Text>{item.periods}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Durations </Text>
-                        <Text>{item.durations}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Quality of Blood Flow </Text>
-                        <Text>{item.qualityofbloodflow}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Pain during Cycle </Text>
-                        <Text>{item.painduringcycle}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Menopause </Text>
-                        <Text>{item.menopause}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Date / Time </Text>
-                        <Text>
-                          {item.from_date} / {item.opd_time}
+                        <Text
+                          style={[
+                            styles.modalText,
+                            {marginBottom: 0, fontSize: 13},
+                          ]}>
+                          #{index + 1} Symptom
                         </Text>
+                        <TouchableOpacity onPress={() => removeSymptom(index)}>
+                          <FontAwesomeIcon
+                            icon={faTrashCan}
+                            color="#FF3B30"
+                            style={styles.icon}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.sympDivOuter} key={index + 1}>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Menarche Age</Text>
+                          <Text>{item.menarche_age}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Lmp </Text>
+                          <Text>{item.lmp}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Periods </Text>
+                          <Text>{item.periods}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Durations </Text>
+                          <Text>{item.durations}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>
+                            Quality of Blood Flow{' '}
+                          </Text>
+                          <Text>{item.qualityofbloodflow}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Pain during Cycle </Text>
+                          <Text>{item.painduringcycle}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Menopause </Text>
+                          <Text>{item.menopause}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Date / Time </Text>
+                          <Text>
+                            {item.from_date} / {item.opd_time}
+                          </Text>
+                        </View>
                       </View>
                     </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{padding: 20}}>
+                    <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                      No Data Available
+                    </Text>
                   </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
                 </View>
-              </View>
-            )}
+              )}
+            </View>
+          </ScrollView>
+          <View style={styles.addButton}>
+            <TouchableOpacity
+              style={[styles.addbuttonDiv]}
+              onPress={() => diseasesHandler()}>
+              <FontAwesomeIcon
+                icon={faPlus}
+                color={'white'}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.addButton}>
-          <TouchableOpacity
-            style={[styles.addbuttonDiv]}
-            onPress={() => diseasesHandler()}>
-            <FontAwesomeIcon
-              icon={faPlus}
-              color={'white'}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={() => savePatientSymptoms()}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={() => savePatientSymptoms()}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* add symptoms Modal */}
-        <Modal
+      ) : (
+        <View
           visible={isModalVisible}
           onDismiss={toggleModal}
           contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
               <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
                 Add Menstrual
@@ -584,6 +560,42 @@ const Menstrualhistory = () => {
                           />
                         </TouchableOpacity>
                       </View>
+                      <View>
+                        <Text style={styles.modalText}>Time</Text>
+                        <TouchableOpacity
+                          style={[
+                            styles.segButton,
+                            {flexDirection: 'row', gap: 20},
+                          ]}
+                          onPress={() => setOpenTime(true)}>
+                          <Text style={styles.segText}>
+                            {values.opd_time || 'Select Time'}
+                          </Text>
+                          <DatePicker
+                            modal
+                            mode="time"
+                            open={openTime}
+                            date={new Date()}
+                            onConfirm={selectedTime => {
+                              setOpenTime(false);
+                              const formattedTime =
+                                selectedTime.toLocaleTimeString('en-US', {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  hour12: true,
+                                });
+                              setFieldValue('opd_time', formattedTime);
+                            }}
+                            onCancel={() => {
+                              setOpenTime(false);
+                            }}
+                          />
+                          <FontAwesomeIcon
+                            icon={faCalendarDays}
+                            style={styles.icon}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
 
                     <TouchableOpacity
@@ -599,8 +611,8 @@ const Menstrualhistory = () => {
               }}
             </Formik>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -673,8 +685,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     padding: 16,
-    position: 'absolute',
-    bottom: 0.5,
+
     width: '100%',
   },
 
@@ -789,5 +800,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 1,
     textAlign: 'center',
+  },
+  sympContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sympText: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    flex: 0.9,
+  },
+  editIcon: {
+    padding: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#05b508',
   },
 });

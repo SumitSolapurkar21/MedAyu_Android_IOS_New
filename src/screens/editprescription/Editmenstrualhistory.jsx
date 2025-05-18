@@ -11,7 +11,11 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faArrowLeft, faXmark, faCalendarDays} from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowLeft,
+  faXmark,
+  faCalendarDays,
+} from '@fortawesome/free-solid-svg-icons';
 import {useNavigation} from '@react-navigation/native';
 import {Modal} from 'react-native-paper';
 import axios from 'axios';
@@ -25,6 +29,7 @@ const Editmenstrualhistory = ({route}) => {
   // Modal state
   const [isModalVisible, setIsModalVisible] = useState(true);
   const [open, setOpen] = useState(false);
+  const [openTime, setOpenTime] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -85,7 +90,11 @@ const Editmenstrualhistory = ({route}) => {
 
   return (
     <>
-      <StatusBar style={styles.StatusBar} animated={false} backgroundColor="#ffffff" />
+      <StatusBar
+        style={styles.StatusBar}
+        animated={false}
+        backgroundColor="#ffffff"
+      />
       {/* Header */}
       <View style={styles.navbar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -95,67 +104,92 @@ const Editmenstrualhistory = ({route}) => {
           <Text style={styles.navbarText}>Edit Menstrual History</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
-        <ScrollView style={{marginBottom: 100}} vertical showsVerticalScrollIndicator={false}>
-          {/* Current Menstrual History Details */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Current Menstrual History Details</Text>
-            <View style={styles.sympDiv}>
-              <View style={styles.sympDivOuter}>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Menarche Age</Text>
-                  <Text>{formData.menarche_age}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Lmp</Text>
-                  <Text>{formData.lmp}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Periods</Text>
-                  <Text>{formData.periods}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Durations</Text>
-                  <Text>{formData.durations}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Quality of Blood Flow</Text>
-                  <Text>{formData.qualityofbloodflow}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Pain during Cycle</Text>
-                  <Text>{formData.painduringcycle}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Menopause</Text>
-                  <Text>{formData.menopause}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Date / Time</Text>
-                  <Text>{formData.from_date} / {formData.opd_time}</Text>
+
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 100}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Current Menstrual History Details */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>
+                Current Menstrual History Details
+              </Text>
+              <View style={styles.sympDiv}>
+                <View style={styles.sympDivOuter}>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Menarche Age</Text>
+                    <Text>{formData.menarche_age}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Lmp</Text>
+                    <Text>{formData.lmp}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Periods</Text>
+                    <Text>{formData.periods}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Durations</Text>
+                    <Text>{formData.durations}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Quality of Blood Flow</Text>
+                    <Text>{formData.qualityofbloodflow}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Pain during Cycle</Text>
+                    <Text>{formData.painduringcycle}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Menopause</Text>
+                    <Text>{formData.menopause}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Date / Time</Text>
+                    <Text>
+                      {formData.from_date} / {formData.opd_time}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-          {/* Edit Button */}
-          <View style={styles.categoryDiv}>
-            <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={() => setIsModalVisible(true)}>
-              <Text style={styles.buttonText}>Edit</Text>
+            {/* Edit Button */}
+            <View style={styles.categoryDiv}>
+              <TouchableOpacity
+                style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+                onPress={() => setIsModalVisible(true)}>
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={updatePatientMenstrualHistory}>
+              <Text style={styles.buttonText}>Update</Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.loginButton}>
-          <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={updatePatientMenstrualHistory}>
-            <Text style={styles.buttonText}>Update</Text>
-          </TouchableOpacity>
         </View>
-        {/* Edit Modal */}
-        <Modal visible={isModalVisible} onDismiss={() => setIsModalVisible(false)} contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+      ) : (
+        <View
+          visible={isModalVisible}
+          onDismiss={() => setIsModalVisible(false)}
+          contentContainerStyle={styles.bottomModalContainer}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>Edit Menstrual History</Text>
-              <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton1}>
-                <FontAwesomeIcon icon={faXmark} color="#FF3B30" style={styles.icon} />
+              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
+                Edit Menstrual History
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(false)}
+                style={styles.closeButton1}>
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  color="#FF3B30"
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
             <ScrollView>
@@ -166,7 +200,9 @@ const Editmenstrualhistory = ({route}) => {
                     style={styles.filterinput}
                     placeholder="Menarche Age"
                     value={formData.menarche_age}
-                    onChangeText={text => setFormData(prev => ({...prev, menarche_age: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, menarche_age: text}))
+                    }
                   />
                 </View>
                 <View>
@@ -175,20 +211,33 @@ const Editmenstrualhistory = ({route}) => {
                     style={styles.filterinput}
                     placeholder="Lmp"
                     value={formData.lmp}
-                    onChangeText={text => setFormData(prev => ({...prev, lmp: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, lmp: text}))
+                    }
                   />
                 </View>
                 <View>
                   <Text style={styles.modalText}>Periods</Text>
                   <View style={{flexDirection: 'row', gap: 12}}>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.periods === 'Regular' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, periods: 'Regular'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.periods === 'Regular' && styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, periods: 'Regular'}))
+                      }>
                       <Text style={styles.segText}>Regular</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.periods === 'Irregular' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, periods: 'Irregular'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.periods === 'Irregular' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, periods: 'Irregular'}))
+                      }>
                       <Text style={styles.segText}>Irregular</Text>
                     </TouchableOpacity>
                   </View>
@@ -199,25 +248,54 @@ const Editmenstrualhistory = ({route}) => {
                     style={styles.filterinput}
                     placeholder="Durations"
                     value={formData.durations}
-                    onChangeText={text => setFormData(prev => ({...prev, durations: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, durations: text}))
+                    }
                   />
                 </View>
                 <View>
                   <Text style={styles.modalText}>Quality of Blood Flow</Text>
                   <View style={{flexDirection: 'row', gap: 12}}>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.qualityofbloodflow === 'Scanty' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, qualityofbloodflow: 'Scanty'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.qualityofbloodflow === 'Scanty' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({
+                          ...prev,
+                          qualityofbloodflow: 'Scanty',
+                        }))
+                      }>
                       <Text style={styles.segText}>Scanty</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.qualityofbloodflow === 'Mod' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, qualityofbloodflow: 'Mod'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.qualityofbloodflow === 'Mod' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({
+                          ...prev,
+                          qualityofbloodflow: 'Mod',
+                        }))
+                      }>
                       <Text style={styles.segText}>Mod</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.qualityofbloodflow === 'Heavy' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, qualityofbloodflow: 'Heavy'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.qualityofbloodflow === 'Heavy' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({
+                          ...prev,
+                          qualityofbloodflow: 'Heavy',
+                        }))
+                      }>
                       <Text style={styles.segText}>Heavy</Text>
                     </TouchableOpacity>
                   </View>
@@ -226,13 +304,25 @@ const Editmenstrualhistory = ({route}) => {
                   <Text style={styles.modalText}>Pain during Cycle</Text>
                   <View style={{flexDirection: 'row', gap: 12}}>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.painduringcycle === 'yes' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, painduringcycle: 'yes'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.painduringcycle === 'yes' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, painduringcycle: 'yes'}))
+                      }>
                       <Text style={styles.segText}>Yes</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.painduringcycle === 'no' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, painduringcycle: 'no'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.painduringcycle === 'no' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, painduringcycle: 'no'}))
+                      }>
                       <Text style={styles.segText}>No</Text>
                     </TouchableOpacity>
                   </View>
@@ -243,13 +333,19 @@ const Editmenstrualhistory = ({route}) => {
                     style={styles.filterinput}
                     placeholder="Menopause"
                     value={formData.menopause}
-                    onChangeText={text => setFormData(prev => ({...prev, menopause: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, menopause: text}))
+                    }
                   />
                 </View>
                 <View>
                   <Text style={styles.modalText}>From Date</Text>
-                  <TouchableOpacity style={[styles.segButton, {flexDirection: 'row', gap: 20}]} onPress={() => setOpen(true)}>
-                    <Text style={styles.segText}>{formData.from_date || 'Select Date'}</Text>
+                  <TouchableOpacity
+                    style={[styles.segButton, {flexDirection: 'row', gap: 20}]}
+                    onPress={() => setOpen(true)}>
+                    <Text style={styles.segText}>
+                      {formData.from_date || 'Select Date'}
+                    </Text>
                     <DatePicker
                       modal
                       mode="date"
@@ -257,24 +353,58 @@ const Editmenstrualhistory = ({route}) => {
                       date={new Date()}
                       onConfirm={selectedDate => {
                         setOpen(false);
-                        const formattedDate = selectedDate.toISOString().split('T')[0];
-                        setFormData(prev => ({...prev, from_date: formattedDate}));
+                        const formattedDate = selectedDate
+                          .toISOString()
+                          .split('T')[0];
+                        setFormData(prev => ({
+                          ...prev,
+                          from_date: formattedDate,
+                        }));
                       }}
                       onCancel={() => {
                         setOpen(false);
                       }}
                     />
-                    <FontAwesomeIcon icon={faCalendarDays} style={styles.icon} />
+                    <FontAwesomeIcon
+                      icon={faCalendarDays}
+                      style={styles.icon}
+                    />
                   </TouchableOpacity>
                 </View>
                 <View>
                   <Text style={styles.modalText}>OPD Time</Text>
-                  <TextInput
-                    style={styles.filterinput}
-                    placeholder="OPD Time"
-                    value={formData.opd_time}
-                    onChangeText={text => setFormData(prev => ({...prev, opd_time: text}))}
-                  />
+                  <TouchableOpacity
+                    style={[styles.segButton, {flexDirection: 'row', gap: 20}]}
+                    onPress={() => setOpenTime(true)}>
+                    <Text style={styles.segText}>
+                      {formData.opd_time || 'Select Time'}
+                    </Text>
+                    <DatePicker
+                      modal
+                      mode="time"
+                      open={openTime}
+                      date={new Date()}
+                      onConfirm={selectedTime => {
+                        setOpenTime(false);
+                        const formattedTime = selectedTime.toLocaleTimeString('en-US', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true
+                        });
+                        setFormData(prev => ({
+                          ...prev,
+                          opd_time: formattedTime,
+                        }));
+                      }}
+                      onCancel={() => {
+                        setOpenTime(false);
+                      }}
+                    />
+                    <FontAwesomeIcon
+                      icon={faCalendarDays}
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
                 </View>
               </View>
             </ScrollView>
@@ -291,8 +421,8 @@ const Editmenstrualhistory = ({route}) => {
               <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
