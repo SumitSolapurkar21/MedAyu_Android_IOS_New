@@ -29,7 +29,7 @@ const Editmenstrualhistory = ({route}) => {
   // Modal state
   const [isModalVisible, setIsModalVisible] = useState(true);
   const [open, setOpen] = useState(false);
-  const [openTime, setOpenTime] = useState(false);
+  const [timeOpen, setTimeOpen] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -375,29 +375,26 @@ const Editmenstrualhistory = ({route}) => {
                   <Text style={styles.modalText}>OPD Time</Text>
                   <TouchableOpacity
                     style={[styles.segButton, {flexDirection: 'row', gap: 20}]}
-                    onPress={() => setOpenTime(true)}>
+                    onPress={() => setTimeOpen(true)}>
                     <Text style={styles.segText}>
                       {formData.opd_time || 'Select Time'}
                     </Text>
                     <DatePicker
                       modal
                       mode="time"
-                      open={openTime}
+                      open={timeOpen}
                       date={new Date()}
                       onConfirm={selectedTime => {
-                        setOpenTime(false);
-                        const formattedTime = selectedTime.toLocaleTimeString('en-US', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: true
-                        });
+                        setTimeOpen(false);
+                        const hours = selectedTime.getHours().toString().padStart(2, '0');
+                        const minutes = selectedTime.getMinutes().toString().padStart(2, '0');
                         setFormData(prev => ({
                           ...prev,
-                          opd_time: formattedTime,
+                          opd_time: `${hours}:${minutes}`,
                         }));
                       }}
                       onCancel={() => {
-                        setOpenTime(false);
+                        setTimeOpen(false);
                       }}
                     />
                     <FontAwesomeIcon

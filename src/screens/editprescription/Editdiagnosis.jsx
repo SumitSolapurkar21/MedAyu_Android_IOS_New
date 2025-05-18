@@ -22,10 +22,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {Modal} from 'react-native-paper';
 import axios from 'axios';
-import {
-  addopdassessment,
-  searchdiagnosisdata,
-} from '../../api/api';
+import {addopdassessment, searchdiagnosisdata} from '../../api/api';
 import DatePicker from 'react-native-date-picker';
 
 const Editdiagnosis = ({route}) => {
@@ -102,7 +99,9 @@ const Editdiagnosis = ({route}) => {
   // Update form data
   const updateFormData = () => {
     const updatedData = {
-      icdcode: diagnosisArray.find(item => item.illnessname === selectedDiseases)?.icdcode || formData.icdcode,
+      icdcode:
+        diagnosisArray.find(item => item.illnessname === selectedDiseases)
+          ?.icdcode || formData.icdcode,
       illnessname: selectedDiseases || formData.illnessname,
       diagnosis_type: diagnosisType || formData.diagnosis_type,
       adddate: adddate || formData.adddate,
@@ -161,110 +160,111 @@ const Editdiagnosis = ({route}) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 70}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Segmented Buttons */}
-          <View style={styles.segDiv}>
-            <TouchableOpacity
-              style={[
-                styles.segButton,
-                value === 'Medical' && styles.selectedButton,
-              ]}
-              onPress={() => setValue('Medical')}>
-              <Text style={styles.segText}>Medical</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.segButton,
-                value === 'Ayurvedic' && styles.selectedButton,
-              ]}
-              onPress={() => setValue('Ayurvedic')}>
-              <Text style={styles.segText}>Ayurvedic</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Category Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Diagnosis</Text>
-            <View style={styles.filterDiv}>
-              <TextInput
-                style={[styles.filterinput, {padding: 4}]}
-                placeholder="Search Diagnosis"
-                value={diagnosisSearchInput}
-                onChangeText={text => setDiagnosisSearchInput(text)}
-              />
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 70}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Segmented Buttons */}
+            <View style={styles.segDiv}>
+              <TouchableOpacity
+                style={[
+                  styles.segButton,
+                  value === 'Medical' && styles.selectedButton,
+                ]}
+                onPress={() => setValue('Medical')}>
+                <Text style={styles.segText}>Medical</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.segButton,
+                  value === 'Ayurvedic' && styles.selectedButton,
+                ]}
+                onPress={() => setValue('Ayurvedic')}>
+                <Text style={styles.segText}>Ayurvedic</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.catDiv}>
-              {diagnosisArray?.length > 0 &&
-                diagnosisArray.map((item, index) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSelectedDiseases(item.illnessname);
-                      setDiagnosisType(item.diagnosis_type || '');
-                      setAdddate(item.adddate || '');
-                      setAddtime(item.addtime || '');
-                      toggleModal();
-                    }}
-                    key={index + 1}
-                    style={[
-                      styles.segButton,
-                      selectedDiseases === item.illnessname &&
-                        styles.selectedButton,
-                    ]}>
-                    <Text style={styles.segText}>{item.illnessname}</Text>
-                  </TouchableOpacity>
-                ))}
-            </View>
-          </View>
 
-          {/* Current Diagnosis Details */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Current Diagnosis Details</Text>
-            <View style={styles.sympDiv}>
-              <View style={styles.sympDivOuter}>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>ICD Code</Text>
-                  <Text>{formData.icdcode}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Diagnosis</Text>
-                  <Text>{formData.illnessname}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Diagnosis Type</Text>
-                  <Text>{formData.diagnosis_type}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Date / Time</Text>
-                  <Text>
-                    {formData.adddate} / {formData.addtime}
-                  </Text>
+            {/* Category Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Diagnosis</Text>
+              <View style={styles.filterDiv}>
+                <TextInput
+                  style={[styles.filterinput]}
+                  placeholder="Search Diagnosis"
+                  value={diagnosisSearchInput}
+                  onChangeText={text => setDiagnosisSearchInput(text)}
+                />
+              </View>
+              <View style={styles.catDiv}>
+                {diagnosisArray?.length > 0 &&
+                  diagnosisArray.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSelectedDiseases(item.illnessname);
+                        setDiagnosisType(item.diagnosis_type || '');
+                        setAdddate(item.adddate || '');
+                        setAddtime(item.addtime || '');
+                        toggleModal();
+                      }}
+                      key={index + 1}
+                      style={[
+                        styles.segButton,
+                        selectedDiseases === item.illnessname &&
+                          styles.selectedButton,
+                      ]}>
+                      <Text style={styles.segText}>{item.illnessname}</Text>
+                    </TouchableOpacity>
+                  ))}
+              </View>
+            </View>
+
+            {/* Current Diagnosis Details */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Current Diagnosis Details</Text>
+              <View style={styles.sympDiv}>
+                <View style={styles.sympDivOuter}>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>ICD Code</Text>
+                    <Text>{formData.icdcode}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Diagnosis</Text>
+                    <Text>{formData.illnessname}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Diagnosis Type</Text>
+                    <Text>{formData.diagnosis_type}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Date / Time</Text>
+                    <Text>
+                      {formData.adddate} / {formData.addtime}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
+          </ScrollView>
+
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={() => {
+                updateFormData();
+                updatePatientDiagnosis();
+              }}>
+              <Text style={styles.buttonText}>Update</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={() => {
-              updateFormData();
-              updatePatientDiagnosis();
-            }}>
-            <Text style={styles.buttonText}>Update</Text>
-          </TouchableOpacity>
         </View>
-
-        {/* Add Diagnosis Modal */}
-        <Modal
+      ) : (
+        <View
           visible={isModalVisible}
           onDismiss={toggleModal}
           contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
               <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
                 Edit Diagnosis
@@ -287,9 +287,7 @@ const Editdiagnosis = ({route}) => {
                     styles.segButton,
                     selectedDiseases && styles.selectedButton,
                   ]}>
-                  <Text style={styles.segText}>
-                    {selectedDiseases || '-'}
-                  </Text>
+                  <Text style={styles.segText}>{selectedDiseases || '-'}</Text>
                 </TouchableOpacity>
               </View>
               <View style={{marginBottom: 10}}>
@@ -318,7 +316,9 @@ const Editdiagnosis = ({route}) => {
                 <View style={{flexDirection: 'row', gap: 8}}>
                   <View style={[styles.segButton]}>
                     <Text style={styles.segText}>
-                      {diagnosisArray.find(item => item.illnessname === selectedDiseases)?.icdcode || '-'}
+                      {diagnosisArray.find(
+                        item => item.illnessname === selectedDiseases,
+                      )?.icdcode || '-'}
                     </Text>
                   </View>
                 </View>
@@ -326,14 +326,9 @@ const Editdiagnosis = ({route}) => {
               <View>
                 <Text style={styles.modalText}>Date</Text>
                 <TouchableOpacity
-                  style={[
-                    styles.segButton,
-                    {flexDirection: 'row', gap: 20},
-                  ]}
+                  style={[styles.segButton, {flexDirection: 'row', gap: 20}]}
                   onPress={() => setOpen(true)}>
-                  <Text style={styles.segText}>
-                    {adddate || 'Select Date'}
-                  </Text>
+                  <Text style={styles.segText}>{adddate || 'Select Date'}</Text>
                   <DatePicker
                     modal
                     mode="date"
@@ -341,30 +336,24 @@ const Editdiagnosis = ({route}) => {
                     date={new Date()}
                     onConfirm={selectedDate => {
                       setOpen(false);
-                      const formattedDate = selectedDate.toISOString().split('T')[0];
+                      const formattedDate = selectedDate
+                        .toISOString()
+                        .split('T')[0];
                       setAdddate(formattedDate);
                     }}
                     onCancel={() => {
                       setOpen(false);
                     }}
                   />
-                  <FontAwesomeIcon
-                    icon={faCalendarDays}
-                    style={styles.icon}
-                  />
+                  <FontAwesomeIcon icon={faCalendarDays} style={styles.icon} />
                 </TouchableOpacity>
               </View>
               <View>
                 <Text style={styles.modalText}>Time</Text>
                 <TouchableOpacity
-                  style={[
-                    styles.segButton,
-                    {flexDirection: 'row', gap: 20},
-                  ]}
+                  style={[styles.segButton, {flexDirection: 'row', gap: 20}]}
                   onPress={() => setTimeOpen(true)}>
-                  <Text style={styles.segText}>
-                    {addtime || 'Select Time'}
-                  </Text>
+                  <Text style={styles.segText}>{addtime || 'Select Time'}</Text>
                   <DatePicker
                     modal
                     mode="time"
@@ -372,18 +361,21 @@ const Editdiagnosis = ({route}) => {
                     date={new Date()}
                     onConfirm={selectedTime => {
                       setTimeOpen(false);
-                      const hours = selectedTime.getHours().toString().padStart(2, '0');
-                      const minutes = selectedTime.getMinutes().toString().padStart(2, '0');
+                      const hours = selectedTime
+                        .getHours()
+                        .toString()
+                        .padStart(2, '0');
+                      const minutes = selectedTime
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, '0');
                       setAddtime(`${hours}:${minutes}`);
                     }}
                     onCancel={() => {
                       setTimeOpen(false);
                     }}
                   />
-                  <FontAwesomeIcon
-                    icon={faCalendarDays}
-                    style={styles.icon}
-                  />
+                  <FontAwesomeIcon icon={faCalendarDays} style={styles.icon} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -394,11 +386,11 @@ const Editdiagnosis = ({route}) => {
                 toggleModal();
               }}
               style={[styles.closeButton1, {backgroundColor: '#5cd65c'}]}>
-              <Text style={styles.buttonText}>Update</Text>
+              <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -442,7 +434,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   filterinput: {
-    padding: 0,
+    padding: 8,
     paddingHorizontal: 16,
     borderColor: '#e6e6e6',
     borderWidth: 1.4,
@@ -555,5 +547,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0.5,
     width: '100%',
+  },
+  closeButton: {
+    padding: 10,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: 'red',
   },
 });
