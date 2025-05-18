@@ -9,11 +9,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
   faCalendarDays,
+  faPencil,
   faPencilSquare,
   faTrashCan,
   faXmark,
@@ -196,24 +203,24 @@ const Medicinehistory = () => {
     useCallback(() => {
       const fetchmobileAssessment = async () => {
         try {
-        await axios
-          .post(FetchMobileOpdAssessmentForEditapi, {
-            hospital_id: userData?.hospital_id,
-            reception_id: userData?._id,
-            patient_id: selectedPatient?._id,
-            api_type: 'OPD-MEDICINE-HISTORY',
-            uhid: selectedPatient?.patientuniqueno,
-            mobilenumber: selectedPatient?.mobilenumber,
-            appoint_id: selectedPatient?.appoint_id,
-          })
-          .then(res => {
-            console.log('res : ', res.data);
-            setPatientSympyomsArrayEdit(res.data.opdmedicinehistoryarray);
-          });
-      } catch (error) {
-        console.error(error);
-      }
-    };
+          await axios
+            .post(FetchMobileOpdAssessmentForEditapi, {
+              hospital_id: userData?.hospital_id,
+              reception_id: userData?._id,
+              patient_id: selectedPatient?._id,
+              api_type: 'OPD-MEDICINE-HISTORY',
+              uhid: selectedPatient?.patientuniqueno,
+              mobilenumber: selectedPatient?.mobilenumber,
+              appoint_id: selectedPatient?.appoint_id,
+            })
+            .then(res => {
+              console.log('res : ', res.data);
+              setPatientSympyomsArrayEdit(res.data.opdmedicinehistoryarray);
+            });
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
       fetchmobileAssessment();
     }, []),
@@ -237,44 +244,86 @@ const Medicinehistory = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 70}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Category Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Medicine</Text>
-            <View style={styles.filterDiv}>
-              <TextInput
-                style={[styles.filterinput, {padding: 4}]}
-                placeholder="Search Diseases"
-                value={diseaseSearchInput}
-                onChangeText={text => setDiseaseSearchInput(text)}
-              />
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 70}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Category Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Medicine</Text>
+              <View style={styles.filterDiv}>
+                <TextInput
+                  style={[styles.filterinput, {padding: 4}]}
+                  placeholder="Search Diseases"
+                  value={diseaseSearchInput}
+                  onChangeText={text => setDiseaseSearchInput(text)}
+                />
+              </View>
+              <View style={styles.catDiv}>
+                {medicineArray?.length > 0 &&
+                  medicineArray.map((item, index) => (
+                    <TouchableOpacity
+                      onPress={() => diseasesHandler(item.drugname)}
+                      key={index + 1}
+                      style={[
+                        styles.segButton,
+                        selectedDiseases === item.drugname &&
+                          styles.selectedButton,
+                      ]}>
+                      <Text style={styles.segText}>{item.drugname}</Text>
+                    </TouchableOpacity>
+                  ))}
+              </View>
             </View>
-            <View style={styles.catDiv}>
-              {medicineArray?.length > 0 &&
-                medicineArray.map((item, index) => (
-                  <TouchableOpacity
-                    onPress={() => diseasesHandler(item.drugname)}
-                    key={index + 1}
-                    style={[
-                      styles.segButton,
-                      selectedDiseases === item.drugname &&
-                        styles.selectedButton,
-                    ]}>
-                    <Text style={styles.segText}>{item.drugname}</Text>
-                  </TouchableOpacity>
-                ))}
+            {/* Symptoms Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Previous Medicine History</Text>
+              {patientSympyomsArrayEdit?.length > 0 ? (
+                patientSympyomsArrayEdit?.map((item, index) => {
+                  return (
+                    <View
+                      style={[styles.sympDiv, styles.sympContainer]}
+                      key={index + 1}>
+                      <Text style={styles.sympText}>
+                        {item.drugname} {item.dose} {item.route}{' '}
+                        {item.from_date} {item.years} {item.months} {item.days}
+                      </Text>
+                      <TouchableOpacity
+                        style={styles.editIcon}
+                        onPress={() =>
+                          navigation.navigate('Editmedicinehistory', {
+                            data: item,
+                            userData,
+                            selectedPatient,
+                          })
+                        }>
+                        <FontAwesomeIcon
+                          icon={faPencil}
+                          color="#05b508"
+                          style={styles.icon}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{padding: 20}}>
+                    <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                      No Data Available
+                    </Text>
+                  </View>
+                </View>
+              )}
             </View>
-          </View>
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Previous Medicine History</Text>
-            {patientSympyomsArrayEdit?.length > 0 ? (
-              patientSympyomsArrayEdit?.map((item, index) => {
-                return (
+            {/* Symptoms Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Medicine History</Text>
+              {patientAssessmentArray?.length > 0 ? (
+                patientAssessmentArray?.map((item, index) => {
+                  return (
                     <View style={styles.sympDiv} key={index + 1}>
                       <View
                         style={[
@@ -293,27 +342,27 @@ const Medicinehistory = () => {
                           #{index + 1} Symptom
                         </Text>
                         <TouchableOpacity
-                          style={styles.deleteButton}
-                          onPress={() => navigation.navigate('Editmedicinehistory', {data: item, userData, selectedPatient})}>
-                          <FontAwesomeIcon 
-                            icon={faPencilSquare}
-                            color="#05b508"
+                          onPress={() => removeSymptom(index)}
+                          style={styles.deleteButton}>
+                          <FontAwesomeIcon
+                            icon={faTrashCan}
+                            color="#FF3B30"
                             style={styles.icon}
                           />
                         </TouchableOpacity>
                       </View>
                       <View style={styles.sympDivOuter} key={index + 1}>
                         <View style={styles.sympDivInner}>
-                          <Text style={styles.label}>Drug Name</Text>
+                          <Text style={styles.label}>Grug Name</Text>
                           <Text>{item.drugname}</Text>
                         </View>
                         <View style={styles.sympDivInner}>
                           <Text style={styles.label}>Dose</Text>
-                          <Text>{item.dose}</Text>
+                          <Text>{item.drugname}</Text>
                         </View>
                         <View style={styles.sympDivInner}>
                           <Text style={styles.label}>Route</Text>
-                          <Text>{item.route}</Text>
+                          <Text>{item.drugname}</Text>
                         </View>
                         <View style={styles.sympDivInner}>
                           <Text style={styles.label}>From Date</Text>
@@ -333,109 +382,33 @@ const Medicinehistory = () => {
                         </View>
                       </View>
                     </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
-                </View>
-              </View>
-            )}
-          </View>
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Medicine History</Text>
-            {patientAssessmentArray?.length > 0 ? (
-              patientAssessmentArray?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
-                        style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
-                        ]}>
-                        #{index + 1} Symptom
-                      </Text>
-                      <TouchableOpacity
-                        onPress={() => removeSymptom(index)}
-                        style={styles.deleteButton}>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          color="#FF3B30"
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Grug Name</Text>
-                        <Text>{item.drugname}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Dose</Text>
-                        <Text>{item.drugname}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Route</Text>
-                        <Text>{item.drugname}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>From Date</Text>
-                        <Text>{item.from_date}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Years</Text>
-                        <Text>{item.years}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Months</Text>
-                        <Text>{item.months}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Days</Text>
-                        <Text>{item.days}</Text>
-                      </View>
-                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{padding: 20}}>
+                    <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                      No Data Available
+                    </Text>
                   </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
                 </View>
-              </View>
-            )}
+              )}
+            </View>
+          </ScrollView>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={() => savePatientSymptoms()}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={() => savePatientSymptoms()}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
         </View>
-
-        {/* add symptoms Modal */}
-        <Modal
+      ) : (
+        <View
           visible={isModalVisible}
           onDismiss={toggleModal}
           contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
               <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
                 Add Medicine
@@ -674,8 +647,8 @@ const Medicinehistory = () => {
               }}
             </Formik>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -703,6 +676,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f7f7fc',
+  },
+  sympContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   categoryDiv: {
     padding: 10,
@@ -849,5 +827,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 1,
     textAlign: 'center',
+  },
+  editIcon: {
+    padding: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#05b508',
   },
 });

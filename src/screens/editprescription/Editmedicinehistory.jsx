@@ -156,7 +156,11 @@ const Editmedicinehistory = ({route}) => {
 
   return (
     <>
-      <StatusBar style={styles.StatusBar} animated={false} backgroundColor="#ffffff" />
+      <StatusBar
+        style={styles.StatusBar}
+        animated={false}
+        backgroundColor="#ffffff"
+      />
       {/* Header */}
       <View style={styles.navbar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -166,70 +170,93 @@ const Editmedicinehistory = ({route}) => {
           <Text style={styles.navbarText}>Edit Medicine History</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
-        <ScrollView style={{marginBottom: 100}} vertical showsVerticalScrollIndicator={false}>
-          {/* Current Medicine History Details */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Current Medicine History Details</Text>
-            <View style={styles.sympDiv}>
-              <View style={styles.sympDivOuter}>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Drug Name</Text>
-                  <Text>{formData.drugname}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Dose</Text>
-                  <Text>{formData.dose}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Route</Text>
-                  <Text>{formData.route}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Schedule</Text>
-                  <Text>{formData.schedule}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>From Date</Text>
-                  <Text>{formData.from_date}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Years</Text>
-                  <Text>{formData.years}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Months</Text>
-                  <Text>{formData.months}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Days</Text>
-                  <Text>{formData.days}</Text>
+
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 100}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Current Medicine History Details */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>
+                Current Medicine History Details
+              </Text>
+              <View style={styles.sympDiv}>
+                <View style={styles.sympDivOuter}>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Drug Name</Text>
+                    <Text>{formData.drugname}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Dose</Text>
+                    <Text>{formData.dose}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Route</Text>
+                    <Text>{formData.route}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Schedule</Text>
+                    <Text>{formData.schedule}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>From Date</Text>
+                    <Text>{formData.from_date}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Years</Text>
+                    <Text>{formData.years}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Months</Text>
+                    <Text>{formData.months}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Days</Text>
+                    <Text>{formData.days}</Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-          {/* Edit Button */}
-          <View style={styles.categoryDiv}>
-            <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={() => setIsModalVisible(true)}>
-              <Text style={styles.buttonText}>Edit</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-        <View style={styles.loginButton}>
-          <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={updatePatientMedicineHistory}>
-            <Text style={styles.buttonText}>Update</Text>
-          </TouchableOpacity>
-        </View>
-        {/* Edit Modal */}
-        <Modal visible={isModalVisible} onDismiss={() => setIsModalVisible(false)} contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>Edit Medicine History</Text>
-              <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton1}>
-                <FontAwesomeIcon icon={faXmark} color="#FF3B30" style={styles.icon} />
+            {/* Edit Button */}
+            <View style={styles.categoryDiv}>
+              <TouchableOpacity
+                style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+                onPress={() => setIsModalVisible(true)}>
+                <Text style={styles.buttonText}>Edit</Text>
               </TouchableOpacity>
             </View>
-            <View style={{flex: 1}}>
+          </ScrollView>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={updatePatientMedicineHistory}>
+              <Text style={styles.buttonText}>Update</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        <View
+          visible={isModalVisible}
+          onDismiss={() => setIsModalVisible(false)}
+          contentContainerStyle={styles.bottomModalContainer}>
+          <View style={{padding: 20}}>
+            <View style={styles.modalContentHeader}>
+              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
+                Edit Medicine History
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(false)}
+                style={styles.closeButton1}>
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  color="#FF3B30"
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            </View>
+            <View>
               <Text style={styles.modalText}>Drug Name</Text>
               <TextInput
                 style={styles.filterinput}
@@ -237,7 +264,10 @@ const Editmedicinehistory = ({route}) => {
                 value={medicineSearchInput}
                 onChangeText={text => setMedicineSearchInput(text)}
               />
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 10}}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{marginBottom: 10}}>
                 <View style={styles.catDiv}>
                   {medicineArray?.length > 0 &&
                     medicineArray.map((item, index) => (
@@ -246,7 +276,8 @@ const Editmedicinehistory = ({route}) => {
                         key={index}
                         style={[
                           styles.segButton,
-                          selectedMedicine === item.drugname && styles.selectedButton,
+                          selectedMedicine === item.drugname &&
+                            styles.selectedButton,
                         ]}>
                         <Text style={styles.segText}>{item.drugname}</Text>
                       </TouchableOpacity>
@@ -284,8 +315,12 @@ const Editmedicinehistory = ({route}) => {
               </View>
               <View>
                 <Text style={styles.modalText}>From Date</Text>
-                <TouchableOpacity style={[styles.segButton, {flexDirection: 'row', gap: 20}]} onPress={() => setOpen(true)}>
-                  <Text style={styles.segText}>{fromDate || 'Select Date'}</Text>
+                <TouchableOpacity
+                  style={[styles.segButton, {flexDirection: 'row', gap: 20}]}
+                  onPress={() => setOpen(true)}>
+                  <Text style={styles.segText}>
+                    {fromDate || 'Select Date'}
+                  </Text>
                   <DatePicker
                     modal
                     mode="date"
@@ -362,8 +397,8 @@ const Editmedicinehistory = ({route}) => {
               <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -407,7 +442,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   filterinput: {
-    padding: 4,
+    padding: 8,
     paddingHorizontal: 16,
     borderColor: '#e6e6e6',
     borderWidth: 1.4,
