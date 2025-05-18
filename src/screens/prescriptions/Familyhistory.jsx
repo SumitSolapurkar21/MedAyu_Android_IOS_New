@@ -9,11 +9,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
   faCalendarDays,
+  faPencil,
   faPencilSquare,
   faTrashCan,
   faXmark,
@@ -108,25 +115,25 @@ const Familyhistory = () => {
     {label: 'Adopted Daughter', value: 'Adopted Daughter'},
     {label: 'Adopted Son', value: 'Adopted Son'},
     {
-      label: 'Son’s Wife (Daughter In Law)',
-      value: 'Son’s Wife (Daughter In Law)',
+      label: "Son's Wife (Daughter In Law)",
+      value: "Son's Wife (Daughter In Law)",
     },
     {
-      label: 'Daughter’s Husband (Son In Law)',
-      value: 'Daughter’s Husband (Son In Law)',
+      label: "Daughter's Husband (Son In Law)",
+      value: "Daughter's Husband (Son In Law)",
     },
-    {label: 'Son’s Son (Grandson)', value: 'Son’s Son (Grandson)'},
+    {label: "Son's Son (Grandson)", value: "Son's Son (Grandson)"},
     {
-      label: 'Son’s Daughter (Grand Daughter)',
-      value: 'Son’s Daughter (Grand Daughter)',
+      label: "Son's Daughter (Grand Daughter)",
+      value: "Son's Daughter (Grand Daughter)",
     },
-    {label: 'Daughter’s Son', value: 'Daughter’s Son'},
-    {label: 'Daughter’s Daughter', value: 'Daughter’s Daughter'},
+    {label: "Daughter's Son", value: "Daughter's Son"},
+    {label: "Daughter's Daughter", value: "Daughter's Daughter"},
     {
       label: 'Husband Sister (sister In Law)',
       value: 'Husband Sister (sister In Law)',
     },
-    {label: 'Father’s Sister', value: 'Father’s Sister'},
+    {label: "Father's Sister", value: "Father's Sister"},
     {label: 'Elder Sister Husband', value: 'Elder Sister Husband'},
     {label: 'Younger Sister Husband', value: 'Younger Sister Husband'},
     {
@@ -134,98 +141,98 @@ const Familyhistory = () => {
       value: 'Husband Elder Brother (Brother In Law)',
     },
     {label: 'Husband Younger Brother', value: 'Husband Younger Brother'},
-    {label: 'Elder Brother’s Wife', value: 'Elder Brother’s Wife'},
+    {label: "Elder Brother's Wife", value: "Elder Brother's Wife"},
     {label: 'Younger Brothers Wife', value: 'Younger Brothers Wife'},
     {
-      label: 'Wife’s Sister (Sister in Law)',
-      value: 'Wife’s Sister (Sister in Law)',
+      label: "Wife's Sister (Sister in Law)",
+      value: "Wife's Sister (Sister in Law)",
     },
-    {label: 'Wife’s Elder Brother', value: 'Wife’s Elder Brother'},
-    {label: 'Wife’s Younger Brother', value: 'Wife’s Younger Brother'},
+    {label: "Wife's Elder Brother", value: "Wife's Elder Brother"},
+    {label: "Wife's Younger Brother", value: "Wife's Younger Brother"},
     {label: 'Younger Sister Husband', value: 'Younger Sister Husband'},
     {
-      label: 'Husband’s Elder Brother (Brother In Law)',
-      value: 'Husband’s Elder Brother (Brother In Law)',
+      label: "Husband's Elder Brother (Brother In Law)",
+      value: "Husband's Elder Brother (Brother In Law)",
     },
-    {label: 'Wife’s Brother Wife', value: 'Wife’s Brother Wife'},
+    {label: "Wife's Brother Wife", value: "Wife's Brother Wife"},
     {label: 'Husband Younger Brother', value: 'Husband Younger Brother'},
-    {label: 'Husband’s Sister’s Husband', value: 'Husband’s Sister’s Husband'},
-    {label: 'Wife’s Sister’s Husband', value: 'Wife’s Sister’s Husband'},
+    {label: "Husband's Sister's Husband", value: "Husband's Sister's Husband"},
+    {label: "Wife's Sister's Husband", value: "Wife's Sister's Husband"},
     {
-      label: 'Husband’s Elder Brother’s Wife',
-      value: 'Husband’s Elder Brother’s Wife',
+      label: "Husband's Elder Brother's Wife",
+      value: "Husband's Elder Brother's Wife",
     },
     {
-      label: 'Husband’s Younger Brother’s Wife',
-      value: 'Husband’s Younger Brother’s Wife',
+      label: "Husband's Younger Brother's Wife",
+      value: "Husband's Younger Brother's Wife",
     },
     {
-      label: 'Father’s Brother’s Son (Cousin)',
-      value: 'Father’s Brother’s Son (Cousin)',
+      label: "Father's Brother's Son (Cousin)",
+      value: "Father's Brother's Son (Cousin)",
     },
     {
-      label: 'Fathers Brother’s Daughter (Cousin)',
-      value: 'Fathers Brother’s Daughter (Cousin)',
+      label: "Fathers Brother's Daughter (Cousin)",
+      value: "Fathers Brother's Daughter (Cousin)",
     },
     {
-      label: 'Father’s Sister’s Son (Cousin)',
-      value: 'Father’s Sister’s Son (Cousin)',
+      label: "Father's Sister's Son (Cousin)",
+      value: "Father's Sister's Son (Cousin)",
     },
     {
-      label: 'Father’s Sister’s Daughter (Cousin)',
-      value: 'Father’s Sister’s Daughter (Cousin)',
+      label: "Father's Sister's Daughter (Cousin)",
+      value: "Father's Sister's Daughter (Cousin)",
     },
     {
-      label: 'Mother’s Brother’s Son (Cousin)',
-      value: 'Mother’s Brother’s Son (Cousin)',
+      label: "Mother's Brother's Son (Cousin)",
+      value: "Mother's Brother's Son (Cousin)",
     },
     {
-      label: 'Mother’s Brother’s Daughter (Cousin)',
-      value: 'Mother’s Brother’s Daughter (Cousin)',
+      label: "Mother's Brother's Daughter (Cousin)",
+      value: "Mother's Brother's Daughter (Cousin)",
     },
     {
-      label: 'Mother’s Sister’s Son (Cousin)',
-      value: 'Mother’s Sister’s Son (Cousin)',
+      label: "Mother's Sister's Son (Cousin)",
+      value: "Mother's Sister's Son (Cousin)",
     },
     {
-      label: 'Mother’s Sister’s Daughter (Cousin)',
-      value: 'Mother’s Sister’s Daughter (Cousin)',
+      label: "Mother's Sister's Daughter (Cousin)",
+      value: "Mother's Sister's Daughter (Cousin)",
     },
     {
-      label: 'Spouse’s Mother (Mother In Law)',
-      value: 'Spouse’s Mother (Mother In Law)',
+      label: "Spouse's Mother (Mother In Law)",
+      value: "Spouse's Mother (Mother In Law)",
     },
     {
-      label: 'Spouse’s Father (Father In Law)',
-      value: 'Spouse’s Father (Father In Law)',
+      label: "Spouse's Father (Father In Law)",
+      value: "Spouse's Father (Father In Law)",
     },
     {
-      label: 'Father’s Younger Brother (Uncle)',
-      value: 'Father’s Younger Brother (Uncle)',
+      label: "Father's Younger Brother (Uncle)",
+      value: "Father's Younger Brother (Uncle)",
     },
     {
-      label: 'Father’s Elder Brother (Uncle)',
-      value: 'Father’s Elder Brother (Uncle)',
+      label: "Father's Elder Brother (Uncle)",
+      value: "Father's Elder Brother (Uncle)",
     },
     {
-      label: 'Father’s Younger Brother’s Wife (Aunt)',
-      value: 'Father’s Younger Brother’s Wife (Aunt)',
+      label: "Father's Younger Brother's Wife (Aunt)",
+      value: "Father's Younger Brother's Wife (Aunt)",
     },
-    {label: 'Mother’s Brother', value: 'Mother’s Brother'},
-    {label: 'Mother’s Younger Sister', value: 'Mother’s Younger Sister'},
+    {label: "Mother's Brother", value: "Mother's Brother"},
+    {label: "Mother's Younger Sister", value: "Mother's Younger Sister"},
     {
-      label: 'Mother’s Younger Sister’s Husband',
-      value: 'Mother’s Younger Sister’s Husband',
-    },
-    {
-      label: 'Mother’s Elder Sister’s Husband (Uncle)',
-      value: 'Mother’s Elder Sister’s Husband (Uncle)',
+      label: "Mother's Younger Sister's Husband",
+      value: "Mother's Younger Sister's Husband",
     },
     {
-      label: 'Mother’s Elder Sister (Aunt)',
-      value: 'Mother’s Elder Sister (Aunt)',
+      label: "Mother's Elder Sister's Husband (Uncle)",
+      value: "Mother's Elder Sister's Husband (Uncle)",
     },
-    {label: 'Mother’s Brother Wife', value: 'Mother’s Brother Wife'},
+    {
+      label: "Mother's Elder Sister (Aunt)",
+      value: "Mother's Elder Sister (Aunt)",
+    },
+    {label: "Mother's Brother Wife", value: "Mother's Brother Wife"},
     {label: 'Mistress', value: 'Mistress'},
     {label: 'Concubine / Keep Mistress', value: 'Concubine / Keep Mistress'},
     {label: 'Pupil', value: 'Pupil'},
@@ -375,24 +382,24 @@ const Familyhistory = () => {
     useCallback(() => {
       const fetchmobileAssessment = async () => {
         try {
-        await axios
-          .post(FetchMobileOpdAssessmentForEditapi, {
-            hospital_id: userData?.hospital_id,
-            reception_id: userData?._id,
-            patient_id: selectedPatient?._id,
-            api_type: 'OPD-FAMILY-HISTORY',
-            uhid: selectedPatient?.patientuniqueno,
-            mobilenumber: selectedPatient?.mobilenumber,
-            appoint_id: selectedPatient?.appoint_id,
-          })
-          .then(res => {
-            console.log('res : ', res.data);
-            setPatientSympyomsArrayEdit(res.data.opdfamilyhistoryarray);
-          });
-      } catch (error) {
-        console.error(error);
-      }
-    };
+          await axios
+            .post(FetchMobileOpdAssessmentForEditapi, {
+              hospital_id: userData?.hospital_id,
+              reception_id: userData?._id,
+              patient_id: selectedPatient?._id,
+              api_type: 'OPD-FAMILY-HISTORY',
+              uhid: selectedPatient?.patientuniqueno,
+              mobilenumber: selectedPatient?.mobilenumber,
+              appoint_id: selectedPatient?.appoint_id,
+            })
+            .then(res => {
+              console.log('res : ', res.data);
+              setPatientSympyomsArrayEdit(res.data.opdfamilyhistoryarray);
+            });
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
       fetchmobileAssessment();
     }, []),
@@ -416,200 +423,174 @@ const Familyhistory = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 70}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Category Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Diseases</Text>
-            <View style={styles.filterDiv}>
-              <TextInput
-                style={[styles.filterinput, {padding: 4}]}
-                placeholder="Search Diseases"
-                value={diseaseSearchInput}
-                onChangeText={text => setDiseaseSearchInput(text)}
-              />
-            </View>
-            <View style={styles.catDiv}>
-              {diseasesArray?.length > 0 &&
-                diseasesArray.map((item, index) => (
-                  <TouchableOpacity
-                    onPress={() => diseasesHandler(item.illnessname)}
-                    key={index + 1}
-                    style={[
-                      styles.segButton,
-                      selectedDiseases === item.illnessname &&
-                        styles.selectedButton,
-                    ]}>
-                    <Text style={styles.segText}>{item.illnessname}</Text>
-                  </TouchableOpacity>
-                ))}
-            </View>
-          </View>
-          {/* Already 
-                    Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Previous Past History</Text>
-            {
-            patientSympyomsArrayEdit?.length > 0 ? (
-              patientSympyomsArrayEdit?.map((item, index) => {
-                console.log('patientSympyomsArrayEdit : ', item);
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
+      {!isModalVisible ? (
+        <>
+          <View style={styles.container}>
+            <ScrollView
+              style={{marginBottom: 70}}
+              vertical
+              showsVerticalScrollIndicator={false}>
+              {/* Category Section */}
+              <View style={styles.categoryDiv}>
+                <Text style={styles.categoryText}>Diseases</Text>
+                <View style={styles.filterDiv}>
+                  <TextInput
+                    style={[styles.filterinput]}
+                    placeholder="Search Diseases"
+                    value={diseaseSearchInput}
+                    onChangeText={text => setDiseaseSearchInput(text)}
+                  />
+                </View>
+                <View style={styles.catDiv}>
+                  {diseasesArray?.length > 0 &&
+                    diseasesArray.map((item, index) => (
+                      <TouchableOpacity
+                        onPress={() => diseasesHandler(item.illnessname)}
+                        key={index + 1}
                         style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
+                          styles.segButton,
+                          selectedDiseases === item.illnessname &&
+                            styles.selectedButton,
                         ]}>
-                        #{index + 1} Symptom
-                      </Text>
-                      <TouchableOpacity onPress={() => navigation.navigate('Editfamilyhistory', {data: item, userData, selectedPatient})}>
-                        <FontAwesomeIcon
-                          icon={faPencilSquare}
-                          color="#05b508"
-                          style={[styles.icon, {padding: 9}]}
-                        />
+                        <Text style={styles.segText}>{item.illnessname}</Text>
                       </TouchableOpacity>
-                    </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Illness</Text>
-                        <Text>{item.illnessname}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>From Date</Text>
-                        <Text>{item.from_date}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Years</Text>
-                        <Text>{item.years}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Months</Text>
-                        <Text>{item.months}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Days</Text>
-                        <Text>{item.days}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Treatment Status</Text>
-                        <Text>{item.treatment_status}</Text>
-                      </View>
-                    </View>
-                  </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
+                    ))}
                 </View>
               </View>
-            )}
-          </View>
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Family History</Text>
-            {patientAssessmentArray?.length > 0 ? (
-              patientAssessmentArray?.map((item, index) => {
-                return (
-                  <>
-                    <View style={styles.sympDiv} key={index + 1}>
+              {/* Already 
+                    Symptoms Section */}
+              <View style={styles.categoryDiv}>
+                <Text style={styles.categoryText}>Previous Past History</Text>
+                {patientSympyomsArrayEdit?.length > 0 ? (
+                  patientSympyomsArrayEdit?.map((item, index) => {
+                    return (
                       <View
-                        style={[
-                          styles.modalContentHeader,
-                          {
-                            borderBottomWidth: 1,
-                            paddingBottom: 6,
-                            borderColor: '#e6e6e6',
-                          },
-                        ]}>
-                        <Text
-                          style={[
-                            styles.modalText,
-                            {marginBottom: 0, fontSize: 13},
-                          ]}>
-                          #{index + 1} Symptom
-                        </Text>
+                        style={[styles.sympDiv, styles.sympContainer]}
+                        key={index + 1}>
+                        <View style={styles.sympDivOuter} key={index + 1}>
+                          <Text style={styles.sympText}>
+                            {item.illnessname} {item.from_date} {item.years}{' '}
+                            {item.months} {item.days} {item.treatment_status}
+                          </Text>
+                        </View>
                         <TouchableOpacity
-                          onPress={() => removeSymptom(index)}
-                          style={styles.deleteButton}>
+                          style={styles.editIcon}
+                          onPress={() =>
+                            navigation.navigate('Editfamilyhistory', {
+                              data: item,
+                              userData,
+                              selectedPatient,
+                            })
+                          }>
                           <FontAwesomeIcon
-                            icon={faTrashCan}
-                            color="#FF3B30"
-                            style={styles.icon}
+                            icon={faPencil}
+                            color="#05b508"
+                            style={[styles.icon, {padding: 9}]}
                           />
                         </TouchableOpacity>
                       </View>
-                      <View style={styles.sympDivOuter} key={index + 1}>
-                        <View style={styles.sympDivInner}>
-                          <Text style={styles.label}>Illness</Text>
-                          <Text>{item.illnessname}</Text>
-                        </View>
-                        <View style={styles.sympDivInner}>
-                          <Text style={styles.label}>From Date</Text>
-                          <Text>{item.from_date}</Text>
-                        </View>
-                        <View style={styles.sympDivInner}>
-                          <Text style={styles.label}>Years</Text>
-                          <Text>{item.years}</Text>
-                        </View>
-                        <View style={styles.sympDivInner}>
-                          <Text style={styles.label}>Months</Text>
-                          <Text>{item.months}</Text>
-                        </View>
-                        <View style={styles.sympDivInner}>
-                          <Text style={styles.label}>Days</Text>
-                          <Text>{item.days}</Text>
-                        </View>
-                        <View style={styles.sympDivInner}>
-                          <Text style={styles.label}>Relations</Text>
-                          <Text>{item.treatment_status}</Text>
-                        </View>
-                      </View>
+                    );
+                  })
+                ) : (
+                  <View style={styles.sympDiv}>
+                    <View style={{padding: 20}}>
+                      <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                        No Data Available
+                      </Text>
                     </View>
-                  </>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
-                </View>
+                  </View>
+                )}
               </View>
-            )}
+              {/* Symptoms Section */}
+              <View style={styles.categoryDiv}>
+                <Text style={styles.categoryText}>Family History</Text>
+                {patientAssessmentArray?.length > 0 ? (
+                  patientAssessmentArray?.map((item, index) => {
+                    return (
+                      <>
+                        <View style={styles.sympDiv} key={index + 1}>
+                          <View
+                            style={[
+                              styles.modalContentHeader,
+                              {
+                                borderBottomWidth: 1,
+                                paddingBottom: 6,
+                                borderColor: '#e6e6e6',
+                              },
+                            ]}>
+                            <Text
+                              style={[
+                                styles.modalText,
+                                {marginBottom: 0, fontSize: 13},
+                              ]}>
+                              #{index + 1} Symptom
+                            </Text>
+                            <TouchableOpacity
+                              onPress={() => removeSymptom(index)}
+                              style={styles.deleteButton}>
+                              <FontAwesomeIcon
+                                icon={faTrashCan}
+                                color="#FF3B30"
+                                style={styles.icon}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                          <View style={styles.sympDivOuter} key={index + 1}>
+                            <View style={styles.sympDivInner}>
+                              <Text style={styles.label}>Illness</Text>
+                              <Text>{item.illnessname}</Text>
+                            </View>
+                            <View style={styles.sympDivInner}>
+                              <Text style={styles.label}>From Date</Text>
+                              <Text>{item.from_date}</Text>
+                            </View>
+                            <View style={styles.sympDivInner}>
+                              <Text style={styles.label}>Years</Text>
+                              <Text>{item.years}</Text>
+                            </View>
+                            <View style={styles.sympDivInner}>
+                              <Text style={styles.label}>Months</Text>
+                              <Text>{item.months}</Text>
+                            </View>
+                            <View style={styles.sympDivInner}>
+                              <Text style={styles.label}>Days</Text>
+                              <Text>{item.days}</Text>
+                            </View>
+                            <View style={styles.sympDivInner}>
+                              <Text style={styles.label}>Relations</Text>
+                              <Text>{item.treatment_status}</Text>
+                            </View>
+                          </View>
+                        </View>
+                      </>
+                    );
+                  })
+                ) : (
+                  <View style={styles.sympDiv}>
+                    <View style={{padding: 20}}>
+                      <Text style={{textAlign: 'center', fontWeight: '500'}}>
+                        No Data Available
+                      </Text>
+                    </View>
+                  </View>
+                )}
+              </View>
+            </ScrollView>
+            <View style={styles.loginButton}>
+              <TouchableOpacity
+                style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+                onPress={() => savePatientSymptoms()}>
+                <Text style={styles.buttonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </ScrollView>
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={() => savePatientSymptoms()}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* add symptoms Modal */}
-        <Modal
+        </>
+      ) : (
+        <View
           visible={isModalVisible}
           onDismiss={toggleModal}
           contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
               <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
                 Add Diseases
@@ -827,8 +808,8 @@ const Familyhistory = () => {
               }}
             </Formik>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -873,7 +854,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   filterinput: {
-    padding: 4,
+    padding: 8,
     paddingHorizontal: 16,
     borderColor: '#e6e6e6',
     borderWidth: 1.4,
@@ -997,5 +978,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     width: '100%',
     borderRadius: 4,
+  },
+  sympContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sympText: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    flex: 0.9,
+  },
+  editIcon: {
+    padding: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#05b508',
   },
 });

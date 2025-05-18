@@ -13,9 +13,7 @@ import React, {useState, useEffect} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
-  faPencilSquare,
-  faPlus,
-  faTrashCan,
+  faPencil,
   faXmark,
   faCalendarDays,
 } from '@fortawesome/free-solid-svg-icons';
@@ -45,7 +43,18 @@ const Editfamilyhistory = ({route}) => {
   const [open, setOpen] = useState(false);
 
   const relationOptions = [
-    'Mother', 'Father', 'Brother', 'Sister', 'Son', 'Daughter', 'Niece', 'Nephew', 'Uncle', 'Aunt', 'Grandfather', 'Grandmother'
+    'Mother',
+    'Father',
+    'Brother',
+    'Sister',
+    'Son',
+    'Daughter',
+    'Niece',
+    'Nephew',
+    'Uncle',
+    'Aunt',
+    'Grandfather',
+    'Grandmother',
   ];
 
   // Initialize form data with the passed data
@@ -147,7 +156,7 @@ const Editfamilyhistory = ({route}) => {
       appoint_id: selectedPatient?.appoint_id,
     };
 
-    console.log("OPD-FAMILY-HISTORY DATA ", data);
+    console.log('OPD-FAMILY-HISTORY DATA ', data);
 
     try {
       await axios.post(addopdassessment, data).then(res => {
@@ -181,205 +190,228 @@ const Editfamilyhistory = ({route}) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 100}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Current Family History Details */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>
-              Current Family History Details
-            </Text>
-            <View style={styles.sympDiv}>
-              <View style={styles.sympDivOuter}>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Illness</Text>
-                  <Text>{formData.illnessname}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Relation</Text>
-                  <Text>{formData.relation}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>From Date</Text>
-                  <Text>{formData.from_date}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Years</Text>
-                  <Text>{formData.years}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Months</Text>
-                  <Text>{formData.months}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Days</Text>
-                  <Text>{formData.days}</Text>
+      {!isModalVisible ? (
+        <>
+          <View style={styles.container}>
+            <ScrollView
+              style={{marginBottom: 100}}
+              vertical
+              showsVerticalScrollIndicator={false}>
+              {/* Current Family History Details */}
+              <View style={styles.categoryDiv}>
+                <Text style={styles.categoryText}>
+                  Current Family History Details
+                </Text>
+                <View style={styles.sympDiv}>
+                  <View style={styles.sympDivOuter}>
+                    <View style={styles.sympDivInner}>
+                      <Text style={styles.label}>Illness</Text>
+                      <Text>{formData.illnessname}</Text>
+                    </View>
+                    <View style={styles.sympDivInner}>
+                      <Text style={styles.label}>Relation</Text>
+                      <Text>{formData.relation}</Text>
+                    </View>
+                    <View style={styles.sympDivInner}>
+                      <Text style={styles.label}>From Date</Text>
+                      <Text>{formData.from_date}</Text>
+                    </View>
+                    <View style={styles.sympDivInner}>
+                      <Text style={styles.label}>Years</Text>
+                      <Text>{formData.years}</Text>
+                    </View>
+                    <View style={styles.sympDivInner}>
+                      <Text style={styles.label}>Months</Text>
+                      <Text>{formData.months}</Text>
+                    </View>
+                    <View style={styles.sympDivInner}>
+                      <Text style={styles.label}>Days</Text>
+                      <Text>{formData.days}</Text>
+                    </View>
+                  </View>
                 </View>
               </View>
-            </View>
-          </View>
 
-          {/* Edit Button */}
-          <View style={styles.categoryDiv}>
-            <TouchableOpacity
-              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-              onPress={() => setIsModalVisible(true)}>
-              <Text style={styles.buttonText}>Edit</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+              {/* Edit Button */}
+              <View style={styles.categoryDiv}>
+                <TouchableOpacity
+                  style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+                  onPress={() => setIsModalVisible(true)}>
+                  <Text style={styles.buttonText}>Edit</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
 
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={updatePatientFamilyHistory}>
-            <Text style={styles.buttonText}>Update</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Edit Modal */}
-        <Modal
-          visible={isModalVisible}
-          onDismiss={() => setIsModalVisible(false)}
-          contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>Add Diseases</Text>
-              <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton1}>
-                <FontAwesomeIcon icon={faXmark} color="#FF3B30" style={styles.icon} />
+            <View style={styles.loginButton}>
+              <TouchableOpacity
+                style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+                onPress={updatePatientFamilyHistory}>
+                <Text style={styles.buttonText}>Update</Text>
               </TouchableOpacity>
             </View>
-            <View style={{flex: 1}}>
-              <Text style={styles.modalText}>Illness</Text>
-              <TextInput
-                style={styles.filterinput}
-                placeholder="Search Diseases"
-                value={diseaseSearchInput}
-                onChangeText={text => setDiseaseSearchInput(text)}
-              />
+          </View>
+        </>
+      ) : (
+        <>
+          <View
+            visible={isModalVisible}
+            onDismiss={() => setIsModalVisible(false)}
+            contentContainerStyle={styles.bottomModalContainer}>
+            <View style={{padding: 20}}>
+              <View style={styles.modalContentHeader}>
+                <Text
+                  style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
+                  Add Diseases
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setIsModalVisible(false)}
+                  style={styles.closeButton1}>
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    color="#FF3B30"
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Text style={styles.modalText}>Illness</Text>
+                <TextInput
+                  style={styles.filterinput}
+                  placeholder="Search Diseases"
+                  value={diseaseSearchInput}
+                  onChangeText={text => setDiseaseSearchInput(text)}
+                />
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  style={{marginBottom: 10}}>
+                  <View style={styles.catDiv}>
+                    {diseasesArray?.length > 0 &&
+                      diseasesArray.map((item, index) => (
+                        <TouchableOpacity
+                          onPress={() => setSelectedDiseases(item.illnessname)}
+                          key={index}
+                          style={[
+                            styles.segButton,
+                            selectedDiseases === item.illnessname &&
+                              styles.selectedButton,
+                          ]}>
+                          <Text style={styles.segText}>{item.illnessname}</Text>
+                        </TouchableOpacity>
+                      ))}
+                  </View>
+                </ScrollView>
+              </View>
+              <View style={styles.modalDiv}>
+                <View>
+                  <Text style={styles.modalText}>From Date</Text>
+                  <TouchableOpacity
+                    style={[styles.segButton, {flexDirection: 'row', gap: 20}]}
+                    onPress={() => setOpen(true)}>
+                    <Text style={styles.segText}>
+                      {fromDate || 'Select Date'}
+                    </Text>
+                    <DatePicker
+                      modal
+                      mode="date"
+                      open={open}
+                      date={new Date()}
+                      onConfirm={selectedDate => {
+                        setOpen(false);
+                        const formattedDate = selectedDate.toLocaleDateString(
+                          'en-US',
+                          {
+                            weekday: 'short',
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                          },
+                        );
+                        setFromDate(formattedDate);
+                        const {years, months, days} = calculateDateDifference(
+                          selectedDate,
+                          new Date(),
+                        );
+                        setYears(years.toString());
+                        setMonths(months.toString());
+                        setDays(days.toString());
+                      }}
+                      onCancel={() => {
+                        setOpen(false);
+                      }}
+                    />
+                    <FontAwesomeIcon
+                      icon={faCalendarDays}
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <Text style={styles.modalText}>Years</Text>
+                  <TextInput
+                    keyboardType="numeric"
+                    style={styles.filterinput}
+                    placeholder="Years"
+                    value={years}
+                    onChangeText={text => setYears(text)}
+                  />
+                </View>
+                <View>
+                  <Text style={styles.modalText}>Months</Text>
+                  <TextInput
+                    keyboardType="numeric"
+                    style={styles.filterinput}
+                    placeholder="Months"
+                    value={months}
+                    onChangeText={text => setMonths(text)}
+                  />
+                </View>
+                <View>
+                  <Text style={styles.modalText}>Days</Text>
+                  <TextInput
+                    keyboardType="numeric"
+                    style={styles.filterinput}
+                    placeholder="Days"
+                    value={days}
+                    onChangeText={text => setDays(text)}
+                  />
+                </View>
+              </View>
+              <Text style={styles.modalText}>Relation Status</Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 style={{marginBottom: 10}}>
                 <View style={styles.catDiv}>
-                  {diseasesArray?.length > 0 &&
-                    diseasesArray.map((item, index) => (
-                      <TouchableOpacity
-                        onPress={() => setSelectedDiseases(item.illnessname)}
-                        key={index}
-                        style={[
-                          styles.segButton,
-                          selectedDiseases === item.illnessname && styles.selectedButton,
-                        ]}>
-                        <Text style={styles.segText}>{item.illnessname}</Text>
-                      </TouchableOpacity>
-                    ))}
+                  {relationOptions.map((rel, idx) => (
+                    <TouchableOpacity
+                      key={rel}
+                      onPress={() => setRelation(rel)}
+                      style={[
+                        styles.segButton,
+                        relation === rel && styles.selectedButton,
+                      ]}>
+                      <Text style={styles.segText}>{rel}</Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
               </ScrollView>
+              <TouchableOpacity
+                onPress={updateFormData}
+                style={{
+                  backgroundColor: '#5cd65c',
+                  padding: 10,
+                  borderRadius: 6,
+                  alignSelf: 'flex-end',
+                  marginTop: 10,
+                  minWidth: 80,
+                }}>
+                <Text style={styles.buttonText}>Add</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.modalDiv}>
-              <View>
-                <Text style={styles.modalText}>From Date</Text>
-                <TouchableOpacity
-                  style={[styles.segButton, {flexDirection: 'row', gap: 20}]}
-                  onPress={() => setOpen(true)}>
-                  <Text style={styles.segText}>{fromDate || 'Select Date'}</Text>
-                  <DatePicker
-                    modal
-                    mode="date"
-                    open={open}
-                    date={new Date()}
-                    onConfirm={selectedDate => {
-                      setOpen(false);
-                      const formattedDate = selectedDate.toLocaleDateString(
-                        'en-US',
-                        {
-                          weekday: 'short',
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric',
-                        },
-                      );
-                      setFromDate(formattedDate);
-                      const {years, months, days} = calculateDateDifference(
-                        selectedDate,
-                        new Date(),
-                      );
-                      setYears(years.toString());
-                      setMonths(months.toString());
-                      setDays(days.toString());
-                    }}
-                    onCancel={() => {
-                      setOpen(false);
-                    }}
-                  />
-                  <FontAwesomeIcon icon={faCalendarDays} style={styles.icon} />
-                </TouchableOpacity>
-              </View>
-              <View>
-                <Text style={styles.modalText}>Years</Text>
-                <TextInput
-                  keyboardType="numeric"
-                  style={styles.filterinput}
-                  placeholder="Years"
-                  value={years}
-                  onChangeText={text => setYears(text)}
-                />
-              </View>
-              <View>
-                <Text style={styles.modalText}>Months</Text>
-                <TextInput
-                  keyboardType="numeric"
-                  style={styles.filterinput}
-                  placeholder="Months"
-                  value={months}
-                  onChangeText={text => setMonths(text)}
-                />
-              </View>
-              <View>
-                <Text style={styles.modalText}>Days</Text>
-                <TextInput
-                  keyboardType="numeric"
-                  style={styles.filterinput}
-                  placeholder="Days"
-                  value={days}
-                  onChangeText={text => setDays(text)}
-                />
-              </View>
-            </View>
-            <Text style={styles.modalText}>Relation Status</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 10}}>
-              <View style={styles.catDiv}>
-                {relationOptions.map((rel, idx) => (
-                  <TouchableOpacity
-                    key={rel}
-                    onPress={() => setRelation(rel)}
-                    style={[
-                      styles.segButton,
-                      relation === rel && styles.selectedButton,
-                    ]}>
-                    <Text style={styles.segText}>{rel}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
-            <TouchableOpacity
-              onPress={updateFormData}
-              style={{
-                backgroundColor: '#5cd65c',
-                padding: 10,
-                borderRadius: 6,
-                alignSelf: 'flex-end',
-                marginTop: 10,
-                minWidth: 80,
-              }}>
-              <Text style={styles.buttonText}>Add</Text>
-            </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+        </>
+      )}
     </>
   );
 };
@@ -423,7 +455,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   filterinput: {
-    padding: 4,
+    padding: 8,
     paddingHorizontal: 16,
     borderColor: '#e6e6e6',
     borderWidth: 1.4,
