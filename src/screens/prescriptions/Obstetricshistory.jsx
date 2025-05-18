@@ -16,16 +16,17 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   faArrowLeft,
   faCalendarDays,
+  faPencil,
   faPencilSquare,
   faPlus,
   faTrashCan,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import UserContext from '../../functions/usercontext';
 import axios from 'axios';
 import {
@@ -34,14 +35,14 @@ import {
   fetchmedicines,
   FetchMobileOpdAssessmentForEditapi,
 } from '../../api/api';
-import {Formik} from 'formik';
-import {Modal} from 'react-native-paper';
+import { Formik } from 'formik';
+import { Modal } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 
 const Obstetricshistory = () => {
   const navigation = useNavigation();
   const formikRef = useRef(null);
-  const {userData, selectedPatient} = useContext(UserContext);
+  const { userData, selectedPatient } = useContext(UserContext);
 
   // array state ...
   const [patientAssessmentArray, setPatientAssessmentArray] = useState([]);
@@ -156,35 +157,36 @@ const Obstetricshistory = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        <ScrollView
-          style={{marginBottom: 70}}
-          vertical
-          showsVerticalScrollIndicator={false}>
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Previous Obstetrics Details</Text>
-            {patientSympyomsArrayEdit?.length > 0 ? (
-              patientSympyomsArrayEdit?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
+      {!isModalVisible ? (
+
+        <View style={styles.container}>
+          <ScrollView
+            style={{ marginBottom: 70 }}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/*Previous Obstetrics Details Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Previous Obstetrics Details</Text>
+              {patientSympyomsArrayEdit?.length > 0 ? (
+                patientSympyomsArrayEdit?.map((item, index) => {
+                  return (
                     <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
-                        style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
-                        ]}>
-                        #{index + 1} Symptom
+                      style={[styles.sympDiv, styles.sympContainer]}
+                      key={index + 1}>
+                      <Text style={styles.sympText}>
+                        {item.g} / {item.p} / {item.l} / {item.a} / {item.d}{' '}
+                        {item.pregnant} {item.breastFeeding} {item.conception}{' '}
+                        {item.contraception}{' '}
+                        {item.contraception === 'yes' && (
+                          <>
+                            - &nbsp;
+                            {item.pillsChecked} {item.injuctionChecked}{' '}
+                            {item.otherChecked}
+                          </>
+                        )}
                       </Text>
                       <TouchableOpacity
+                        style={styles.editIcon}
                         onPress={() =>
                           navigation.navigate('Editobstetricshistory', {
                             data: item,
@@ -193,164 +195,132 @@ const Obstetricshistory = () => {
                           })
                         }>
                         <FontAwesomeIcon
-                          icon={faPencilSquare}
+                          icon={faPencil}
                           color="#05b508"
                           style={styles.icon}
                         />
                       </TouchableOpacity>
                     </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>G / P / L / A / D</Text>
-                        <Text>
-                          {item.g} / {item.p} / {item.l} / {item.a} / {item.d}{' '}
-                        </Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Pregnant</Text>
-                        <Text>{item.pregnant}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Breast Feeding</Text>
-                        <Text>{item.breastFeeding}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Planing to Conceive</Text>
-                        <Text>{item.conception}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Contraception</Text>
-                        <Text>
-                          {item.contraception === 'no'
-                            ? item.contraception
-                            : item.contraception +
-                              ' - ' +
-                              item.pillsChecked +
-                              ' , ' +
-                              item.injuctionChecked +
-                              ' , ' +
-                              item.otherChecked}
-                        </Text>
-                      </View>
-                    </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{ padding: 20 }}>
+                    <Text style={{ textAlign: 'center', fontWeight: '500' }}>
+                      No Data Available
+                    </Text>
                   </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
                 </View>
-              </View>
-            )}
-          </View>
+              )}
+            </View>
 
-          {/* Symptoms Section */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Obstetrics Details</Text>
-            {patientAssessmentArray?.length > 0 ? (
-              patientAssessmentArray?.map((item, index) => {
-                return (
-                  <View style={styles.sympDiv} key={index + 1}>
-                    <View
-                      style={[
-                        styles.modalContentHeader,
-                        {
-                          borderBottomWidth: 1,
-                          paddingBottom: 6,
-                          borderColor: '#e6e6e6',
-                        },
-                      ]}>
-                      <Text
+            {/* Add Obstetrics Details Section */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Obstetrics Details</Text>
+              {patientAssessmentArray?.length > 0 ? (
+                patientAssessmentArray?.map((item, index) => {
+                  return (
+                    <View style={styles.sympDiv} key={index + 1}>
+                      <View
                         style={[
-                          styles.modalText,
-                          {marginBottom: 0, fontSize: 13},
+                          styles.modalContentHeader,
+                          {
+                            borderBottomWidth: 1,
+                            paddingBottom: 6,
+                            borderColor: '#e6e6e6',
+                          },
                         ]}>
-                        #{index + 1} Symptom
-                      </Text>
-                      <TouchableOpacity onPress={() => removeSymptom(index)}>
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          color="#FF3B30"
-                          style={styles.icon}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.sympDivOuter} key={index + 1}>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>G / P / L / A / D</Text>
-                        <Text>
-                          {item.g} / {item.p} / {item.l} / {item.a} / {item.d}{' '}
+                        <Text
+                          style={[
+                            styles.modalText,
+                            { marginBottom: 0, fontSize: 13 },
+                          ]}>
+                          #{index + 1} Symptom
                         </Text>
+                        <TouchableOpacity onPress={() => removeSymptom(index)}>
+                          <FontAwesomeIcon
+                            icon={faTrashCan}
+                            color="#FF3B30"
+                            style={styles.icon}
+                          />
+                        </TouchableOpacity>
                       </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Pregnant</Text>
-                        <Text>{item.pregnant}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Breast Feeding</Text>
-                        <Text>{item.breastFeeding}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Planing to Conceive</Text>
-                        <Text>{item.conception}</Text>
-                      </View>
-                      <View style={styles.sympDivInner}>
-                        <Text style={styles.label}>Contraception</Text>
-                        <Text>
-                          {item.contraception === 'no'
-                            ? item.contraception
-                            : item.contraception +
+                      <View style={styles.sympDivOuter} key={index + 1}>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>G / P / L / A / D</Text>
+                          <Text>
+                            {item.g} / {item.p} / {item.l} / {item.a} / {item.d}{' '}
+                          </Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Pregnant</Text>
+                          <Text>{item.pregnant}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Breast Feeding</Text>
+                          <Text>{item.breastFeeding}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Planing to Conceive</Text>
+                          <Text>{item.conception}</Text>
+                        </View>
+                        <View style={styles.sympDivInner}>
+                          <Text style={styles.label}>Contraception</Text>
+                          <Text>
+                            {item.contraception === 'no'
+                              ? item.contraception
+                              : item.contraception +
                               ' - ' +
                               item.pillsChecked +
                               ' , ' +
                               item.injuctionChecked +
                               ' , ' +
                               item.otherChecked}
-                        </Text>
+                          </Text>
+                        </View>
                       </View>
                     </View>
+                  );
+                })
+              ) : (
+                <View style={styles.sympDiv}>
+                  <View style={{ padding: 20 }}>
+                    <Text style={{ textAlign: 'center', fontWeight: '500' }}>
+                      No Data Available
+                    </Text>
                   </View>
-                );
-              })
-            ) : (
-              <View style={styles.sympDiv}>
-                <View style={{padding: 20}}>
-                  <Text style={{textAlign: 'center', fontWeight: '500'}}>
-                    No Data Available
-                  </Text>
                 </View>
-              </View>
-            )}
+              )}
+            </View>
+          </ScrollView>
+          <View style={styles.addButton}>
+            <TouchableOpacity style={[styles.addbuttonDiv]} onPress={toggleModal}>
+              <FontAwesomeIcon
+                icon={faPlus}
+                color={'white'}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.addButton}>
-          <TouchableOpacity style={[styles.addbuttonDiv]} onPress={toggleModal}>
-            <FontAwesomeIcon
-              icon={faPlus}
-              color={'white'}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.loginButton}>
-          <TouchableOpacity
-            style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
-            onPress={() => savePatientSymptoms()}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, { backgroundColor: '#1b55f5' }]}
+              onPress={() => savePatientSymptoms()}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* add symptoms Modal */}
-        <Modal
+          {/* add symptoms Modal */}
+        </View>
+      ) : (
+
+        <View
           visible={isModalVisible}
           onDismiss={toggleModal}
           contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+          <View style={{ padding: 20 }}>
             <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
+              <Text style={[styles.modalText, { marginBottom: 0, fontSize: 18 }]}>
                 Add Obstetrics
               </Text>
               <TouchableOpacity
@@ -379,12 +349,12 @@ const Obstetricshistory = () => {
                 injuctionChecked: '',
                 otherChecked: '',
               }}
-              onSubmit={(values, {resetForm}) => {
+              onSubmit={(values, { resetForm }) => {
                 toggleModal();
                 setPatientAssessmentArray(prevData => [...prevData, values]);
                 resetForm();
               }}>
-              {({handleBlur, handleSubmit, values, setFieldValue}) => {
+              {({ handleBlur, handleSubmit, values, setFieldValue }) => {
                 return (
                   <>
                     <View style={styles.modalDiv}>
@@ -464,13 +434,13 @@ const Obstetricshistory = () => {
                         <View
                           style={[
                             styles.segDiv,
-                            {flexDirection: 'row', gap: 12},
+                            { flexDirection: 'row', gap: 12 },
                           ]}>
                           <TouchableOpacity
                             style={[
                               styles.segButton,
                               values.pregnant === 'yes' &&
-                                styles.selectedButton,
+                              styles.selectedButton,
                             ]}
                             onPress={() => setFieldValue('pregnant', 'yes')}>
                             <Text style={styles.segText}>Yes</Text>
@@ -490,13 +460,13 @@ const Obstetricshistory = () => {
                         <View
                           style={[
                             styles.segDiv,
-                            {flexDirection: 'row', gap: 12},
+                            { flexDirection: 'row', gap: 12 },
                           ]}>
                           <TouchableOpacity
                             style={[
                               styles.segButton,
                               values.breastFeeding === 'yes' &&
-                                styles.selectedButton,
+                              styles.selectedButton,
                             ]}
                             onPress={() =>
                               setFieldValue('breastFeeding', 'yes')
@@ -507,7 +477,7 @@ const Obstetricshistory = () => {
                             style={[
                               styles.segButton,
                               values.breastFeeding === 'no' &&
-                                styles.selectedButton,
+                              styles.selectedButton,
                             ]}
                             onPress={() =>
                               setFieldValue('breastFeeding', 'no')
@@ -523,13 +493,13 @@ const Obstetricshistory = () => {
                         <View
                           style={[
                             styles.segDiv,
-                            {flexDirection: 'row', gap: 12},
+                            { flexDirection: 'row', gap: 12 },
                           ]}>
                           <TouchableOpacity
                             style={[
                               styles.segButton,
                               values.conception === 'yes' &&
-                                styles.selectedButton,
+                              styles.selectedButton,
                             ]}
                             onPress={() => setFieldValue('conception', 'yes')}>
                             <Text style={styles.segText}>Yes</Text>
@@ -538,7 +508,7 @@ const Obstetricshistory = () => {
                             style={[
                               styles.segButton,
                               values.conception === 'no' &&
-                                styles.selectedButton,
+                              styles.selectedButton,
                             ]}
                             onPress={() => setFieldValue('conception', 'no')}>
                             <Text style={styles.segText}>No</Text>
@@ -550,13 +520,13 @@ const Obstetricshistory = () => {
                         <View
                           style={[
                             styles.segDiv,
-                            {flexDirection: 'row', gap: 12},
+                            { flexDirection: 'row', gap: 12 },
                           ]}>
                           <TouchableOpacity
                             style={[
                               styles.segButton,
                               values.contraception === 'yes' &&
-                                styles.selectedButton,
+                              styles.selectedButton,
                             ]}
                             onPress={() =>
                               setFieldValue('contraception', 'yes')
@@ -567,7 +537,7 @@ const Obstetricshistory = () => {
                             style={[
                               styles.segButton,
                               values.contraception === 'no' &&
-                                styles.selectedButton,
+                              styles.selectedButton,
                             ]}
                             onPress={() =>
                               setFieldValue('contraception', 'no')
@@ -580,13 +550,13 @@ const Obstetricshistory = () => {
                         <View
                           style={[
                             styles.segDiv,
-                            {flexDirection: 'row', gap: 12},
+                            { flexDirection: 'row', gap: 12 },
                           ]}>
                           <TouchableOpacity
                             style={[
                               styles.segButton,
                               values.pillsChecked === 'Pills' &&
-                                styles.selectedButton,
+                              styles.selectedButton,
                             ]}
                             onPress={() =>
                               setFieldValue('pillsChecked', 'Pills')
@@ -597,7 +567,7 @@ const Obstetricshistory = () => {
                             style={[
                               styles.segButton,
                               values.injuctionChecked === 'Injection' &&
-                                styles.selectedButton,
+                              styles.selectedButton,
                             ]}
                             onPress={() =>
                               setFieldValue('injuctionChecked', 'Injection')
@@ -608,7 +578,7 @@ const Obstetricshistory = () => {
                             style={[
                               styles.segButton,
                               values.otherChecked === 'Other' &&
-                                styles.selectedButton,
+                              styles.selectedButton,
                             ]}
                             onPress={() =>
                               setFieldValue('otherChecked', 'Other')
@@ -623,7 +593,7 @@ const Obstetricshistory = () => {
                       onPress={handleSubmit}
                       style={[
                         styles.closeButton1,
-                        {backgroundColor: '#5cd65c'},
+                        { backgroundColor: '#5cd65c' },
                       ]}>
                       <Text style={styles.buttonText}>Add</Text>
                     </TouchableOpacity>
@@ -632,8 +602,10 @@ const Obstetricshistory = () => {
               }}
             </Formik>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
+
+
     </>
   );
 };
@@ -823,5 +795,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 1,
     textAlign: 'center',
+  },
+  sympContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sympText: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    flex: 0.9,
+  },
+  editIcon: {
+    padding: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#05b508',
   },
 });

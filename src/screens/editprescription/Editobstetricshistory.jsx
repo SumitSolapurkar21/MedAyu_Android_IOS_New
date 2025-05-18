@@ -86,7 +86,11 @@ const Editobstetricshistory = ({route}) => {
 
   return (
     <>
-      <StatusBar style={styles.StatusBar} animated={false} backgroundColor="#ffffff" />
+      <StatusBar
+        style={styles.StatusBar}
+        animated={false}
+        backgroundColor="#ffffff"
+      />
       {/* Header */}
       <View style={styles.navbar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -96,65 +100,91 @@ const Editobstetricshistory = ({route}) => {
           <Text style={styles.navbarText}>Edit Obstetrics History</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
-        <ScrollView style={{marginBottom: 100}} vertical showsVerticalScrollIndicator={false}>
-          {/* Current Obstetrics History Details */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Current Obstetrics History Details</Text>
-            <View style={styles.sympDiv}>
-              <View style={styles.sympDivOuter}>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>G / P / L / A / D</Text>
-                  <Text>{formData.g} / {formData.p} / {formData.l} / {formData.a} / {formData.d}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Pregnant</Text>
-                  <Text>{formData.pregnant}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Breast Feeding</Text>
-                  <Text>{formData.breastFeeding}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Planning to Conceive</Text>
-                  <Text>{formData.conception}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Contraception</Text>
-                  <Text>
-                    {formData.contraception === 'no'
-                      ? formData.contraception
-                      : formData.contraception +
-                        ' - ' +
-                        formData.pillsChecked +
-                        ' , ' +
-                        formData.injuctionChecked +
-                        ' , ' +
-                        formData.otherChecked}
-                  </Text>
+
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 100}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Current Obstetrics History Details */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>
+                Current Obstetrics History Details
+              </Text>
+              <View style={styles.sympDiv}>
+                <View style={styles.sympDivOuter}>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>G / P / L / A / D</Text>
+                    <Text>
+                      {formData.g} / {formData.p} / {formData.l} / {formData.a}{' '}
+                      / {formData.d}
+                    </Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Pregnant</Text>
+                    <Text>{formData.pregnant}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Breast Feeding</Text>
+                    <Text>{formData.breastFeeding}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Planning to Conceive</Text>
+                    <Text>{formData.conception}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Contraception</Text>
+                    <Text>
+                      {formData.contraception === 'no'
+                        ? formData.contraception
+                        : formData.contraception +
+                          ' - ' +
+                          formData.pillsChecked +
+                          ' , ' +
+                          formData.injuctionChecked +
+                          ' , ' +
+                          formData.otherChecked}
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-          {/* Edit Button */}
-          <View style={styles.categoryDiv}>
-            <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={() => setIsModalVisible(true)}>
-              <Text style={styles.buttonText}>Edit</Text>
+            {/* Edit Button */}
+            <View style={styles.categoryDiv}>
+              <TouchableOpacity
+                style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+                onPress={() => setIsModalVisible(true)}>
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={updatePatientObstetricsHistory}>
+              <Text style={styles.buttonText}>Update</Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.loginButton}>
-          <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={updatePatientObstetricsHistory}>
-            <Text style={styles.buttonText}>Update</Text>
-          </TouchableOpacity>
         </View>
-        {/* Edit Modal */}
-        <Modal visible={isModalVisible} onDismiss={() => setIsModalVisible(false)} contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+      ) : (
+        <View
+          visible={isModalVisible}
+          onDismiss={() => setIsModalVisible(false)}
+          contentContainerStyle={styles.bottomModalContainer}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>Edit Obstetrics History</Text>
-              <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton1}>
-                <FontAwesomeIcon icon={faXmark} color="#FF3B30" style={styles.icon} />
+              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
+                Edit Obstetrics History
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(false)}
+                style={styles.closeButton1}>
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  color="#FF3B30"
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
             <ScrollView>
@@ -165,7 +195,9 @@ const Editobstetricshistory = ({route}) => {
                     style={styles.filterinput}
                     placeholder="G"
                     value={formData.g}
-                    onChangeText={text => setFormData(prev => ({...prev, g: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, g: text}))
+                    }
                   />
                 </View>
                 <View>
@@ -174,7 +206,9 @@ const Editobstetricshistory = ({route}) => {
                     style={styles.filterinput}
                     placeholder="P"
                     value={formData.p}
-                    onChangeText={text => setFormData(prev => ({...prev, p: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, p: text}))
+                    }
                   />
                 </View>
                 <View>
@@ -183,7 +217,9 @@ const Editobstetricshistory = ({route}) => {
                     style={styles.filterinput}
                     placeholder="L"
                     value={formData.l}
-                    onChangeText={text => setFormData(prev => ({...prev, l: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, l: text}))
+                    }
                   />
                 </View>
                 <View>
@@ -192,7 +228,9 @@ const Editobstetricshistory = ({route}) => {
                     style={styles.filterinput}
                     placeholder="A"
                     value={formData.a}
-                    onChangeText={text => setFormData(prev => ({...prev, a: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, a: text}))
+                    }
                   />
                 </View>
                 <View>
@@ -201,20 +239,32 @@ const Editobstetricshistory = ({route}) => {
                     style={styles.filterinput}
                     placeholder="D"
                     value={formData.d}
-                    onChangeText={text => setFormData(prev => ({...prev, d: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, d: text}))
+                    }
                   />
                 </View>
                 <View>
                   <Text style={styles.modalText}>Pregnant</Text>
                   <View style={{flexDirection: 'row', gap: 12}}>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.pregnant === 'yes' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, pregnant: 'yes'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.pregnant === 'yes' && styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, pregnant: 'yes'}))
+                      }>
                       <Text style={styles.segText}>Yes</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.pregnant === 'no' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, pregnant: 'no'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.pregnant === 'no' && styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, pregnant: 'no'}))
+                      }>
                       <Text style={styles.segText}>No</Text>
                     </TouchableOpacity>
                   </View>
@@ -223,13 +273,25 @@ const Editobstetricshistory = ({route}) => {
                   <Text style={styles.modalText}>Breast Feeding</Text>
                   <View style={{flexDirection: 'row', gap: 12}}>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.breastFeeding === 'yes' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, breastFeeding: 'yes'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.breastFeeding === 'yes' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, breastFeeding: 'yes'}))
+                      }>
                       <Text style={styles.segText}>Yes</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.breastFeeding === 'no' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, breastFeeding: 'no'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.breastFeeding === 'no' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, breastFeeding: 'no'}))
+                      }>
                       <Text style={styles.segText}>No</Text>
                     </TouchableOpacity>
                   </View>
@@ -238,13 +300,23 @@ const Editobstetricshistory = ({route}) => {
                   <Text style={styles.modalText}>Planning to Conceive</Text>
                   <View style={{flexDirection: 'row', gap: 12}}>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.conception === 'yes' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, conception: 'yes'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.conception === 'yes' && styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, conception: 'yes'}))
+                      }>
                       <Text style={styles.segText}>Yes</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.conception === 'no' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, conception: 'no'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.conception === 'no' && styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, conception: 'no'}))
+                      }>
                       <Text style={styles.segText}>No</Text>
                     </TouchableOpacity>
                   </View>
@@ -253,13 +325,31 @@ const Editobstetricshistory = ({route}) => {
                   <Text style={styles.modalText}>Contraception</Text>
                   <View style={{flexDirection: 'row', gap: 12}}>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.contraception === 'yes' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, contraception: 'yes'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.contraception === 'yes' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({...prev, contraception: 'yes'}))
+                      }>
                       <Text style={styles.segText}>Yes</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.contraception === 'no' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, contraception: 'no', pillsChecked: '', injuctionChecked: '', otherChecked: ''}))}>
+                      style={[
+                        styles.segButton,
+                        formData.contraception === 'no' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({
+                          ...prev,
+                          contraception: 'no',
+                          pillsChecked: '',
+                          injuctionChecked: '',
+                          otherChecked: '',
+                        }))
+                      }>
                       <Text style={styles.segText}>No</Text>
                     </TouchableOpacity>
                   </View>
@@ -267,18 +357,50 @@ const Editobstetricshistory = ({route}) => {
                 {formData.contraception === 'yes' && (
                   <View style={{flexDirection: 'row', gap: 12, marginTop: 10}}>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.pillsChecked === 'Pills' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, pillsChecked: prev.pillsChecked === 'Pills' ? '' : 'Pills'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.pillsChecked === 'Pills' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({
+                          ...prev,
+                          pillsChecked:
+                            prev.pillsChecked === 'Pills' ? '' : 'Pills',
+                        }))
+                      }>
                       <Text style={styles.segText}>Pills</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.injuctionChecked === 'Injection' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, injuctionChecked: prev.injuctionChecked === 'Injection' ? '' : 'Injection'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.injuctionChecked === 'Injection' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({
+                          ...prev,
+                          injuctionChecked:
+                            prev.injuctionChecked === 'Injection'
+                              ? ''
+                              : 'Injection',
+                        }))
+                      }>
                       <Text style={styles.segText}>Injection</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.segButton, formData.otherChecked === 'Other' && styles.selectedButton]}
-                      onPress={() => setFormData(prev => ({...prev, otherChecked: prev.otherChecked === 'Other' ? '' : 'Other'}))}>
+                      style={[
+                        styles.segButton,
+                        formData.otherChecked === 'Other' &&
+                          styles.selectedButton,
+                      ]}
+                      onPress={() =>
+                        setFormData(prev => ({
+                          ...prev,
+                          otherChecked:
+                            prev.otherChecked === 'Other' ? '' : 'Other',
+                        }))
+                      }>
                       <Text style={styles.segText}>Other</Text>
                     </TouchableOpacity>
                   </View>
@@ -298,8 +420,8 @@ const Editobstetricshistory = ({route}) => {
               <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
