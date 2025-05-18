@@ -13,6 +13,7 @@ import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   faArrowLeft,
   faChevronUp,
+  faPencil,
   faPencilSquare,
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -171,27 +172,27 @@ const Vitals = () => {
     useCallback(() => {
       const fetchmobileAssessment = async () => {
         try {
-        await axios
-          .post(FetchMobileOpdAssessmentForEditapi, {
-            hospital_id: userData?.hospital_id,
-            reception_id: userData?._id,
-            patient_id: selectedPatient?._id,
-            api_type: 'OPD-VITALS',
-            uhid: selectedPatient?.patientuniqueno,
-            mobilenumber: selectedPatient?.mobilenumber,
-            appoint_id: selectedPatient?.appoint_id,
-          })
-          .then(res => {
-            console.log('res : ', res.data);
-            setPatientSympyomsArrayEdit(res.data.opdvitalshistoryarray);
-          });
-      } catch (error) {
-        console.error(error);
-      }
-    };
+          await axios
+            .post(FetchMobileOpdAssessmentForEditapi, {
+              hospital_id: userData?.hospital_id,
+              reception_id: userData?._id,
+              patient_id: selectedPatient?._id,
+              api_type: 'OPD-VITALS',
+              uhid: selectedPatient?.patientuniqueno,
+              mobilenumber: selectedPatient?.mobilenumber,
+              appoint_id: selectedPatient?.appoint_id,
+            })
+            .then(res => {
+              console.log('res : ', res.data);
+              setPatientSympyomsArrayEdit(res.data.opdvitalshistoryarray);
+            });
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-    fetchmobileAssessment();
-  }, []),
+      fetchmobileAssessment();
+    }, []),
   );
 
   return (
@@ -685,81 +686,34 @@ const Vitals = () => {
 
                   {/* Symptoms Section */}
                   <View style={styles.categoryDiv}>
-                    <Text style={styles.categoryText}>
-                       Vitals Details
-                    </Text>
+                    <Text style={styles.categoryText}>Vitals Details</Text>
                     {patientSympyomsArrayEdit?.length > 0 ? (
                       patientSympyomsArrayEdit?.map((item, index) => {
                         return (
-                          <View style={styles.sympDiv} key={index + 1}>
-                            <View
-                              style={[
-                                styles.modalContentHeader,
-                                {
-                                  borderBottomWidth: 1,
-                                  paddingBottom: 6,
-                                  borderColor: '#e6e6e6',
-                                },
-                              ]}>
-                              <Text
-                                style={[
-                                  styles.modalText,
-                                  {marginBottom: 0, fontSize: 13},
-                                ]}>
-                                #{index + 1} Symptom
-                              </Text>
-                              <TouchableOpacity onPress={() => navigation.navigate('Editvitals', {data: item, userData, selectedPatient})}>
-                                <FontAwesomeIcon
-                                  icon={faPencilSquare}
-                                  color="#05b508"
-                                  style={styles.icon}
-                                />
-                              </TouchableOpacity>
-                            </View>
-                            <View style={styles.sympDivOuter} key={index + 1}>
-
-                              {/* New Vitals Data */}
-                              <View style={styles.sympDivInner}>
-                                <Text style={styles.label}>Eye Opening</Text>
-                                <Text>{item.eyeopening}</Text>
-                              </View>
-                              <View style={styles.sympDivInner}>
-                                <Text style={styles.label}>Motor Response</Text>
-                                <Text>{item.motorResponse}</Text>
-                              </View>
-                              <View style={styles.sympDivInner}>
-                                <Text style={styles.label}>Diastolic BP</Text>
-                                <Text>{item.p_diastolicbp}</Text>
-                              </View>
-                              <View style={styles.sympDivInner}>
-                                <Text style={styles.label}>Pulse</Text>
-                                <Text>{item.p_pulse}</Text>
-                              </View>
-                              <View style={styles.sympDivInner}>
-                                <Text style={styles.label}>
-                                  Respiratory Rate
-                                </Text>
-                                <Text>{item.p_rsprate}</Text>
-                              </View>
-                              <View style={styles.sympDivInner}>
-                                <Text style={styles.label}>SpO2</Text>
-                                <Text>{item.p_spo2}</Text>
-                              </View>
-                              <View style={styles.sympDivInner}>
-                                <Text style={styles.label}>Systolic BP</Text>
-                                <Text>{item.p_systolicbp}</Text>
-                              </View>
-                              <View style={styles.sympDivInner}>
-                                <Text style={styles.label}>Temperature</Text>
-                                <Text>{item.p_temp}</Text>
-                              </View>
-                              <View style={styles.sympDivInner}>
-                                <Text style={styles.label}>
-                                  Verbal Response
-                                </Text>
-                                <Text>{item.verbalResponse}</Text>
-                              </View>
-                            </View>
+                          <View
+                            style={[styles.sympDiv, styles.sympContainer]}
+                            key={index + 1}>
+                            <Text style={styles.sympText}>
+                              {item.p_diastolicbp} {item.p_pulse}{' '}
+                              {item.p_rsprate} {item.p_spo2} {item.p_systolicbp}{' '}
+                              {item.p_temp} {item.eyeopening}{' '}
+                              {item.motorResponse} {item.verbalResponse}
+                            </Text>
+                            <TouchableOpacity
+                              style={styles.editIcon}
+                              onPress={() =>
+                                navigation.navigate('Editvitals', {
+                                  data: item,
+                                  userData,
+                                  selectedPatient,
+                                })
+                              }>
+                              <FontAwesomeIcon
+                                icon={faPencil}
+                                color="#05b508"
+                                style={styles.icon}
+                              />
+                            </TouchableOpacity>
                           </View>
                         );
                       })
@@ -978,5 +932,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 10,
+  },
+  sympContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  sympText: {
+    fontSize: 16,
+    fontWeight: 'normal',
+    flex: 0.9,
+  },
+  editIcon: {
+    padding: 8,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: '#05b508',
   },
 });

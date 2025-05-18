@@ -105,7 +105,11 @@ const Editvitals = ({route}) => {
 
   return (
     <>
-      <StatusBar style={styles.StatusBar} animated={false} backgroundColor="#ffffff" />
+      <StatusBar
+        style={styles.StatusBar}
+        animated={false}
+        backgroundColor="#ffffff"
+      />
       {/* Header */}
       <View style={styles.navbar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -115,71 +119,92 @@ const Editvitals = ({route}) => {
           <Text style={styles.navbarText}>Edit Vitals</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
-        <ScrollView style={{marginBottom: 100}} vertical showsVerticalScrollIndicator={false}>
-          {/* Current Vitals Details */}
-          <View style={styles.categoryDiv}>
-            <Text style={styles.categoryText}>Current Vitals Details</Text>
-            <View style={styles.sympDiv}>
-              <View style={styles.sympDivOuter}>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Temperature</Text>
-                  <Text>{formData.p_temp}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Pulse</Text>
-                  <Text>{formData.p_pulse}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>SPO2</Text>
-                  <Text>{formData.p_spo2}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Systolic BP</Text>
-                  <Text>{formData.p_systolicbp}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Diastolic BP</Text>
-                  <Text>{formData.p_diastolicbp}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Resp. Rate</Text>
-                  <Text>{formData.p_rsprate}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Eye Opening</Text>
-                  <Text>{formData.eyeopening}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Verbal Response</Text>
-                  <Text>{formData.verbalResponse}</Text>
-                </View>
-                <View style={styles.sympDivInner}>
-                  <Text style={styles.label}>Motor Response</Text>
-                  <Text>{formData.motorResponse}</Text>
+
+      {!isModalVisible ? (
+        <View style={styles.container}>
+          <ScrollView
+            style={{marginBottom: 100}}
+            vertical
+            showsVerticalScrollIndicator={false}>
+            {/* Current Vitals Details */}
+            <View style={styles.categoryDiv}>
+              <Text style={styles.categoryText}>Current Vitals Details</Text>
+              <View style={styles.sympDiv}>
+                <View style={styles.sympDivOuter}>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Temperature</Text>
+                    <Text>{formData.p_temp}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Pulse</Text>
+                    <Text>{formData.p_pulse}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>SPO2</Text>
+                    <Text>{formData.p_spo2}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Systolic BP</Text>
+                    <Text>{formData.p_systolicbp}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Diastolic BP</Text>
+                    <Text>{formData.p_diastolicbp}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Resp. Rate</Text>
+                    <Text>{formData.p_rsprate}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Eye Opening</Text>
+                    <Text>{formData.eyeopening}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Verbal Response</Text>
+                    <Text>{formData.verbalResponse}</Text>
+                  </View>
+                  <View style={styles.sympDivInner}>
+                    <Text style={styles.label}>Motor Response</Text>
+                    <Text>{formData.motorResponse}</Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-          {/* Edit Button */}
-          <View style={styles.categoryDiv}>
-            <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={() => setIsModalVisible(true)}>
-              <Text style={styles.buttonText}>Edit</Text>
+            {/* Edit Button */}
+            <View style={styles.categoryDiv}>
+              <TouchableOpacity
+                style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+                onPress={() => setIsModalVisible(true)}>
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+          <View style={styles.loginButton}>
+            <TouchableOpacity
+              style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]}
+              onPress={updatePatientVitalsHistory}>
+              <Text style={styles.buttonText}>Update</Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View style={styles.loginButton}>
-          <TouchableOpacity style={[styles.buttonDiv, {backgroundColor: '#1b55f5'}]} onPress={updatePatientVitalsHistory}>
-            <Text style={styles.buttonText}>Update</Text>
-          </TouchableOpacity>
         </View>
-        {/* Edit Modal */}
-        <Modal visible={isModalVisible} onDismiss={() => setIsModalVisible(false)} contentContainerStyle={styles.bottomModalContainer}>
-          <View style={styles.modalContent}>
+      ) : (
+        <View
+          visible={isModalVisible}
+          onDismiss={() => setIsModalVisible(false)}
+          contentContainerStyle={styles.bottomModalContainer}>
+          <View style={{padding: 20}}>
             <View style={styles.modalContentHeader}>
-              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>Edit Vitals</Text>
-              <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton1}>
-                <FontAwesomeIcon icon={faXmark} color="#FF3B30" style={styles.icon} />
+              <Text style={[styles.modalText, {marginBottom: 0, fontSize: 18}]}>
+                Edit Vitals
+              </Text>
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(false)}
+                style={styles.closeButton1}>
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  color="#FF3B30"
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
             <ScrollView>
@@ -190,7 +215,9 @@ const Editvitals = ({route}) => {
                     style={styles.filterinput}
                     placeholder="Temperature"
                     value={formData.p_temp}
-                    onChangeText={text => setFormData(prev => ({...prev, p_temp: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, p_temp: text}))
+                    }
                     keyboardType="numeric"
                   />
                 </View>
@@ -200,7 +227,9 @@ const Editvitals = ({route}) => {
                     style={styles.filterinput}
                     placeholder="Pulse"
                     value={formData.p_pulse}
-                    onChangeText={text => setFormData(prev => ({...prev, p_pulse: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, p_pulse: text}))
+                    }
                     keyboardType="numeric"
                   />
                 </View>
@@ -210,7 +239,9 @@ const Editvitals = ({route}) => {
                     style={styles.filterinput}
                     placeholder="SPO2"
                     value={formData.p_spo2}
-                    onChangeText={text => setFormData(prev => ({...prev, p_spo2: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, p_spo2: text}))
+                    }
                     keyboardType="numeric"
                   />
                 </View>
@@ -220,7 +251,9 @@ const Editvitals = ({route}) => {
                     style={styles.filterinput}
                     placeholder="Systolic BP"
                     value={formData.p_systolicbp}
-                    onChangeText={text => setFormData(prev => ({...prev, p_systolicbp: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, p_systolicbp: text}))
+                    }
                     keyboardType="numeric"
                   />
                 </View>
@@ -230,7 +263,9 @@ const Editvitals = ({route}) => {
                     style={styles.filterinput}
                     placeholder="Diastolic BP"
                     value={formData.p_diastolicbp}
-                    onChangeText={text => setFormData(prev => ({...prev, p_diastolicbp: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, p_diastolicbp: text}))
+                    }
                     keyboardType="numeric"
                   />
                 </View>
@@ -240,20 +275,33 @@ const Editvitals = ({route}) => {
                     style={styles.filterinput}
                     placeholder="Resp. Rate"
                     value={formData.p_rsprate}
-                    onChangeText={text => setFormData(prev => ({...prev, p_rsprate: text}))}
+                    onChangeText={text =>
+                      setFormData(prev => ({...prev, p_rsprate: text}))
+                    }
                     keyboardType="numeric"
                   />
                 </View>
                 <View>
                   <Text style={styles.modalText}>Eye Opening</Text>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 10}}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={{marginBottom: 10}}>
                     <View style={{flexDirection: 'row', gap: 8}}>
                       {relationEyeOpening.map(opt => (
                         <TouchableOpacity
                           key={opt.value}
-                          style={[styles.segButton, formData.eyeopening === opt.value && styles.selectedButton]}
-                          onPress={() => setFormData(prev => ({...prev, eyeopening: opt.value}))}
-                        >
+                          style={[
+                            styles.segButton,
+                            formData.eyeopening === opt.value &&
+                              styles.selectedButton,
+                          ]}
+                          onPress={() =>
+                            setFormData(prev => ({
+                              ...prev,
+                              eyeopening: opt.value,
+                            }))
+                          }>
                           <Text style={styles.segText}>{opt.label}</Text>
                         </TouchableOpacity>
                       ))}
@@ -262,14 +310,25 @@ const Editvitals = ({route}) => {
                 </View>
                 <View>
                   <Text style={styles.modalText}>Verbal Response</Text>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 10}}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={{marginBottom: 10}}>
                     <View style={{flexDirection: 'row', gap: 8}}>
                       {relationVerbalResp.map(opt => (
                         <TouchableOpacity
                           key={opt.value}
-                          style={[styles.segButton, formData.verbalResponse === opt.value && styles.selectedButton]}
-                          onPress={() => setFormData(prev => ({...prev, verbalResponse: opt.value}))}
-                        >
+                          style={[
+                            styles.segButton,
+                            formData.verbalResponse === opt.value &&
+                              styles.selectedButton,
+                          ]}
+                          onPress={() =>
+                            setFormData(prev => ({
+                              ...prev,
+                              verbalResponse: opt.value,
+                            }))
+                          }>
                           <Text style={styles.segText}>{opt.label}</Text>
                         </TouchableOpacity>
                       ))}
@@ -278,14 +337,25 @@ const Editvitals = ({route}) => {
                 </View>
                 <View>
                   <Text style={styles.modalText}>Motor Response</Text>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 10}}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={{marginBottom: 10}}>
                     <View style={{flexDirection: 'row', gap: 8}}>
                       {relationMotorResp.map(opt => (
                         <TouchableOpacity
                           key={opt.value}
-                          style={[styles.segButton, formData.motorResponse === opt.value && styles.selectedButton]}
-                          onPress={() => setFormData(prev => ({...prev, motorResponse: opt.value}))}
-                        >
+                          style={[
+                            styles.segButton,
+                            formData.motorResponse === opt.value &&
+                              styles.selectedButton,
+                          ]}
+                          onPress={() =>
+                            setFormData(prev => ({
+                              ...prev,
+                              motorResponse: opt.value,
+                            }))
+                          }>
                           <Text style={styles.segText}>{opt.label}</Text>
                         </TouchableOpacity>
                       ))}
@@ -307,8 +377,8 @@ const Editvitals = ({route}) => {
               <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
           </View>
-        </Modal>
-      </View>
+        </View>
+      )}
     </>
   );
 };
@@ -380,8 +450,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     padding: 16,
-    position: 'absolute',
-    bottom: 0.5,
     width: '100%',
   },
   modalText: {

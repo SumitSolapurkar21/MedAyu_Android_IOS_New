@@ -573,4 +573,5 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 4,
   },
+  
 });
