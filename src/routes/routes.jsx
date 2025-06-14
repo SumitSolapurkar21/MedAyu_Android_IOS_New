@@ -48,10 +48,14 @@ import Editdiagnosis from '../screens/editprescription/Editdiagnosis';
 import Edittreatment from '../screens/editprescription/Edittreatment';
 import Editadvice from '../screens/editprescription/Editadvice';
 import Editfollowup from '../screens/editprescription/Editfollowup';
+import AshtvidhPariksha from '../screens/prescriptions/Ayurvedic/AshtvidhPariksha';
+import DashavidhPariksha from '../screens/prescriptions/Ayurvedic/DashavidhPariksha';
+import Samprapti from '../screens/prescriptions/Ayurvedic/Samprapti';
+import SrotasPariksha from '../screens/prescriptions/Ayurvedic/SrotasPariksha';
+import Prakruti from '../screens/prescriptions/Ayurvedic/Prakruti';
 const Stack = createNativeStackNavigator();
 
 export const MyRoutes = () => {
-
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -100,18 +104,42 @@ export const MyRoutes = () => {
         <Stack.Screen name="Editcomplaints" component={Editcomplaints} />
         <Stack.Screen name="Editpasthistory" component={Editpasthistory} />
         <Stack.Screen name="Editfamilyhistory" component={Editfamilyhistory} />
-        <Stack.Screen name="Editmedicinehistory" component={Editmedicinehistory} />
-        <Stack.Screen name="Editpersonalhistory" component={Editpersonalhistory} />
-        <Stack.Screen name="Editobstetricshistory" component={Editobstetricshistory} />
-        <Stack.Screen name="Editmenstrualhistory" component={Editmenstrualhistory} />
-        <Stack.Screen name="Editvitals" component={Editvitals} /> 
-        <Stack.Screen name="Editgeneralexamination" component={Editgeneralexamination} />
-        <Stack.Screen name="Editsystemicexamination" component={Editsystemicexamination} />
+        <Stack.Screen
+          name="Editmedicinehistory"
+          component={Editmedicinehistory}
+        />
+        <Stack.Screen
+          name="Editpersonalhistory"
+          component={Editpersonalhistory}
+        />
+        <Stack.Screen
+          name="Editobstetricshistory"
+          component={Editobstetricshistory}
+        />
+        <Stack.Screen
+          name="Editmenstrualhistory"
+          component={Editmenstrualhistory}
+        />
+        <Stack.Screen name="Editvitals" component={Editvitals} />
+        <Stack.Screen
+          name="Editgeneralexamination"
+          component={Editgeneralexamination}
+        />
+        <Stack.Screen
+          name="Editsystemicexamination"
+          component={Editsystemicexamination}
+        />
         <Stack.Screen name="Editdiagnosis" component={Editdiagnosis} />
         <Stack.Screen name="Edittreatment" component={Edittreatment} />
         <Stack.Screen name="Editadvice" component={Editadvice} />
         <Stack.Screen name="Editfollowup" component={Editfollowup} />
 
+        {/* Assessment Pages .... */}
+        <Stack.Screen name="AshtvidhPariksha" component={AshtvidhPariksha} />
+        <Stack.Screen name="DashavidhPariksha" component={DashavidhPariksha} />
+        <Stack.Screen name="Samprapti" component={Samprapti} />
+        <Stack.Screen name="SrotasPariksha" component={SrotasPariksha} />
+        <Stack.Screen name="Prakruti" component={Prakruti} />
 
         {/* Bills Pages .... */}
         <Stack.Screen name="Billhome" component={BillHome} />
@@ -120,8 +148,6 @@ export const MyRoutes = () => {
         <Stack.Screen name="EditBillItems" component={EditBillItem} />
 
         <Stack.Screen name="ApplyAttendence" component={ApplyAttendance} />
-
-        
       </Stack.Navigator>
     </NavigationContainer>
   );

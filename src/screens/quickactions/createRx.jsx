@@ -50,12 +50,22 @@ const CreateRx = () => {
     {id: 9, prescription: 'General Examination', page: 'Generalexamination'},
     {id: 10, prescription: 'Systemic Examination', page: 'SystemicExamination'},
     {id: 11, prescription: 'Diagnosis', page: 'Diagnosis'},
-//     {id: 12, prescription: 'Plan of Care', page: 'Planofcare'},
+    //     {id: 12, prescription: 'Plan of Care', page: 'Planofcare'},
     {id: 13, prescription: 'Treatment', page: 'Treatment'},
-//     {id: 14, prescription: 'Procedure', page: 'Procedure'},
+    //     {id: 14, prescription: 'Procedure', page: 'Procedure'},
     {id: 15, prescription: 'Advice', page: 'Advice'},
     {id: 16, prescription: 'Follow Up Date', page: 'Followupdate'},
   ];
+
+  const prescriptionAyurvedicType = [
+    {id: 1, prescription: 'Ashtvidh Pariksha', page: 'AshtvidhPariksha'},
+    {id: 2, prescription: 'Dashavidh Pariksha', page: 'DashavidhPariksha'},
+    {id: 3, prescription: 'Samprapti', page: 'Samprapti'},
+    {id: 4, prescription: 'Srotas Pariksha', page: 'SrotasPariksha'},
+    {id: 5, prescription: 'Prakruti', page: 'Prakruti'},
+  ];
+
+  const [prescriptionCategory, setPrescriptionCategory] = useState('Medical');
 
   const formattedDate =
     new Date()
@@ -141,28 +151,66 @@ const CreateRx = () => {
         )}
       </View>
       <View style={styles.container}>
+        <View style={styles.prescriptionCategory}>
+          <TouchableOpacity
+            style={[
+              styles.prescriptionCategoryButton,
+              prescriptionCategory === 'Medical' && styles.activeButton,
+            ]}
+            onPress={() => setPrescriptionCategory('Medical')}>
+            <Text style={styles.prescriptionCategoryText}>Medical</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.prescriptionCategoryButton,
+              prescriptionCategory === 'Ayurvedic' && styles.activeButton,
+            ]}
+            onPress={() => setPrescriptionCategory('Ayurvedic')}>
+            <Text style={styles.prescriptionCategoryText}>Ayurvedic</Text>
+          </TouchableOpacity>
+        </View>
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           vertical
           style={styles.body}>
-          {prescriptionType &&
-            prescriptionType?.map(prescription => {
-              return (
-                <TouchableOpacity
-                  style={styles.bodyDiv}
-                  key={prescription.id}
-                  onPress={() => navigationHandler(`${prescription.page}`)}>
-                  <Text style={styles.bodyText}>
-                    {prescription.prescription}
-                  </Text>
-                  <FontAwesomeIcon
-                    icon={faCirclePlus}
-                    color="#cc99ff"
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-              );
-            })}
+          {prescriptionCategory === 'Medical'
+            ? prescriptionType &&
+              prescriptionType?.map(prescription => {
+                return (
+                  <TouchableOpacity
+                    style={styles.bodyDiv}
+                    key={prescription.id}
+                    onPress={() => navigationHandler(`${prescription.page}`)}>
+                    <Text style={styles.bodyText}>
+                      {prescription.prescription}
+                    </Text>
+                    <FontAwesomeIcon
+                      icon={faCirclePlus}
+                      color="#cc99ff"
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
+                );
+              })
+            : prescriptionAyurvedicType &&
+              prescriptionAyurvedicType?.map(prescription => {
+                return (
+                  <TouchableOpacity
+                    style={styles.bodyDiv}
+                    key={prescription.id}
+                    onPress={() => navigationHandler(`${prescription.page}`)}>
+                    <Text style={styles.bodyText}>
+                      {prescription.prescription}
+                    </Text>
+                    <FontAwesomeIcon
+                      icon={faCirclePlus}
+                      color="#cc99ff"
+                      style={styles.icon}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
         </ScrollView>
       </View>
     </>
@@ -232,5 +280,28 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#ffffff',
     letterSpacing: 1,
+  },
+  prescriptionCategory: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    padding: 16,
+    gap: 10,
+  },
+  prescriptionCategoryButton: {
+    padding: 10,
+    borderRadius: 6,
+    width: '40%',
+    borderWidth: 2,
+    borderColor: '#f0f0f0',
+  },
+  prescriptionCategoryText: {
+    color: '#000000',
+    letterSpacing: 1,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  activeButton: {
+    backgroundColor: '#f0f0f0',
+    borderColor: '#f0f0f0',
   },
 });
