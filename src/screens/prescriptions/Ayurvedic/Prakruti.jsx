@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
@@ -16,7 +16,7 @@ import {
   faArrowLeft,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import {RadioButton} from 'react-native-paper';
+import {Divider, RadioButton} from 'react-native-paper';
 import UserContext from '../../../functions/usercontext';
 import {addopdassessment} from '../../../api/api';
 import axios from 'axios';
@@ -123,7 +123,7 @@ const Prakruti = () => {
   const [collapse16, setCollapse16] = useState(false);
   const [collapse17, setCollapse17] = useState(false);
   const [collapse18, setCollapse18] = useState(false);
-  const [collapse19, setCollapse19] = useState(false);
+
 
   const {userData, selectedPatient} = useContext(UserContext);
   const [patientSympyomsArray, setPatientSympyomsArray] = useState([]);
@@ -161,7 +161,7 @@ const Prakruti = () => {
       } catch (error) {
         Alert.alert('Error !!', error);
       }
-      navigation.replace('CreateRx');
+      navigation.goBack();
     } else {
       Alert.alert('Warning !!', 'Add symptoms first');
     }
@@ -173,6 +173,109 @@ const Prakruti = () => {
       prevArray.filter((_, index) => index !== indexToRemove),
     );
   };
+
+  // Function to calculate Prakruti type based on selected values
+  const calculatePrakrutiType = () => {
+    const vataFields = [
+      'BodyWeightFrame_Vata', 'Skin_Vata', 'Fingernails_Vata', 'Hair_Vata',
+      'Forehead_Vata', 'Eyes_Vata', 'Lips_Vata', 'Thirst_Vata', 'Excretions_Vata',
+      'VoiceSpeech_Vata', 'WorkingStyle_Vata', 'MentalMakeup_Vata', 'Temperament_Vata',
+      'Relationships_Vata', 'WeatherPreferences_Vata', 'MoneyMatters_Vata',
+      'Memory_Vata', 'Dreams_Vata', 'Sleep_Vata'
+    ];
+    
+    const pittaFields = [
+      'BodyWeightFrame_Pitta', 'Skin_Pitta', 'Fingernails_Pitta', 'Hair_Pitta',
+      'Forehead_Pitta', 'Eyes_Pitta', 'Lips_Pitta', 'Thirst_Pitta', 'Excretions_Pitta',
+      'VoiceSpeech_Pitta', 'WorkingStyle_Pitta', 'MentalMakeup_Pitta', 'Temperament_Pitta',
+      'Relationships_Pitta', 'WeatherPreferences_Pitta', 'MoneyMatters_Pitta',
+      'Memory_Pitta', 'Dreams_Pitta', 'Sleep_Pitta'
+    ];
+    
+    const kaphaFields = [
+      'BodyWeightFrame_Kapha', 'Skin_Kapha', 'Fingernails_Kapha', 'Hair_Kapha',
+      'Forehead_Kapha', 'Eyes_Kapha', 'Lips_Kapha', 'Thirst_Kapha', 'Excretions_Kapha',
+      'VoiceSpeech_Kapha', 'WorkingStyle_Kapha', 'MentalMakeup_Kapha', 'Temperament_Kapha',
+      'Relationships_Kapha', 'WeatherPreferences_Kapha', 'MoneyMatters_Kapha',
+      'Memory_Kapha', 'Dreams_Kapha', 'Sleep_Kapha'
+    ];
+
+    let vataCount = 0;
+    let pittaCount = 0;
+    let kaphaCount = 0;
+
+    // Count selected values for each dosha
+    vataFields.forEach(field => {
+      if (formData[field] && formData[field] !== '') {
+        vataCount++;
+      }
+    });
+
+    pittaFields.forEach(field => {
+      if (formData[field] && formData[field] !== '') {
+        pittaCount++;
+      }
+    });
+
+    kaphaFields.forEach(field => {
+      if (formData[field] && formData[field] !== '') {
+        kaphaCount++;
+      }
+    });
+
+    // Create array of doshas with their counts
+    const doshaCounts = [
+      { name: 'Vatta', count: vataCount },
+      { name: 'Pitta', count: pittaCount },
+      { name: 'Kapha', count: kaphaCount }
+    ];
+
+    // Sort by count in descending order
+    doshaCounts.sort((a, b) => b.count - a.count);
+
+    // Filter out doshas with count 0
+    const activeDoshas = doshaCounts.filter(dosha => dosha.count > 0);
+
+    if (activeDoshas.length === 0) {
+      return '';
+    }
+
+    // Create result string in format "Vatta-Pitta-Kapha"
+    const result = activeDoshas.map(dosha => dosha.name).join('-');
+    
+    return result;
+  };
+
+  // Update Result whenever formData changes
+  useEffect(() => {
+    const prakrutiType = calculatePrakrutiType();
+    if (prakrutiType !== formData.Result) {
+      setFormData(prev => ({
+        ...prev,
+        Result: prakrutiType,
+      }));
+    }
+  }, [
+    formData.BodyWeightFrame_Vata, formData.BodyWeightFrame_Pitta, formData.BodyWeightFrame_Kapha,
+    formData.Skin_Vata, formData.Skin_Pitta, formData.Skin_Kapha,
+    formData.Fingernails_Vata, formData.Fingernails_Pitta, formData.Fingernails_Kapha,
+    formData.Hair_Vata, formData.Hair_Pitta, formData.Hair_Kapha,
+    formData.Forehead_Vata, formData.Forehead_Pitta, formData.Forehead_Kapha,
+    formData.Eyes_Vata, formData.Eyes_Pitta, formData.Eyes_Kapha,
+    formData.Lips_Vata, formData.Lips_Pitta, formData.Lips_Kapha,
+    formData.Thirst_Vata, formData.Thirst_Pitta, formData.Thirst_Kapha,
+    formData.Excretions_Vata, formData.Excretions_Pitta, formData.Excretions_Kapha,
+    formData.VoiceSpeech_Vata, formData.VoiceSpeech_Pitta, formData.VoiceSpeech_Kapha,
+    formData.WorkingStyle_Vata, formData.WorkingStyle_Pitta, formData.WorkingStyle_Kapha,
+    formData.MentalMakeup_Vata, formData.MentalMakeup_Pitta, formData.MentalMakeup_Kapha,
+    formData.Temperament_Vata, formData.Temperament_Pitta, formData.Temperament_Kapha,
+    formData.Relationships_Vata, formData.Relationships_Pitta, formData.Relationships_Kapha,
+    formData.WeatherPreferences_Vata, formData.WeatherPreferences_Pitta, formData.WeatherPreferences_Kapha,
+    formData.MoneyMatters_Vata, formData.MoneyMatters_Pitta, formData.MoneyMatters_Kapha,
+    formData.Memory_Vata, formData.Memory_Pitta, formData.Memory_Kapha,
+    formData.Dreams_Vata, formData.Dreams_Pitta, formData.Dreams_Kapha,
+    formData.Sleep_Vata, formData.Sleep_Pitta, formData.Sleep_Kapha
+  ]);
 
   return (
     <View style={styles.container}>
@@ -211,21 +314,21 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="Lean" />
-                      <Text>Lean</Text>
+                      <Text style={styles.radioText}>Lean</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="Light weight" />
-                      <Text>Light weight</Text>
+                      <Text style={styles.radioText}>Light weight</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="Can not gain weight easily but can shed it rapidly" />
-                      <Text>
+                      <Text style={styles.radioText}>
                         Can not gain weight easily but can shed it rapidly
                       </Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="VATA PRAKRUTI" />
-                      <Text>VATA PRAKRUTI</Text>
+                      <Text style={styles.radioText}>VATA PRAKRUTI</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -244,19 +347,19 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="Well proportioned frame" />
-                      <Text>Well proportioned frame</Text>
+                      <Text style={styles.radioText}>Well proportioned frame</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="Average weight" />
-                      <Text>Average weight</Text>
+                      <Text style={styles.radioText}>Average weight</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="Can gain as well as shed weight easily" />
-                      <Text>Can gain as well as shed weight easily</Text>
+                      <Text style={styles.radioText}>Can gain as well as shed weight easily</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="PITTA PRAKRUTI" />
-                      <Text>VATA PRAKRUTI</Text>
+                      <Text style={styles.radioText}>PITTA PRAKRUTI</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -275,21 +378,21 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="Board and robust frame" />
-                      <Text>Board and robust frame</Text>
+                      <Text style={styles.radioText}>Board and robust frame</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="Heavy bodied" />
-                      <Text>Heavy bodied</Text>
+                      <Text style={styles.radioText}>Heavy bodied</Text>
                     </View>
                     <View style={styles.radiosection}>
-                      <RadioButton value="Can gain weight easily but can not shed it as fast" />
-                      <Text>
+                      <RadioButton value="Can gain weight easily but can not shed it as fast"  />
+                      <Text style={styles.radioText}>
                         Can gain weight easily but can not shed it as fast
                       </Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="KAPHA PRAKRUTI" />
-                      <Text>VATA PRAKRUTI</Text>
+                      <Text style={styles.radioText}>KAPHA PRAKRUTI</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -320,11 +423,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="dry,rough to touch" />
-                      <Text>dry,rough to touch</Text>
+                      <Text style={styles.radioText}>dry,rough to touch</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="dull,darkish skin" />
-                      <Text>dull,darkish skin</Text>
+                      <Text style={styles.radioText}>dull,darkish skin</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -343,11 +446,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="soft,oily,warm to touch" />
-                      <Text>soft,oily,warm to touch</Text>
+                      <Text style={styles.radioText}>soft,oily,warm to touch</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="golwing skin ,wether fair or dark" />
-                      <Text>golwing skin ,wether fair or dark</Text>
+                      <Text style={styles.radioText}>golwing skin ,wether fair or dark</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -366,11 +469,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="thick,supple,cool to touch" />
-                      <Text>thick,supple,cool to touch</Text>
+                      <Text style={styles.radioText}>thick,supple,cool to touch</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="pale skin, whitish complexion" />
-                      <Text>pale skin, whitish complexion</Text>
+                      <Text style={styles.radioText}>pale skin, whitish complexion</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -401,15 +504,15 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="rough and brittle" />
-                      <Text>rough and brittle</Text>
+                      <Text style={styles.radioText}>rough and brittle</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="small" />
-                      <Text>small</Text>
+                      <Text style={styles.radioText}>small</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="dull in colour" />
-                      <Text>dull in colour</Text>
+                      <Text style={styles.radioText}>dull in colour</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -428,15 +531,15 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="tough" />
-                      <Text>tough</Text>
+                      <Text style={styles.radioText}>tough</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="medium" />
-                      <Text>medium</Text>
+                      <Text style={styles.radioText}>medium</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="pinkish in colour" />
-                      <Text>pinkish in colour</Text>
+                      <Text style={styles.radioText}>pinkish in colour</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -455,19 +558,19 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="smooth" />
-                      <Text>smooth</Text>
+                      <Text style={styles.radioText}>smooth</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="large and wide" />
-                      <Text>large and wide</Text>
+                      <Text style={styles.radioText}>large and wide</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="Whitish in color" />
-                      <Text>Whitish in color</Text>
+                      <Text style={styles.radioText}>Whitish in color</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="KAPHA PRAKRUTI" />
-                      <Text>VATA PRAKRUTI</Text>
+                      <Text style={styles.radioText}>VATA PRAKRUTI</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -498,17 +601,17 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="dry and coarse" />
-                      <Text>dry and coarse</Text>
+                      <Text style={styles.radioText}>dry and coarse</Text>
                     </View>
                     <View style={styles.radiosection}>
-                      <RadioButton value="curly or difficult to manage , prone to split ends" />
+                      <RadioButton value="curly or difficult to manage , prone to split ends"  />
                       <Text>
                         curly or difficult to manage , prone to split ends
                       </Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="dark brown to black" />
-                      <Text>dark brown to black </Text>
+                      <Text style={styles.radioText}>dark brown to black </Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -527,17 +630,17 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="smooth and fine" />
-                      <Text>smooth and fine</Text>
+                      <Text style={styles.radioText}>smooth and fine</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="spare,lending towards early greying or balding" />
-                      <Text>
+                      <Text style={styles.radioText}>
                         spare,lending towards early greying or balding
                       </Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="light to auburn" />
-                      <Text>light to auburn</Text>
+                      <Text style={styles.radioText}>light to auburn</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -556,15 +659,15 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="silky and lustrous" />
-                      <Text>silky and lustrous</Text>
+                      <Text style={styles.radioText}>silky and lustrous</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="thick" />
-                      <Text>thick</Text>
+                      <Text style={styles.radioText}>thick</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="medium to brown" />
-                      <Text>medium to brown</Text>
+                      <Text style={styles.radioText}>medium to brown</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -595,7 +698,7 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="small" />
-                      <Text>small</Text>
+                      <Text style={styles.radioText}>small</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -614,7 +717,7 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="medium" />
-                      <Text>medium</Text>
+                      <Text style={styles.radioText}>medium</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -633,7 +736,7 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="large" />
-                      <Text>large</Text>
+                      <Text style={styles.radioText}>large</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -664,19 +767,19 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="small and active" />
-                      <Text>small and active</Text>
+                      <Text style={styles.radioText}>small and active</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="brown to dark brown pupils" />
-                      <Text>brown to dark brown pupils</Text>
+                      <Text style={styles.radioText}>brown to dark brown pupils</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="dull sclerae" />
-                      <Text>dull sclerae</Text>
+                      <Text style={styles.radioText}>dull sclerae</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="dry" />
-                      <Text>dry</Text>
+                      <Text style={styles.radioText}>dry</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -695,19 +798,19 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="sharp and penetrating" />
-                      <Text>sharp and penetrating</Text>
+                      <Text style={styles.radioText}>sharp and penetrating</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="light pupils could be brown,green or gray" />
-                      <Text>light pupils could be brown,green or gray</Text>
+                      <Text style={styles.radioText}>light pupils could be brown,green or gray</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="yellowish sclerae" />
-                      <Text>yellowish sclerae</Text>
+                      <Text style={styles.radioText}>yellowish sclerae</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="medium in size" />
-                      <Text>medium in size</Text>
+                      <Text style={styles.radioText}>medium in size</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -726,19 +829,19 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="moist" />
-                      <Text>moist</Text>
+                      <Text style={styles.radioText}>moist</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="large and attractive with thick lashes" />
-                      <Text>large and attractive with thick lashes</Text>
+                      <Text style={styles.radioText}>large and attractive with thick lashes</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="bright blue or black pupils" />
-                      <Text>bright blue or black pupils</Text>
+                      <Text style={styles.radioText}>bright blue or black pupils</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="clear white sclerae" />
-                      <Text>clear white sclerae</Text>
+                      <Text style={styles.radioText}>clear white sclerae</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -769,11 +872,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="thin" />
-                      <Text>thin</Text>
+                      <Text style={styles.radioText}>thin</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="darkish in colour" />
-                      <Text>darkish in colour</Text>
+                      <Text style={styles.radioText}>darkish in colour</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -792,11 +895,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="medium" />
-                      <Text>medium</Text>
+                      <Text style={styles.radioText}>medium</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="pinkish in colour" />
-                      <Text>pinkish in colour</Text>
+                      <Text style={styles.radioText}>pinkish in colour</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -815,11 +918,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="large" />
-                      <Text>large</Text>
+                      <Text style={styles.radioText}>large</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="pale in colur" />
-                      <Text>pale in colur</Text>
+                      <Text style={styles.radioText}>pale in colur</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -850,7 +953,7 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="variables" />
-                      <Text>variables</Text>
+                      <Text style={styles.radioText}>variables</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -869,7 +972,7 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="excessive" />
-                      <Text>excessive</Text>
+                      <Text style={styles.radioText}>excessive</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -888,7 +991,7 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="scanty" />
-                      <Text>scanty</Text>
+                      <Text style={styles.radioText}>scanty</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -919,13 +1022,13 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="frequently constipated hard and gaseous stools" />
-                      <Text>
+                      <Text style={styles.radioText}>
                         frequently constipated hard and gaseous stools
                       </Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="less sweating and arination" />
-                      <Text>less sweating and arination</Text>
+                      <Text style={styles.radioText}>less sweating and arination</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -944,11 +1047,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="regular ,soft and loose often buring stools" />
-                      <Text>regular ,soft and loose often buring stools</Text>
+                      <Text style={styles.radioText}>regular ,soft and loose often buring stools</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="profuse sweating and urination,strong body odour" />
-                      <Text>
+                      <Text style={styles.radioText}>
                         profuse sweating and urination,strong body odour
                       </Text>
                     </View>
@@ -969,11 +1072,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="regular ,thick and oily stools" />
-                      <Text>regular ,thick and oily stools</Text>
+                      <Text style={styles.radioText}>regular ,thick and oily stools</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="moderate sweating and urination" />
-                      <Text>moderate sweating and urination</Text>
+                      <Text style={styles.radioText}>moderate sweating and urination</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1004,12 +1107,12 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="weak, hoarse or shrill voice" />
-                      <Text>weak, hoarse or shrill voice</Text>
+                      <Text style={styles.radioText}>weak, hoarse or shrill voice</Text>
                     </View>
 
                     <View style={styles.radiosection}>
                       <RadioButton value="talk rapidly rather than clearly" />
-                      <Text>talk rapidly rather than clearly</Text>
+                      <Text style={styles.radioText}>talk rapidly rather than clearly</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1028,11 +1131,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="commanding and sharp voice" />
-                      <Text>commanding and sharp voice</Text>
+                      <Text style={styles.radioText}>commanding and sharp voice</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="persuasive and motivating" />
-                      <Text>persuasive and motivating</Text>
+                      <Text style={styles.radioText}>persuasive and motivating</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1051,11 +1154,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="gentle and pleasing voice" />
-                      <Text>gentle and pleasing voice</Text>
+                      <Text style={styles.radioText}>gentle and pleasing voice</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="talk less keep secrets within" />
-                      <Text>talk less keep secrets within</Text>
+                      <Text style={styles.radioText}>talk less keep secrets within</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1086,13 +1189,13 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="fast work" />
-                      <Text>fast work</Text>
+                      <Text style={styles.radioText}>fast work</Text>
                     </View>
 
                     <View style={styles.radiosection}>
-                      <RadioButton value="starts impulsively, but do not necessarily complet" />
-                      <Text>
-                        starts impulsively, but do not necessarily complet
+                      <RadioButton value="starts impulsively, but do not necessarily complete" />
+                      <Text style={styles.radioText}>
+                        starts impulsively, but do not necessarily complete
                       </Text>
                     </View>
                   </View>
@@ -1112,11 +1215,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="Determined worker" />
-                      <Text>Determined worker</Text>
+                      <Text style={styles.radioText}>Determined worker</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="highly task and goal oriented" />
-                      <Text>highly task and goal oriented</Text>
+                      <Text style={styles.radioText}>highly task and goal oriented</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1135,11 +1238,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="methodical worker" />
-                      <Text>methodical worker</Text>
+                      <Text style={styles.radioText}>methodical worker</Text>
                     </View>
                     <View style={styles.radiosection}>
-                      <RadioButton value="slow to being,but always see a task to completion" />
-                      <Text>
+                      <RadioButton value="slow to being,but always see a task to compl style={styles.radioText}etion" />
+                      <Text style={styles.radioText}>
                         slow to being,but always see a task to completion
                       </Text>
                     </View>
@@ -1172,12 +1275,12 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="restless and easily distracted" />
-                      <Text>restless and easily distracted</Text>
+                      <Text style={styles.radioText}>restless and easily distracted</Text>
                     </View>
 
                     <View style={styles.radiosection}>
                       <RadioButton value="curious mind" />
-                      <Text>curious mind</Text>
+                      <Text style={styles.radioText}>curious mind</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1196,11 +1299,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="passionate and generative" />
-                      <Text>passionate and generative</Text>
+                      <Text style={styles.radioText}>passionate and generative</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="assertive mind" />
-                      <Text>assertive mind</Text>
+                      <Text style={styles.radioText}>assertive mind</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1219,11 +1322,11 @@ const Prakruti = () => {
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
                       <RadioButton value="calm and stable" />
-                      <Text>calm and stable</Text>
+                      <Text style={styles.radioText}>calm and stable</Text>
                     </View>
                     <View style={styles.radiosection}>
                       <RadioButton value="logical mind" />
-                      <Text>logical mind</Text>
+                      <Text style={styles.radioText}>logical mind</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1253,13 +1356,17 @@ const Prakruti = () => {
                   value={formData.Temperament_Vata}>
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
-                      <RadioButton value="restless and easily distracted" />
-                      <Text>restless and easily distracted</Text>
+                      <RadioButton value="Insecure and impatient" />
+                      <Text style={styles.radioText}>Insecure and impatient</Text>
                     </View>
 
                     <View style={styles.radiosection}>
-                      <RadioButton value="curious mind" />
-                      <Text>curious mind</Text>
+                      <RadioButton value="hardly ever content,always searching" />
+                      <Text style={styles.radioText}>hardly ever content,always searching</Text>
+                    </View>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="quick in emotional reactions and outbursts" />
+                      <Text style={styles.radioText}>quick in emotional reactions and outbursts</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1277,12 +1384,18 @@ const Prakruti = () => {
                   value={formData.Temperament_Pitta}>
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
-                      <RadioButton value="passionate and generative" />
-                      <Text>passionate and generative</Text>
+                      <RadioButton value="aggressive and impatient" />
+                      <Text style={styles.radioText}>aggressive and impatient</Text>
                     </View>
                     <View style={styles.radiosection}>
-                      <RadioButton value="assertive mind" />
-                      <Text>assertive mind</Text>
+                      <RadioButton value="dominating and cynical" />
+                      <Text style={styles.radioText}>dominating and cynical</Text>
+                    </View>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="intense emotions of like or dislike,love or hate"  />
+                      <Text style={styles.radioText}>
+                        intense emotions of like or dislike,love or hate
+                      </Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1300,12 +1413,20 @@ const Prakruti = () => {
                   value={formData.Temperament_Kapha}>
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
-                      <RadioButton value="calm and stable" />
-                      <Text>calm and stable</Text>
+                      <RadioButton value="comfortable and patient" />
+                      <Text style={styles.radioText}>comfortable and patient</Text>
                     </View>
                     <View style={styles.radiosection}>
-                      <RadioButton value="logical mind" />
-                      <Text>logical mind</Text>
+                      <RadioButton value="laid back" />
+                      <Text style={styles.radioText}>laid back</Text>
+                    </View>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="show to change" />
+                      <Text style={styles.radioText}>show to change</Text>
+                    </View>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="do not get angry,have calm endurence" />
+                      <Text style={styles.radioText}>do not get angry,have calm endurence</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1317,37 +1438,78 @@ const Prakruti = () => {
           <TouchableOpacity
             style={styles.sectionHeader}
             onPress={() => setCollapse13(!collapse13)}>
-            <Text style={styles.title}>Purishvahasrotas</Text>
+            <Text style={styles.title}>Relationships</Text>
             <FontAwesomeIcon icon={collapse13 ? faAngleUp : faAngleDown} />
           </TouchableOpacity>
           {collapse13 && (
             <>
               <View style={styles.contentOuter}>
-                <Text style={styles.text}>Purishvahasrotas</Text>
+                <Text style={styles.text}>Vata (ether and air)</Text>
                 <RadioButton.Group
                   onValueChange={value =>
                     setFormData(prev => ({
                       ...prev,
-                      Purishvahasrotas: value,
+                      Relationships_Vata: value,
                     }))
                   }
-                  value={formData.Purishvahasrotas}>
+                  value={formData.Relationships_Vata}>
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
-                      <RadioButton value="Alpalpa" />
-                      <Text>Alpalpa</Text>
+                      <RadioButton value="forgive and forget easily" />
+                      <Text style={styles.radioText}>forgive and forget easily</Text>
+                    </View>
+
+                    <View style={styles.radiosection}>
+                      <RadioButton value="frequently in and out of love" />
+                      <Text style={styles.radioText}>frequently in and out of love</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Pitta (fire and water)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Relationships_Pitta: value,
+                    }))
+                  }
+                  value={formData.Relationships_Pitta}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="hold grudges for long" />
+                      <Text style={styles.radioText}>hold grudges for long</Text>
                     </View>
                     <View style={styles.radiosection}>
-                      <RadioButton value="Atidrava" />
-                      <Text>Atidrava</Text>
+                      <RadioButton value="enter into intense relationship" />
+                      <Text style={styles.radioText}>enter into intense relationship</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Kapha (water and earth)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Relationships_Kapha: value,
+                    }))
+                  }
+                  value={formData.Relationships_Kapha}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="forgive,but never forget" />
+                      <Text style={styles.radioText}>forgive,but never forget</Text>
                     </View>
                     <View style={styles.radiosection}>
-                      <RadioButton value="Sashula" />
-                      <Text>Sashula</Text>
-                    </View>
-                    <View style={styles.radiosection}>
-                      <RadioButton value="Grathita" />
-                      <Text>Grathita</Text>
+                      <RadioButton value="deeply attached in love and grounded in family tip"/>
+                      <Text style={styles.radioText}>
+                        deeply attached in love and grounded in family tip
+                      </Text>
                     </View>
                   </View>
                 </RadioButton.Group>
@@ -1360,43 +1522,374 @@ const Prakruti = () => {
           <TouchableOpacity
             style={styles.sectionHeader}
             onPress={() => setCollapse14(!collapse14)}>
-            <Text style={styles.title}>Swedavahasrotas</Text>
+            <Text style={styles.title}>Weather Preferences</Text>
             <FontAwesomeIcon icon={collapse14 ? faAngleUp : faAngleDown} />
           </TouchableOpacity>
           {collapse14 && (
             <>
               <View style={styles.contentOuter}>
-                <Text style={styles.text}>Swedavahasrotas</Text>
+                <Text style={styles.text}>Vata (ether and air)</Text>
                 <RadioButton.Group
                   onValueChange={value =>
                     setFormData(prev => ({
                       ...prev,
-                      Swedavahasrotas: value,
+                      WeatherPreferences_Vata: value,
                     }))
                   }
-                  value={formData.Swedavahasrotas}>
+                  value={formData.WeatherPreferences_Vata}>
                   <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
-                      <RadioButton value="Asweda" />
-                      <Text>Asweda</Text>
+                      <RadioButton value="sunny, warm and rainy climate" />
+                      <Text style={styles.radioText}>sunny, warm and rainy climate</Text>
                     </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Pitta (fire and water)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      WeatherPreferences_Pitta: value,
+                    }))
+                  }
+                  value={formData.WeatherPreferences_Pitta}>
+                  <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
-                      <RadioButton value="Lomaharsha" />
-                      <Text>Lomaharsha</Text>
+                      <RadioButton value="cool, pleasant climate" />
+                      <Text style={styles.radioText}>cool, pleasant climate</Text>
                     </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Kapha (water and earth)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      WeatherPreferences_Kapha: value,
+                    }))
+                  }
+                  value={formData.WeatherPreferences_Kapha}>
+                  <View style={styles.grpradio}>
                     <View style={styles.radiosection}>
-                      <RadioButton value="Atisweda" />
-                      <Text>Atisweda</Text>
-                    </View>
-                    <View style={styles.radiosection}>
-                      <RadioButton value="Angaparidaha" />
-                      <Text>Angaparidaha</Text>
+                      <RadioButton value="comfortable anywhere except in humid climate" />
+                      <Text style={styles.radioText}>comfortable anywhere except in humid climate</Text>
                     </View>
                   </View>
                 </RadioButton.Group>
               </View>
             </>
           )}
+        </View>
+
+
+        <View style={styles.section}>
+          <TouchableOpacity
+            style={styles.sectionHeader}
+            onPress={() => setCollapse15(!collapse15)}>
+            <Text style={styles.title}>Money Matters</Text>
+            <FontAwesomeIcon icon={collapse15 ? faAngleUp : faAngleDown} />
+          </TouchableOpacity>
+          {collapse15 && (
+            <>
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Vata (ether and air)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      MoneyMatters_Vata: value,
+                    }))
+                  }
+                  value={formData.MoneyMatters_Vata}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="spend easily,don't care to earn or save much" />
+                      <Text style={styles.radioText}>spend easily,don't care to earn or save much</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Pitta (fire and water)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      MoneyMatters_Pitta: value,
+                    }))
+                  }
+                  value={formData.MoneyMatters_Pitta}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="plan well before spending" />
+                      <Text style={styles.radioText}>plan well before spending</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Kapha (water and earth)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      MoneyMatters_Kapha: value,
+                    }))
+                  }
+                  value={formData.MoneyMatters_Kapha}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="do not spend easily ,like to accumulate" />
+                      <Text style={styles.radioText}>do not spend easily ,like to accumulate</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+            </>
+          )}
+        </View>
+
+        <View style={styles.section}>
+          <TouchableOpacity
+            style={styles.sectionHeader}
+            onPress={() => setCollapse16(!collapse16)}>
+            <Text style={styles.title}>Memory</Text>
+            <FontAwesomeIcon icon={collapse16 ? faAngleUp : faAngleDown} />
+          </TouchableOpacity>
+          {collapse16 && (
+            <>
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Vata (ether and air)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Memory_Vata: value,
+                    }))
+                  }
+                  value={formData.Memory_Vata}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="quick grasp hut poor retention" />
+                      <Text style={styles.radioText}>quick grasp hut poor retention</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Pitta (fire and water)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Memory_Pitta: value,
+                    }))
+                  }
+                  value={formData.Memory_Pitta}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="quick grasp and strong retention" />
+                      <Text style={styles.radioText}>quick grasp and strong retention</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Kapha (water and earth)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Memory_Kapha: value,
+                    }))
+                  }
+                  value={formData.Memory_Kapha}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="slow grap but strong retention" />
+                      <Text style={styles.radioText}>slow grap but strong retention</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+            </>
+          )}
+        </View>
+
+        <View style={styles.section}>
+          <TouchableOpacity
+            style={styles.sectionHeader}
+            onPress={() => setCollapse17(!collapse17)}>
+            <Text style={styles.title}>Dreams</Text>
+            <FontAwesomeIcon icon={collapse17 ? faAngleUp : faAngleDown} />
+          </TouchableOpacity>
+          {collapse17 && (
+            <>
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Vata (ether and air)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Dreams_Vata: value,
+                    }))
+                  }
+                  value={formData.Dreams_Vata}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="anxious and many" />
+                      <Text style={styles.radioText}>anxious and many</Text>
+                    </View>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="dreams relate to flying jumping climbing,runing" />
+                      <Text style={styles.radioText}>
+                        dreams relate to flying jumping climbing,runing
+                      </Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Pitta (fire and water)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Dreams_Pitta: value,
+                    }))
+                  }
+                  value={formData.Dreams_Pitta}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="moderate in number" />
+                      <Text style={styles.radioText}>moderate in number</Text>
+                    </View>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="dreams relate to anger, conflict" />
+                      <Text style={styles.radioText}>dreams relate to anger, conflict</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Kapha (water and earth)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Dreams_Kapha: value,
+                    }))
+                  }
+                  value={formData.Dreams_Kapha}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="fewer in number" />
+                      <Text style={styles.radioText}>fewer in number</Text>
+                    </View>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="dreams relate to romance,water pathos or empathy" />
+                      <Text style={styles.radioText}>
+                        dreams relate to romance,water pathos or empathy
+                      </Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+            </>
+          )}
+        </View>
+
+        <View style={styles.section}>
+          <TouchableOpacity
+            style={styles.sectionHeader}
+            onPress={() => setCollapse18(!collapse18)}>
+            <Text style={styles.title}>Sleep</Text>
+            <FontAwesomeIcon icon={collapse18 ? faAngleUp : faAngleDown} />
+          </TouchableOpacity>
+          {collapse18 && (
+            <>
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Vata (ether and air)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Sleep_Vata: value,
+                    }))
+                  }
+                  value={formData.Sleep_Vata}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="less and disturbed" />
+                      <Text style={styles.radioText}>less and disturbed</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Pitta (fire and water)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Sleep_Pitta: value,
+                    }))
+                  }
+                  value={formData.Sleep_Pitta}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="less but sound" />
+                      <Text style={styles.radioText}>less but sound</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+
+              <View style={styles.contentOuter}>
+                <Text style={styles.text}>Kapha (water and earth)</Text>
+                <RadioButton.Group
+                  onValueChange={value =>
+                    setFormData(prev => ({
+                      ...prev,
+                      Sleep_Kapha: value,
+                    }))
+                  }
+                  value={formData.Sleep_Kapha}>
+                  <View style={styles.grpradio}>
+                    <View style={styles.radiosection}>
+                      <RadioButton value="deep and prolonged" />
+                      <Text style={styles.radioText}>deep and prolonged</Text>
+                    </View>
+                  </View>
+                </RadioButton.Group>
+              </View>
+            </>
+          )}
+        </View>
+
+        <View style={styles.section}>
+          <View style={styles.contentOuter}>
+            <Text style={styles.text}>Vatta Pitta Kapha</Text>
+            <TextInput
+                  style={[styles.input, { backgroundColor: '#f5f5f5' }]}
+                  value={formData.Result}
+                  editable={false}
+                 
+                />
+          </View>
         </View>
 
         <TouchableOpacity
@@ -1417,212 +1910,577 @@ const Prakruti = () => {
             </View>
             <View style={styles.recentDataAddedContainerWrapper}>
               <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Pranavahasrotas</Text>
+                <Text style={styles.recentGroupTitle}>Body Weight and Frame</Text>
                 <View style={styles.recentGroupWrapper}>
                   <View style={styles.recentInnerGroup}>
                     <Text style={styles.recentInnerGroupTitle}>
-                      Pranavahasrotas :{' '}
+                      Vata :{' '}
                     </Text>
                     <Text style={styles.recentInnerGroupText}>
-                      {item.Pranavahasrotas}
+                      {item.BodyWeightFrame_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.BodyWeightFrame_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.BodyWeightFrame_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Skin</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Skin_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Skin_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Skin_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Fingernails</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Fingernails_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Fingernails_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Fingernails_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Hair</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Hair_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Hair_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Hair_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Forehead</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Forehead_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Forehead_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Forehead_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Eyes</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Eyes_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Eyes_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Eyes_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Lips</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Lips_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Lips_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Lips_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Thirst</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Thirst_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Thirst_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Thirst_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Excretions</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Excretions_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Excretions_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Excretions_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Voice and Speech</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.VoiceSpeech_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.VoiceSpeech_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.VoiceSpeech_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Working Style</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.WorkingStyle_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.WorkingStyle_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.WorkingStyle_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Mental Make-Up</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.MentalMakeup_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.MentalMakeup_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.MentalMakeup_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Temperament</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Temperament_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Temperament_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Temperament_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Relationships</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Relationships_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Relationships_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Relationships_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Weather Preferences</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.WeatherPreferences_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.WeatherPreferences_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.WeatherPreferences_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Money Matters</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.MoneyMatters_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.MoneyMatters_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.MoneyMatters_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Memory</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Memory_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Memory_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Memory_Kapha}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <Divider/>
+              <View style={styles.recentGroup}>
+                <Text style={styles.recentGroupTitle}>Dreams</Text>
+                <View style={styles.recentGroupWrapper}>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Vata :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Dreams_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Dreams_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Dreams_Kapha}
                     </Text>
                   </View>
                 </View>
               </View>
 
+              <Divider/>
               <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Udakvahasrotas</Text>
+                <Text style={styles.recentGroupTitle}>Sleep</Text>
                 <View style={styles.recentGroupWrapper}>
                   <View style={styles.recentInnerGroup}>
                     <Text style={styles.recentInnerGroupTitle}>
-                      Udakvahasrotas :{' '}
+                      Vata :{' '}
                     </Text>
                     <Text style={styles.recentInnerGroupText}>
-                      {item.Udakvahasrotas}
+                      {item.Sleep_Vata}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pitta :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Sleep_Pitta}
+                    </Text>
+                  </View>
+                  <View style={styles.recentInnerGroup}>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Kapha :{' '}
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Sleep_Kapha}
                     </Text>
                   </View>
                 </View>
               </View>
 
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Srotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>Srotas : </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.srotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Annavahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Annavahasrotas :
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Annavahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Rasavahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Rasavahasrotas :{' '}
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Rasavahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Raktavahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Raktavahasrotas :{' '}
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Raktavahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Mansavahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Mansavahasrotas :{' '}
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Mansavahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Medovahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Medovahasrotas :{' '}
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Medovahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Asthivahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Asthivahasrotas :{' '}
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Asthivahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Majjavahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Majjavahasrotas :{' '}
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Majjavahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Shukravahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Shukravahasrotas :
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Shukravahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Artavavahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Artavavahasrotas :{' '}
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Artavavahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Mutravahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Mutravahasrotas :{' '}
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Mutravahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Purishvahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Purishvahasrotas :{' '}
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Purishvahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.recentGroup}>
-                <Text style={styles.recentGroupTitle}>Swedavahasrotas</Text>
-                <View style={styles.recentGroupWrapper}>
-                  <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>
-                      Swedavahasrotas :{' '}
-                    </Text>
-                    <Text style={styles.recentInnerGroupText}>
-                      {item.Swedavahasrotas}
-                    </Text>
-                  </View>
-                </View>
-              </View>
+              
             </View>
           </View>
         ))}
@@ -1707,7 +2565,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1.5,
     borderRadius: 4,
-    width: 60,
+    width: 200,
     padding: 6,
     borderColor: '#e6e6e6',
     marginHorizontal: 4,
@@ -1781,8 +2639,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 5,
     flexWrap: 'wrap',
-    width: 190,
-    // backgroundColor:"red"
+    marginRight: 5
   },
   recentGroupWrapper: {
     flexDirection: 'row',
@@ -1812,4 +2669,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
   },
+  radioText:{
+    width: 140,
+  }
 });

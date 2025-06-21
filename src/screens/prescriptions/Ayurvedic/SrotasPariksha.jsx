@@ -88,13 +88,16 @@ const SrotasPariksha = () => {
       try {
         await axios.post(addopdassessment, data).then(res => {
           if (res.data.status === true)
-            return Alert.alert('Success !!', 'Srotas Pariksha Added Successfully');
+            return Alert.alert(
+              'Success !!',
+              'Srotas Pariksha Added Successfully',
+            );
           else Alert.alert('Error !!', 'Srotas Pariksha Not Added');
         });
       } catch (error) {
         Alert.alert('Error !!', error);
       }
-      navigation.replace('CreateRx');
+      navigation.goBack();
     } else {
       Alert.alert('Warning !!', 'Add symptoms first');
     }
@@ -487,7 +490,6 @@ const SrotasPariksha = () => {
           )}
         </View>
 
-        
         <View style={styles.section}>
           <TouchableOpacity
             style={styles.sectionHeader}
@@ -547,7 +549,6 @@ const SrotasPariksha = () => {
           )}
         </View>
 
-
         <View style={styles.section}>
           <TouchableOpacity
             style={styles.sectionHeader}
@@ -595,7 +596,6 @@ const SrotasPariksha = () => {
           )}
         </View>
 
-
         <View style={styles.section}>
           <TouchableOpacity
             style={styles.sectionHeader}
@@ -634,7 +634,6 @@ const SrotasPariksha = () => {
             </>
           )}
         </View>
-
 
         <View style={styles.section}>
           <TouchableOpacity
@@ -678,7 +677,6 @@ const SrotasPariksha = () => {
             </>
           )}
         </View>
-
 
         <View style={styles.section}>
           <TouchableOpacity
@@ -833,12 +831,13 @@ const SrotasPariksha = () => {
               </TouchableOpacity>
             </View>
             <View style={styles.recentDataAddedContainerWrapper}>
-
               <View style={styles.recentGroup}>
                 <Text style={styles.recentGroupTitle}>Pranavahasrotas</Text>
                 <View style={styles.recentGroupWrapper}>
                   <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>Pranavahasrotas : </Text>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Pranavahasrotas :{' '}
+                    </Text>
                     <Text style={styles.recentInnerGroupText}>
                       {item.Pranavahasrotas}
                     </Text>
@@ -850,7 +849,9 @@ const SrotasPariksha = () => {
                 <Text style={styles.recentGroupTitle}>Udakvahasrotas</Text>
                 <View style={styles.recentGroupWrapper}>
                   <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>Udakvahasrotas : </Text>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Udakvahasrotas :{' '}
+                    </Text>
                     <Text style={styles.recentInnerGroupText}>
                       {item.Udakvahasrotas}
                     </Text>
@@ -874,8 +875,12 @@ const SrotasPariksha = () => {
                 <Text style={styles.recentGroupTitle}>Annavahasrotas</Text>
                 <View style={styles.recentGroupWrapper}>
                   <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>Annavahasrotas :</Text>
-                    <Text style={styles.recentInnerGroupText}>{item.Annavahasrotas}</Text>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Annavahasrotas :
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Annavahasrotas}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -926,7 +931,9 @@ const SrotasPariksha = () => {
                 <Text style={styles.recentGroupTitle}>Medovahasrotas</Text>
                 <View style={styles.recentGroupWrapper}>
                   <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>Medovahasrotas : </Text>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Medovahasrotas :{' '}
+                    </Text>
                     <Text style={styles.recentInnerGroupText}>
                       {item.Medovahasrotas}
                     </Text>
@@ -938,7 +945,9 @@ const SrotasPariksha = () => {
                 <Text style={styles.recentGroupTitle}>Asthivahasrotas</Text>
                 <View style={styles.recentGroupWrapper}>
                   <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>Asthivahasrotas : </Text>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Asthivahasrotas :{' '}
+                    </Text>
                     <Text style={styles.recentInnerGroupText}>
                       {item.Asthivahasrotas}
                     </Text>
@@ -950,7 +959,9 @@ const SrotasPariksha = () => {
                 <Text style={styles.recentGroupTitle}>Majjavahasrotas</Text>
                 <View style={styles.recentGroupWrapper}>
                   <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>Majjavahasrotas : </Text>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Majjavahasrotas :{' '}
+                    </Text>
                     <Text style={styles.recentInnerGroupText}>
                       {item.Majjavahasrotas}
                     </Text>
@@ -962,8 +973,12 @@ const SrotasPariksha = () => {
                 <Text style={styles.recentGroupTitle}>Shukravahasrotas</Text>
                 <View style={styles.recentGroupWrapper}>
                   <View style={styles.recentInnerGroup}>
-                    <Text style={styles.recentInnerGroupTitle}>Shukravahasrotas :</Text>
-                    <Text style={styles.recentInnerGroupText}>{item.Shukravahasrotas}</Text>
+                    <Text style={styles.recentInnerGroupTitle}>
+                      Shukravahasrotas :
+                    </Text>
+                    <Text style={styles.recentInnerGroupText}>
+                      {item.Shukravahasrotas}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -1023,8 +1038,6 @@ const SrotasPariksha = () => {
                   </View>
                 </View>
               </View>
-
-
             </View>
           </View>
         ))}

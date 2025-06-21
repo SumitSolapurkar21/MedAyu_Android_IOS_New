@@ -80,7 +80,7 @@ const Samprapti = () => {
       } catch (error) {
         Alert.alert('Error !!', error);
       }
-      navigation.replace('CreateRx');
+      navigation.goBack();
     } else {
       Alert.alert('Warning !!', 'Add symptoms first');
     }
